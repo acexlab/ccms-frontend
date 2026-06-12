@@ -1,0 +1,206 @@
+<app-navbar></app-navbar>
+
+<div class="detail-container" *ngIf="caseDetail">
+  <div class="header-nav">
+    <button mat-button routerLink="/bank/cases">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Inbox
+    </button>
+  </div>
+
+  <div class="cards-layout">
+    
+    <div class="left-cards">
+      <!-- Card 1: Court Order Details -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <div class="card-header-title">
+            <mat-card-title>Order details: {{ caseDetail.caseNumber }}</mat-card-title>
+            <app-status-badge [status]="caseDetail.status"></app-status-badge>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Complainant</span>
+              <span class="val">{{ caseDetail.complainantName }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Defendant</span>
+              <span class="val">{{ caseDetail.defendantName }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Target Account</span>
+              <app-masked-text [value]="caseDetail.defendantAccountNumber"></app-masked-text>
+            </div>
+            <div class="info-item">
+              <span class="label">Order Type</span>
+              <span class="val">{{ caseDetail.orderType }}</span>
+            </div>
+            <div class="info-item" *ngIf="caseDetail.orderType === 'FreezeAccount'">
+              <span class="label">Requested Freeze Limit</span>
+              <span class="val">{{ caseDetail.freezeAmount | currency:'INR':'symbol' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Received At</span>
+              <span class="val">{{ caseDetail.createdAt | date:'medium' }}</span>
+            </div>
+          </div>
+
+          <hr />
+
+          <h3>Legal Document Attachments</h3>
+          <div class="docs-list">
+            <div class="doc-item" *ngFor="let doc of caseDetail.documents">
+              <mat-icon>insert_drive_file</mat-icon>
+              <div class="doc-info">
+                <span class="doc-type">{{ doc.documentType }}</span>
+                <a [href]="doc.fileUrl" target="_blank" class="doc-link">{{ doc.fileName }}</a>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Card 2: Batch Validation Result -->
+      <mat-card class="detail-card validation-card">
+        <mat-card-header>
+          <mat-card-title>Automated Batch Validation Result</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-grid" *ngIf="caseDetail.matchedAccountNumber">
+            <div class="info-item">
+              <span class="label">Matched Account Number</span>
+              <app-masked-text [value]="caseDetail.matchedAccountNumber"></app-masked-text>
+            </div>
+            <div class="info-item">
+              <span class="label">Available Balance</span>
+              <span class="val">{{ caseDetail.matchedBalance | currency:'INR':'symbol' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Account Status</span>
+              <span class="val active-status">{{ caseDetail.matchedAccountStatus }}</span>
+            </div>
+          </div>
+
+          <div class="no-match-alert" *ngIf="!caseDetail.matchedAccountNumber">
+            <mat-icon>report_problem</mat-icon>
+            <div class="alert-info">
+              <span>Account Not Found / Pending Batch Match</span>
+              <p>Validation has either not run yet, or failed to identify any customer profile matching the Aadhaar/PAN/Account parameters.</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Card 3: Response (Interactive Form or Read-only) -->
+    <div class="right-cards">
+      
+      <!-- Interactive Form -->
+      <mat-card class="detail-card response-form-card" *ngIf="caseDetail.status === 'AccountValidated'">
+        <mat-card-header>
+          <mat-card-title>Action Required: Submit Response</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="responseForm" (ngSubmit)="onSubmit()" class="response-form">
+            
+            <div class="download-order-box">
+              <mat-icon>info</mat-icon>
+              <span>
+                Please download and review the official <a [href]="getCourtOrderUrl()" target="_blank">Court Order PDF</a> before submitting the balance or freeze confirmation.
+              </span>
+            </div>
+
+            <mat-form-field appearance="outline" *ngIf="caseDetail.orderType === 'FreezeAccount'">
+              <mat-label>Actual Amount Frozen (INR)</mat-label>
+              <input matInput type="number" formControlName="reportedAmount" placeholder="Enter amount frozen" />
+              <mat-error *ngIf="responseForm.get('reportedAmount')?.hasError('required')">
+                Reported Amount is required
+              </mat-error>
+              <mat-error *ngIf="responseForm.get('reportedAmount')?.hasError('min')">
+                Must be greater than zero
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" *ngIf="caseDetail.orderType === 'BalanceEnquiry'">
+              <mat-label>Reported Balance (INR)</mat-label>
+              <input matInput type="number" formControlName="reportedAmount" placeholder="Pre-filled customer balance" />
+              <mat-error *ngIf="responseForm.get('reportedAmount')?.hasError('required')">
+                Reported Balance is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Remarks / Auditing Note</mat-label>
+              <textarea matInput formControlName="remarks" rows="4" placeholder="Enter audit observations (e.g. Account frozen, balance reported)"></textarea>
+              <mat-error *ngIf="responseForm.get('remarks')?.hasError('required')">
+                Remarks are required
+              </mat-error>
+            </mat-form-field>
+
+            <button mat-raised-button color="accent" type="submit" [disabled]="responseForm.invalid || isSubmitting">
+              <mat-icon>send</mat-icon>
+              Submit Response
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Read-only View -->
+      <mat-card class="detail-card response-form-card terminal-response-card" *ngIf="caseDetail.status !== 'AccountValidated'">
+        <mat-card-header>
+          <mat-card-title>Response History</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="caseDetail.response" class="response-display">
+            <div class="info-item">
+              <span class="label">Response Status</span>
+              <span class="val bold-val">{{ caseDetail.response.responseType }}</span>
+            </div>
+
+            <div class="info-item" *ngIf="caseDetail.response.reportedAmount !== undefined && caseDetail.response.reportedAmount !== null">
+              <span class="label">Confirmed Amount</span>
+              <span class="val">{{ caseDetail.response.reportedAmount | currency:'INR':'symbol' }}</span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">Remarks</span>
+              <p class="val remarks-display">{{ caseDetail.response.remarks }}</p>
+            </div>
+
+            <div class="info-item">
+              <span class="label">Responded At</span>
+              <span class="val">{{ caseDetail.response.respondedAt | date:'medium' }}</span>
+            </div>
+
+            <div class="info-item">
+              <span class="label">Origin</span>
+              <span class="val italic-val">{{ caseDetail.response.isSystemGenerated ? 'Background Job' : 'Bank Manual Processing' }}</span>
+            </div>
+          </div>
+
+          <div *ngIf="!caseDetail.response" class="pending-validation-state">
+            <mat-icon>hourglass_empty</mat-icon>
+            <p>Pending Validation</p>
+            <span>Response will be active once account validation finishes.</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="loading-state" *ngIf="isLoading">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div class="error-container" *ngIf="errorMessage">
+  <mat-card class="error-card">
+    <mat-icon>error_outline</mat-icon>
+    <p>{{ errorMessage }}</p>
+    <button mat-raised-button color="primary" routerLink="/bank/cases">Back to Inbox</button>
+  </mat-card>
+</div>

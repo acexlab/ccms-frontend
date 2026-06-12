@@ -1,0 +1,147 @@
+/* Bank Dashboard Layout */
+
+.dashboard-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid;
+}
+
+.action-required {
+  border-left-color: #1565c0;
+}
+
+.pending-batch {
+  border-left-color: #616161;
+}
+
+.completed {
+  border-left-color: #2e7d32;
+}
+
+.resolved {
+  border-left-color: #c62828;
+}
+
+.stat-card mat-card-title {
+  font-size: 36px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.stat-card mat-card-subtitle {
+  font-size: 14px;
+  color: #70757a;
+}
+
+.control-card {
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.control-card mat-card-header {
+  margin-bottom: 24px;
+}
+
+.log-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 6px;
+  border: 1px solid #dadce0;
+}
+
+.log-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.log-item .label {
+  font-size: 11px;
+  color: #70757a;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.log-item .val {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.success-text {
+  color: #2e7d32;
+}
+
+.warn-text {
+  color: #c62828;
+}
+
+.no-runs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  color: #70757a;
+}
+
+.no-runs mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 8px;
+}
+
+hr {
+  margin: 24px 0;
+  border: 0;
+  border-top: 1px solid #dadce0;
+}
+
+.trigger-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.description-text {
+  font-size: 13px;
+  color: #70757a;
+  margin: 0;
+  line-height: 1.5;
+}
+
+button {
+  width: fit-content;
+  height: 48px;
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}

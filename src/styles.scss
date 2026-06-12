@@ -1,0 +1,24 @@
+/*
+ * File: styles.scss
+ * Description: Global application stylesheet integrating Angular Material theme.
+ * To Implement: Keep theme colors consistent with company palette guidelines.
+ */
+
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+:root {
+  --ccms-primary: #3f51b5;
+  --ccms-accent: #ff4081;
+  --ccms-warn: #f44336;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f5f5f5;
+  color: #333333;
+}

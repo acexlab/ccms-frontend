@@ -1,0 +1,12 @@
+# File: .dockerignore
+# Description: Excludes files from docker build context.
+# To Implement: Keep node_modules/ and dist/ out of the image build process.
+
+node_modules/
+dist/
+.angular/
+.git/
+.gitignore
+*.md
+Dockerfile
+nginx.conf

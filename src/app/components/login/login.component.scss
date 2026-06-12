@@ -1,0 +1,44 @@
+/* Styling for centered login layout */
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.login-card {
+  width: 400px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+mat-card-header {
+  margin-bottom: 24px;
+  text-align: center;
+  display: block;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+button[type="submit"] {
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-footer {
+  margin-top: 24px;
+  font-size: 11px;
+  color: #70757a;
+  text-align: center;
+  padding: 8px;
+  border-top: 1px solid #dadce0;
+}

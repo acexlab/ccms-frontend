@@ -1,0 +1,81 @@
+/* Styling for Court Dashboard */
+
+.dashboard-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.summary-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.tile {
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid;
+}
+
+.pending-tile {
+  border-left-color: #616161;
+}
+
+.validated-tile {
+  border-left-color: #1565c0;
+}
+
+.resolved-tile {
+  border-left-color: #2e7d32;
+}
+
+.tile mat-card-title {
+  font-size: 36px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.tile mat-card-subtitle {
+  font-size: 14px;
+  color: #70757a;
+}
+
+.table-card {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.table-card mat-card-header {
+  margin-bottom: 16px;
+}
+
+table {
+  width: 100%;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: #70757a;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+}

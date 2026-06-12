@@ -1,0 +1,281 @@
+/* Bank Case Detail layout */
+
+.detail-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-nav {
+  margin-bottom: 16px;
+}
+
+.cards-layout {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.left-cards, .right-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.detail-card {
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.card-header-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item .label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #70757a;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.info-item .val {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+hr {
+  margin: 24px 0;
+  border: 0;
+  border-top: 1px solid #dadce0;
+}
+
+.docs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doc-item {
+  display: flex;
+  align-items: center;
+  background-color: #fafafa;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #dadce0;
+}
+
+.doc-item mat-icon {
+  color: #3f51b5;
+  margin-right: 12px;
+}
+
+.doc-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.doc-type {
+  font-size: 11px;
+  font-weight: 500;
+  color: #70757a;
+}
+
+.doc-link {
+  color: #3f51b5;
+  font-size: 13px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.doc-link:hover {
+  text-decoration: underline;
+}
+
+/* Validation Result */
+.validation-card {
+  border-left: 5px solid #1565c0;
+}
+
+.active-status {
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.no-match-alert {
+  display: flex;
+  align-items: flex-start;
+  background-color: #fff8e1;
+  border: 1px solid #ffe082;
+  padding: 16px;
+  border-radius: 6px;
+}
+
+.no-match-alert mat-icon {
+  color: #f57f17;
+  margin-right: 12px;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.alert-info span {
+  font-weight: 500;
+  color: #f57f17;
+  font-size: 14px;
+}
+
+.alert-info p {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #5f6368;
+  line-height: 1.4;
+}
+
+/* Response Form */
+.response-form-card {
+  border-left: 5px solid #ff4081;
+}
+
+.response-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.download-order-box {
+  display: flex;
+  align-items: center;
+  background-color: #e3f2fd;
+  border: 1px solid #bbdefb;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #0d47a1;
+  margin-bottom: 8px;
+}
+
+.download-order-box mat-icon {
+  margin-right: 8px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.download-order-box a {
+  font-weight: 500;
+  color: #0d47a1;
+  text-decoration: underline;
+}
+
+button[type="submit"] {
+  height: 48px;
+}
+
+/* Readonly Response View */
+.terminal-response-card {
+  border-left-color: #2e7d32;
+}
+
+.response-display {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bold-val {
+  font-weight: 500;
+}
+
+.remarks-display {
+  background-color: #fafafa;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px dashed #dadce0;
+  font-style: italic;
+  margin: 0;
+}
+
+.pending-validation-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 16px;
+  color: #70757a;
+}
+
+.pending-validation-state mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 12px;
+}
+
+.pending-validation-state p {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.pending-validation-state span {
+  font-size: 12px;
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.error-card {
+  width: 400px;
+  padding: 32px;
+  text-align: center;
+}
+
+.error-card mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #f44336;
+  margin-bottom: 16px;
+}
+
+.error-card p {
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.italic-val {
+  font-style: italic;
+  font-size: 13px;
+  color: #70757a;
+}
