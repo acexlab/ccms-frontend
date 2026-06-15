@@ -1,5 +1,128 @@
-<!-- Card 1: Court Order Details -->
-<!-- Card 2: Batch Validation Result -->
-<!-- Card 3: Response (Interactive Form or Read-only) -->
-<!-- Interactive Form -->
-<!-- Read-only View -->
+<div class="case-detail-container" *ngIf="caseDetails">
+  <div class="header">
+    <h1>{{ caseDetails.caseNumber }}</h1>
+  </div>
+
+  <div class="content-grid">
+    <div class="main-column">
+      <!-- Court Case Information Section -->
+      <div class="card">
+        <h3>Court Case Information</h3>
+        <div class="two-col">
+          <div class="col">
+            <label>COMPLAINANT</label>
+            <p>{{ caseDetails.complainantName }}</p>
+            <p class="identity-number">{{ caseDetails.complainantIdentityNumber }}</p>
+          </div>
+          <div class="col">
+            <label>DEFENDANT</label>
+            <p>{{ caseDetails.defendantName }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Defendant Information Section -->
+      <div class="card">
+        <h3>Defendant Information</h3>
+        <div class="grid-four-col">
+          <div class="info-item">
+            <label>Account Holder Name</label>
+            <p>{{ caseDetails.defendantName }}</p>
+          </div>
+          <div class="info-item">
+            <label>Masked Aadhaar</label>
+            <p>{{ caseDetails.defendantAadhaar }}</p>
+          </div>
+          <div class="info-item">
+            <label>Masked PAN</label>
+            <p>{{ caseDetails.defendantPan }}</p>
+          </div>
+          <div class="info-item">
+            <label>Masked Account Number</label>
+            <p>{{ caseDetails.defendantAccountNumber }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case Documents Section -->
+      <div class="card">
+        <h3>Case Documents</h3>
+        <div class="document-list">
+          <div class="document-item" *ngFor="let doc of caseDetails.documents">
+            <div class="doc-icon">📄</div>
+            <div class="doc-info">
+              <p class="doc-title">{{ doc.documentType }}</p>
+              <p class="doc-meta">{{ doc.fileName }} • {{ (doc.fileSize / 1024).toFixed(1) }} KB</p>
+            </div>
+            <div class="doc-actions">
+              <button class="btn-outline">Preview</button>
+              <button class="btn-outline" (click)="downloadDocument(doc.id)">Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case Response Section -->
+      <div class="card response-section">
+        <h3>Case Response</h3>
+        
+        <div *ngIf="isAwaitingAction">
+          <div class="form-group">
+            <label>Response Remarks</label>
+            <textarea [(ngModel)]="remarks" placeholder="Enter any additional notes or remarks regarding this action..."></textarea>
+          </div>
+          <button class="btn-primary btn-submit" (click)="navigateToResponse()">Submit Response</button>
+        </div>
+
+        <div *ngIf="isResponded && caseDetails.response" class="read-only-response">
+          <div class="info-item">
+            <label>Response Type</label>
+            <p>{{ caseDetails.response.responseType }}</p>
+          </div>
+          <div class="info-item" *ngIf="caseDetails.response.freezeAmountApplied !== null">
+            <label>Amount Frozen</label>
+            <p>₹ {{ caseDetails.response.freezeAmountApplied }}</p>
+          </div>
+          <div class="info-item" *ngIf="caseDetails.response.balanceReported !== null">
+            <label>Balance Reported</label>
+            <p>₹ {{ caseDetails.response.balanceReported }}</p>
+          </div>
+          <div class="info-item">
+            <label>Remarks</label>
+            <p>{{ caseDetails.response.remarks }}</p>
+          </div>
+          <div class="info-item">
+            <label>Submitted At</label>
+            <p>{{ caseDetails.response.submittedAt | date:'medium' }}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Validation Results Panel (Right Column) -->
+    <div class="side-column">
+      <div class="card dark-panel">
+        <h3>Validation Results</h3>
+        <div class="panel-content">
+          <div class="result-item">
+            <label>MATCHED ACCOUNT #</label>
+            <p class="large-text">{{ caseDetails.matchedAccountNumber }}</p>
+          </div>
+          <div class="result-item">
+            <label>ACCOUNT STATUS</label>
+            <p class="status-badge">{{ caseDetails.accountStatus }}</p>
+          </div>
+          <div class="result-item">
+            <label>CURRENT BALANCE (VERIFIED) <span class="read-only-tag">READ ONLY</span></label>
+            <p class="large-amount">₹ {{ caseDetails.currentBalance }}</p>
+          </div>
+          <div class="result-item">
+            <label>VALIDATION TIMESTAMP</label>
+            <p>{{ caseDetails.validationTimestamp | date:'medium' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

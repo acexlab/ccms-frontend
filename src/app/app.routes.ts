@@ -1,9 +1,3 @@
-/*
- * File: app.routes.ts
- * Description: Defines the core route configuration and navigation guards.
- * To Implement: Keep guards aligned with token-based role definitions.
- */
-
 import { Routes } from '@angular/router';
 import { courtGuard } from './authguard/court.guard';
 import { bankGuard } from './authguard/bank.guard';
@@ -40,8 +34,18 @@ export const appRoutes: Routes = [
     canActivate: [bankGuard]
   },
   { 
-    path: 'bank/cases/:id', 
+    path: 'bank/cases/:caseNumber', 
     loadComponent: () => import('./components/bank-case-detail/bank-case-detail.component').then(m => m.BankCaseDetailComponent),
+    canActivate: [bankGuard]
+  },
+  { 
+    path: 'bank/cases/:caseNumber/balance-response', 
+    loadComponent: () => import('./components/balance-enquiry-response/balance-enquiry-response').then(m => m.BalanceEnquiryResponse),
+    canActivate: [bankGuard]
+  },
+  { 
+    path: 'bank/cases/:caseNumber/freeze-response', 
+    loadComponent: () => import('./components/freeze-account-response/freeze-account-response').then(m => m.FreezeAccountResponse),
     canActivate: [bankGuard]
   },
   { 

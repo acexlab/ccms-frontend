@@ -1,0 +1,53 @@
+<div class="response-container" *ngIf="caseDetails">
+  <div class="breadcrumb">
+    <a routerLink="/bank/inbox">Case Inbox</a> &gt; <a [routerLink]="['/bank/cases', caseNumber]">Case #{{ caseNumber }}</a> &gt; Freeze Account Response
+  </div>
+  
+  <div class="header">
+    <h1>Freeze Account Response Form</h1>
+    <p class="subtitle">Review the court mandate and provide institutional compliance details.</p>
+  </div>
+
+  <div class="form-grid">
+    <!-- Left Side: PDF Viewer -->
+    <div class="left-panel card pdf-panel">
+      <div class="pdf-header" *ngIf="courtOrderDoc">
+        <span class="file-name">📄 {{ courtOrderDoc.fileName }}</span>
+        <div class="pdf-controls">
+          <button title="Zoom In">🔍+</button>
+          <button title="Zoom Out">🔍-</button>
+          <button title="Print">🖨️</button>
+          <button title="Download">⬇️</button>
+        </div>
+      </div>
+      <div class="pdf-viewer">
+        <iframe *ngIf="courtOrderUrl" [src]="courtOrderUrl" width="100%" height="600px" style="border: none;"></iframe>
+        <p *ngIf="!courtOrderUrl">Court Order PDF not available.</p>
+      </div>
+    </div>
+
+    <!-- Right Side: Form -->
+    <div class="right-panel card">
+      <p class="instruction-text">Complete the following details to execute the freeze order.</p>
+
+      <div class="form-group">
+        <label>Freeze Amount (INR)</label>
+        <div class="input-wrapper">
+          <span class="currency">₹</span>
+          <input type="number" [(ngModel)]="freezeAmount" placeholder="0.00" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Remarks</label>
+        <textarea [(ngModel)]="remarks" placeholder="Document any account discrepancies or additional holds here..." maxlength="500"></textarea>
+        <small class="char-count">Character count: {{ remarks.length }} / 500</small>
+      </div>
+
+      <div class="button-group">
+        <button class="btn-primary" (click)="submitResponse()">Submit Response</button>
+        <button class="btn-secondary" (click)="cancel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
