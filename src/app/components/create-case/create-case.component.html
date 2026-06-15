@@ -100,12 +100,12 @@
                 <div class="col-span-2 md:col-span-1">
                   <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Full Name</label>
                   <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="complainantName" placeholder="Legal Name" type="text"/>
-                  <p *ngIf="createCaseForm.get('complainantName')?.touched && createCaseForm.get('complainantName')?.invalid" class="text-xs text-error mt-1">Complainant Full Name is required</p>
+                  <p *ngIf="createCaseForm.get('complainantName')?.touched && createCaseForm.get('complainantName')?.invalid" class="text-xs text-error mt-1 font-semibold">Name must contain only letters and spaces (3-100 characters)</p>
                 </div>
                 <div class="col-span-2 md:col-span-1">
                   <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Identity Number (Aadhaar/PAN)</label>
                   <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="complainantId" placeholder="ID Number" type="text"/>
-                  <p *ngIf="createCaseForm.get('complainantId')?.touched && createCaseForm.get('complainantId')?.invalid" class="text-xs text-error mt-1">Complainant Identity Number is required</p>
+                  <p *ngIf="createCaseForm.get('complainantId')?.touched && createCaseForm.get('complainantId')?.invalid" class="text-xs text-error mt-1 font-semibold">Must be a valid 12-digit Aadhaar or 10-char PAN (e.g. ABCDE1234F)</p>
                 </div>
               </div>
             </div>
@@ -115,22 +115,22 @@
                 <div class="col-span-2 md:col-span-1">
                   <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Full Name</label>
                   <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="defendantName" placeholder="Legal Name" type="text"/>
-                  <p *ngIf="createCaseForm.get('defendantName')?.touched && createCaseForm.get('defendantName')?.invalid" class="text-xs text-error mt-1">Defendant Full Name is required</p>
+                  <p *ngIf="createCaseForm.get('defendantName')?.touched && createCaseForm.get('defendantName')?.invalid" class="text-xs text-error mt-1 font-semibold">Name must contain only letters and spaces (3-100 characters)</p>
                 </div>
                 <div class="col-span-2 md:col-span-1">
                   <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Identity Number (Aadhaar/PAN)</label>
                   <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="defendantId" placeholder="ID Number" type="text"/>
-                  <p *ngIf="createCaseForm.get('defendantId')?.touched && createCaseForm.get('defendantId')?.invalid" class="text-xs text-error mt-1">Defendant Identity Number is required</p>
+                  <p *ngIf="createCaseForm.get('defendantId')?.touched && createCaseForm.get('defendantId')?.invalid" class="text-xs text-error mt-1 font-semibold">Must be a valid 12-digit Aadhaar or 10-char PAN (e.g. ABCDE1234F)</p>
                 </div>
                 <div class="col-span-2 md:col-span-1">
                   <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Bank Account Number</label>
                   <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="defendantAccountNumber" placeholder="Account Number" type="text"/>
-                  <p *ngIf="createCaseForm.get('defendantAccountNumber')?.touched && createCaseForm.get('defendantAccountNumber')?.invalid" class="text-xs text-error mt-1">Bank Account Number is required</p>
+                  <p *ngIf="createCaseForm.get('defendantAccountNumber')?.touched && createCaseForm.get('defendantAccountNumber')?.invalid" class="text-xs text-error mt-1 font-semibold">Must be between 9 and 18 digits</p>
                 </div>
                 <div class="col-span-2 md:col-span-1">
                   <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Bank Name</label>
                   <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="defendantBankName" placeholder="Bank Name" type="text"/>
-                  <p *ngIf="createCaseForm.get('defendantBankName')?.touched && createCaseForm.get('defendantBankName')?.invalid" class="text-xs text-error mt-1">Bank Name is required</p>
+                  <p *ngIf="createCaseForm.get('defendantBankName')?.touched && createCaseForm.get('defendantBankName')?.invalid" class="text-xs text-error mt-1 font-semibold">Bank Name must contain only letters and spaces (3-100 characters)</p>
                 </div>
               </div>
             </div>
@@ -192,45 +192,64 @@
             <span class="material-symbols-outlined text-primary">cloud_upload</span>
             <h2 class="font-title-lg text-title-lg">Step 3: Evidence & Verification</h2>
           </div>
-          <div class="space-y-lg">
-            <!-- Drag & Drop -->
-            <div class="border-2 border-dashed border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer" 
-                 (dragover)="$event.preventDefault()" 
-                 (drop)="handleDrop($event)"
-                 (click)="fileInput.click()">
-              <span class="material-symbols-outlined text-primary text-5xl mb-4">upload_file</span>
-              <p class="font-title-md text-title-md mb-1">Drag and drop files here</p>
-              <p class="text-on-surface-variant text-sm">PDF, JPG, or PNG (Max 5MB each)</p>
-              <input class="hidden" #fileInput multiple (change)="handleFiles(fileInput.files || [])" type="file"/>
-              <button class="mt-4 px-6 py-2 bg-primary text-white rounded-full font-label-lg text-label-lg hover:shadow-lg transition-all" type="button">Browse Files</button>
-            </div>
-            <!-- File List -->
-            <div class="space-y-3" id="file-list">
-              <!-- Mandatory items -->
-              <div *ngIf="uploadedFiles.length === 0" class="flex items-center justify-between p-3 bg-surface-bright border border-outline-variant rounded-lg">
-                <div class="flex items-center gap-3">
-                  <span class="material-symbols-outlined text-on-surface-variant">description</span>
-                  <div>
-                    <p class="font-label-lg text-label-lg">No files uploaded yet</p>
-                    <p class="text-[10px] text-error font-bold uppercase">Mandatory: Court Order PDF is required</p>
-                  </div>
+          <div class="space-y-6">
+            <!-- Dedicated Upload for Court Order PDF -->
+            <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant flex justify-between items-center">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary text-3xl">gavel</span>
+                <div>
+                  <p class="font-title-md font-bold text-on-surface">Court Order PDF</p>
+                  <p class="text-xs text-error font-bold uppercase">MANDATORY DOCUMENT</p>
+                  <p *ngIf="courtOrderFile" class="text-xs text-green-600 font-bold mt-1">Uploaded: {{ courtOrderFile.name }} ({{ (courtOrderFile.size / 1024).toFixed(1) }} KB)</p>
                 </div>
               </div>
+              <div class="flex items-center gap-3">
+                <input class="hidden" #courtOrderInput (change)="onFileSelected($event, 'courtOrder')" type="file" accept=".pdf,.png,.jpg,.jpeg"/>
+                <button type="button" (click)="courtOrderInput.click()" class="px-5 py-2 bg-primary text-white font-label-md rounded-full shadow hover:bg-primary-container transition-all">
+                  {{ courtOrderFile ? 'Change File' : 'Browse File' }}
+                </button>
+                <span *ngIf="courtOrderFile" class="material-symbols-outlined text-green-600">check_circle</span>
+                <span *ngIf="courtOrderFile" class="material-symbols-outlined text-error cursor-pointer hover:bg-surface-container rounded-full p-1" (click)="removeFile('courtOrder')">delete</span>
+              </div>
+            </div>
 
-              <div *ngFor="let file of uploadedFiles; let i = index" class="flex items-center justify-between p-3 bg-surface-bright border border-outline-variant rounded-lg">
-                <div class="flex items-center gap-3">
-                  <span class="material-symbols-outlined text-on-surface-variant">description</span>
-                  <div>
-                    <p class="font-label-lg text-label-lg">{{ file.name }}</p>
-                    <p class="text-[10px] text-on-surface-variant uppercase">
-                      {{ i === 0 ? 'Mandatory: Court Order PDF' : (i === 1 ? 'Aadhaar copy' : (i === 2 ? 'PAN copy' : 'Attachment')) }} - {{ (file.size / 1024).toFixed(1) }} KB
-                    </p>
-                  </div>
+            <!-- Dedicated Upload for Aadhaar Copy -->
+            <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant flex justify-between items-center">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary text-3xl">badge</span>
+                <div>
+                  <p class="font-title-md font-bold text-on-surface">Aadhaar Copy</p>
+                  <p class="text-xs text-error font-bold uppercase">MANDATORY DOCUMENT</p>
+                  <p *ngIf="aadhaarFile" class="text-xs text-green-600 font-bold mt-1">Uploaded: {{ aadhaarFile.name }} ({{ (aadhaarFile.size / 1024).toFixed(1) }} KB)</p>
                 </div>
-                <div class="flex items-center gap-4">
-                  <span class="material-symbols-outlined text-green-600">check_circle</span>
-                  <span class="material-symbols-outlined text-error cursor-pointer hover:bg-surface-container rounded-full p-1 text-sm" (click)="removeFile(i)">delete</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <input class="hidden" #aadhaarInput (change)="onFileSelected($event, 'aadhaar')" type="file" accept=".pdf,.png,.jpg,.jpeg"/>
+                <button type="button" (click)="aadhaarInput.click()" class="px-5 py-2 bg-primary text-white font-label-md rounded-full shadow hover:bg-primary-container transition-all">
+                  {{ aadhaarFile ? 'Change File' : 'Browse File' }}
+                </button>
+                <span *ngIf="aadhaarFile" class="material-symbols-outlined text-green-600">check_circle</span>
+                <span *ngIf="aadhaarFile" class="material-symbols-outlined text-error cursor-pointer hover:bg-surface-container rounded-full p-1" (click)="removeFile('aadhaar')">delete</span>
+              </div>
+            </div>
+
+            <!-- Dedicated Upload for PAN Copy -->
+            <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant flex justify-between items-center">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary text-3xl">description</span>
+                <div>
+                  <p class="font-title-md font-bold text-on-surface">PAN Copy</p>
+                  <p class="text-xs text-error font-bold uppercase">MANDATORY DOCUMENT</p>
+                  <p *ngIf="panFile" class="text-xs text-green-600 font-bold mt-1">Uploaded: {{ panFile.name }} ({{ (panFile.size / 1024).toFixed(1) }} KB)</p>
                 </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <input class="hidden" #panInput (change)="onFileSelected($event, 'pan')" type="file" accept=".pdf,.png,.jpg,.jpeg"/>
+                <button type="button" (click)="panInput.click()" class="px-5 py-2 bg-primary text-white font-label-md rounded-full shadow hover:bg-primary-container transition-all">
+                  {{ panFile ? 'Change File' : 'Browse File' }}
+                </button>
+                <span *ngIf="panFile" class="material-symbols-outlined text-green-600">check_circle</span>
+                <span *ngIf="panFile" class="material-symbols-outlined text-error cursor-pointer hover:bg-surface-container rounded-full p-1" (click)="removeFile('pan')">delete</span>
               </div>
             </div>
           </div>
@@ -268,9 +287,19 @@
               </div>
               <div>
                 <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Attachments</p>
-                <p class="text-sm">{{ uploadedFiles.length }} File(s) Selected</p>
-                <ul class="text-xs text-on-surface-variant list-disc pl-4 mt-1">
-                  <li *ngFor="let f of uploadedFiles">{{ f.name }}</li>
+                <ul class="text-xs text-on-surface-variant space-y-1">
+                  <li class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-green-600 text-xs">check_circle</span>
+                    <span>Court Order: {{ courtOrderFile?.name }}</span>
+                  </li>
+                  <li class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-green-600 text-xs">check_circle</span>
+                    <span>Aadhaar Copy: {{ aadhaarFile?.name }}</span>
+                  </li>
+                  <li class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-green-600 text-xs">check_circle</span>
+                    <span>PAN Copy: {{ panFile?.name }}</span>
+                  </li>
                 </ul>
               </div>
             </div>
