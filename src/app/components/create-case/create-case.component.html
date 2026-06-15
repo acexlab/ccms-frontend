@@ -1,5 +1,310 @@
-<!-- Step 1: Complainant & Defendant Details -->
-<!-- Complainant -->
-<!-- Defendant -->
-<!-- Step 2: Order Details -->
-<!-- Step 3: Document Upload -->
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin-desktop sticky top-0 z-50 bg-surface border-b border-outline-variant h-16">
+  <div class="flex items-center gap-4">
+    <span class="font-headline-md text-headline-md font-bold text-primary">CCMS</span>
+    <div class="h-8 w-px bg-outline-variant mx-2"></div>
+    <span class="font-title-md text-title-md text-on-surface-variant">Case Registration System</span>
+  </div>
+  <div class="flex items-center gap-6">
+    <div class="relative group">
+      <span class="material-symbols-outlined text-on-surface-variant cursor-pointer p-2 hover:bg-surface-container-low rounded-full transition-colors">notifications</span>
+      <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+    </div>
+    <span class="material-symbols-outlined text-on-surface-variant cursor-pointer p-2 hover:bg-surface-container-low rounded-full transition-colors">account_circle</span>
+    <span class="material-symbols-outlined text-on-surface-variant cursor-pointer p-2 hover:bg-surface-container-low rounded-full transition-colors" (click)="onLogout()">logout</span>
+  </div>
+</header>
+
+<div class="flex">
+  <!-- SideNavBar -->
+  <aside class="w-[280px] h-[calc(100vh-64px)] fixed left-0 top-16 bg-surface-container-lowest border-r border-outline-variant flex flex-col pt-8 pb-md">
+    <div class="px-6 mb-8 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+        <span class="material-symbols-outlined text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">person</span>
+      </div>
+      <div>
+        <p class="font-title-md text-title-md text-on-surface leading-tight">Court Officer</p>
+        <p class="font-label-md text-label-md text-on-surface-variant">Legal Division</p>
+      </div>
+    </div>
+    <nav class="flex-1 space-y-1">
+      <a class="flex items-center gap-3 py-3 px-6 text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-full transition-all" routerLink="/court/dashboard">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="font-label-lg text-label-lg">Dashboard</span>
+      </a>
+      <a class="flex items-center gap-3 py-3 px-6 bg-secondary-container text-on-secondary-container font-bold rounded-full mx-2 transition-all" routerLink="/court/create-case">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_box</span>
+        <span class="font-label-lg text-label-lg">Create Case</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="ml-[280px] flex-1 p-xl">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="mb-xl">
+        <h1 class="font-headline-lg text-headline-lg text-primary mb-2">New Case Registration</h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant">Follow the institutional procedure to register a new legal enforcement case.</p>
+      </div>
+
+      <!-- Stepper Progress -->
+      <div class="mb-xl relative">
+        <div class="flex justify-between relative z-10">
+          <div class="flex flex-col items-center gap-2 group cursor-pointer" id="step-pill-1" (click)="goToStep(1)">
+            <div [class]="currentStep === 1 ? 'w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : (currentStep > 1 ? 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : 'w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all')">
+              <span *ngIf="currentStep > 1" class="material-symbols-outlined text-white text-base">check</span>
+              <span *ngIf="currentStep <= 1">1</span>
+            </div>
+            <span [class]="currentStep === 1 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Case Parties</span>
+          </div>
+          <div class="flex flex-col items-center gap-2 group cursor-pointer" id="step-pill-2" (click)="goToStep(2)">
+            <div [class]="currentStep === 2 ? 'w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : (currentStep > 2 ? 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : 'w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all')">
+              <span *ngIf="currentStep > 2" class="material-symbols-outlined text-white text-base">check</span>
+              <span *ngIf="currentStep <= 2">2</span>
+            </div>
+            <span [class]="currentStep === 2 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Order Details</span>
+          </div>
+          <div class="flex flex-col items-center gap-2 group cursor-pointer" id="step-pill-3" (click)="goToStep(3)">
+            <div [class]="currentStep === 3 ? 'w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : (currentStep > 3 ? 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : 'w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all')">
+              <span *ngIf="currentStep > 3" class="material-symbols-outlined text-white text-base">check</span>
+              <span *ngIf="currentStep <= 3">3</span>
+            </div>
+            <span [class]="currentStep === 3 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Documents</span>
+          </div>
+          <div class="flex flex-col items-center gap-2 group cursor-pointer" id="step-pill-4" (click)="goToStep(4)">
+            <div [class]="currentStep === 4 ? 'w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : 'w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all'">
+              <span>4</span>
+            </div>
+            <span [class]="currentStep === 4 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Review</span>
+          </div>
+        </div>
+        <!-- Connecting Lines -->
+        <div class="absolute top-5 left-0 w-full h-[2px] bg-surface-container-high -z-0">
+          <div class="h-full bg-primary transition-all duration-500" id="progress-bar" [style.width.%]="progressPercentage"></div>
+        </div>
+      </div>
+
+      <!-- Form Card -->
+      <form [formGroup]="createCaseForm" class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg min-h-[500px] flex flex-col">
+        <!-- Step 1: Complainant & Defendant Details -->
+        <div *ngIf="currentStep === 1" class="step-transition step-active" id="step-content-1">
+          <div class="flex items-center gap-2 mb-lg">
+            <span class="material-symbols-outlined text-primary">group</span>
+            <h2 class="font-title-lg text-title-lg">Step 1: Case Parties Details</h2>
+          </div>
+          <div class="space-y-lg">
+            <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant">
+              <h3 class="font-title-md mb-4 text-primary">Complainant Information</h3>
+              <div class="grid grid-cols-2 gap-lg">
+                <div class="col-span-2 md:col-span-1">
+                  <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Full Name</label>
+                  <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="complainantName" placeholder="Legal Name" type="text"/>
+                  <p *ngIf="createCaseForm.get('complainantName')?.touched && createCaseForm.get('complainantName')?.invalid" class="text-xs text-error mt-1">Complainant Full Name is required</p>
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                  <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Identity Number (Aadhaar/PAN)</label>
+                  <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="complainantId" placeholder="ID Number" type="text"/>
+                  <p *ngIf="createCaseForm.get('complainantId')?.touched && createCaseForm.get('complainantId')?.invalid" class="text-xs text-error mt-1">Complainant Identity Number is required</p>
+                </div>
+              </div>
+            </div>
+            <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant">
+              <h3 class="font-title-md mb-4 text-primary">Defendant Information</h3>
+              <div class="grid grid-cols-2 gap-lg">
+                <div class="col-span-2 md:col-span-1">
+                  <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Full Name</label>
+                  <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="defendantName" placeholder="Legal Name" type="text"/>
+                  <p *ngIf="createCaseForm.get('defendantName')?.touched && createCaseForm.get('defendantName')?.invalid" class="text-xs text-error mt-1">Defendant Full Name is required</p>
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                  <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Identity Number (Aadhaar/PAN)</label>
+                  <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="defendantId" placeholder="ID Number" type="text"/>
+                  <p *ngIf="createCaseForm.get('defendantId')?.touched && createCaseForm.get('defendantId')?.invalid" class="text-xs text-error mt-1">Defendant Identity Number is required</p>
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                  <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Bank Account Number</label>
+                  <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="defendantAccountNumber" placeholder="Account Number" type="text"/>
+                  <p *ngIf="createCaseForm.get('defendantAccountNumber')?.touched && createCaseForm.get('defendantAccountNumber')?.invalid" class="text-xs text-error mt-1">Bank Account Number is required</p>
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                  <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Bank Name</label>
+                  <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="defendantBankName" placeholder="Bank Name" type="text"/>
+                  <p *ngIf="createCaseForm.get('defendantBankName')?.touched && createCaseForm.get('defendantBankName')?.invalid" class="text-xs text-error mt-1">Bank Name is required</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Order Info -->
+        <div *ngIf="currentStep === 2" class="step-transition step-active" id="step-content-2">
+          <div class="flex items-center gap-2 mb-lg">
+            <span class="material-symbols-outlined text-primary">gavel</span>
+            <h2 class="font-title-lg text-title-lg">Step 2: Judicial Order Specifications</h2>
+          </div>
+          <div class="grid grid-cols-2 gap-lg">
+            <div class="col-span-2">
+              <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Order Execution Type</label>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="cursor-pointer border-2 rounded-xl p-4 flex items-center gap-4 hover:border-primary hover:bg-surface-container transition-all" 
+                     [class.border-primary]="orderType === 'freeze'"
+                     [class.bg-surface-container]="orderType === 'freeze'"
+                     [class.border-outline-variant]="orderType !== 'freeze'"
+                     (click)="setOrderType('freeze')">
+                  <div class="w-8 h-8 rounded-full bg-error-container flex items-center justify-center">
+                    <span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">ac_unit</span>
+                  </div>
+                  <div>
+                    <p class="font-title-md text-title-md">Freeze Account</p>
+                    <p class="text-xs text-on-surface-variant">Restrict all debit operations</p>
+                  </div>
+                </div>
+                <div class="cursor-pointer border-2 rounded-xl p-4 flex items-center gap-4 hover:border-primary hover:bg-surface-container transition-all"
+                     [class.border-primary]="orderType === 'enquiry'"
+                     [class.bg-surface-container]="orderType === 'enquiry'"
+                     [class.border-outline-variant]="orderType !== 'enquiry'"
+                     (click)="setOrderType('enquiry')">
+                  <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">search</span>
+                  </div>
+                  <div>
+                    <p class="font-title-md text-title-md">Balance Enquiry</p>
+                    <p class="text-xs text-on-surface-variant">Request current statement</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-span-2" *ngIf="orderType === 'freeze'" id="freeze-amount-container">
+              <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Target Freeze Amount (INR)</label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-on-surface-variant">₹</span>
+                <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 pl-8 text-on-surface" formControlName="freezeAmount" placeholder="0.00" type="number"/>
+              </div>
+              <p class="text-xs text-on-surface-variant mt-2 italic">Note: If left empty, the entire balance will be frozen.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Document Upload -->
+        <div *ngIf="currentStep === 3" class="step-transition step-active" id="step-content-3">
+          <div class="flex items-center gap-2 mb-lg">
+            <span class="material-symbols-outlined text-primary">cloud_upload</span>
+            <h2 class="font-title-lg text-title-lg">Step 3: Evidence & Verification</h2>
+          </div>
+          <div class="space-y-lg">
+            <!-- Drag & Drop -->
+            <div class="border-2 border-dashed border-outline-variant rounded-xl p-xl flex flex-col items-center justify-center bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer" 
+                 (dragover)="$event.preventDefault()" 
+                 (drop)="handleDrop($event)"
+                 (click)="fileInput.click()">
+              <span class="material-symbols-outlined text-primary text-5xl mb-4">upload_file</span>
+              <p class="font-title-md text-title-md mb-1">Drag and drop files here</p>
+              <p class="text-on-surface-variant text-sm">PDF, JPG, or PNG (Max 5MB each)</p>
+              <input class="hidden" #fileInput multiple (change)="handleFiles(fileInput.files || [])" type="file"/>
+              <button class="mt-4 px-6 py-2 bg-primary text-white rounded-full font-label-lg text-label-lg hover:shadow-lg transition-all" type="button">Browse Files</button>
+            </div>
+            <!-- File List -->
+            <div class="space-y-3" id="file-list">
+              <!-- Mandatory items -->
+              <div *ngIf="uploadedFiles.length === 0" class="flex items-center justify-between p-3 bg-surface-bright border border-outline-variant rounded-lg">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-on-surface-variant">description</span>
+                  <div>
+                    <p class="font-label-lg text-label-lg">No files uploaded yet</p>
+                    <p class="text-[10px] text-error font-bold uppercase">Mandatory: Court Order PDF is required</p>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngFor="let file of uploadedFiles; let i = index" class="flex items-center justify-between p-3 bg-surface-bright border border-outline-variant rounded-lg">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-on-surface-variant">description</span>
+                  <div>
+                    <p class="font-label-lg text-label-lg">{{ file.name }}</p>
+                    <p class="text-[10px] text-on-surface-variant uppercase">
+                      {{ i === 0 ? 'Mandatory: Court Order PDF' : (i === 1 ? 'Aadhaar copy' : (i === 2 ? 'PAN copy' : 'Attachment')) }} - {{ (file.size / 1024).toFixed(1) }} KB
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="material-symbols-outlined text-green-600">check_circle</span>
+                  <span class="material-symbols-outlined text-error cursor-pointer hover:bg-surface-container rounded-full p-1 text-sm" (click)="removeFile(i)">delete</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Review & Submit -->
+        <div *ngIf="currentStep === 4" class="step-transition step-active" id="step-content-4">
+          <div class="flex items-center gap-2 mb-lg">
+            <span class="material-symbols-outlined text-primary">task_alt</span>
+            <h2 class="font-title-lg text-title-lg">Step 4: Final Review</h2>
+          </div>
+          <div class="bg-surface-container-low rounded-xl border border-outline-variant p-lg space-y-lg">
+            <div class="grid grid-cols-2 gap-xl">
+              <div>
+                <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Complainant Info</p>
+                <p class="font-title-md text-title-md" id="rev-comp-name">{{ createCaseForm.get('complainantName')?.value || '--' }}</p>
+                <p class="text-sm text-on-surface-variant" id="rev-comp-contact">Official ID: {{ createCaseForm.get('complainantId')?.value || '--' }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Defendant Info</p>
+                <p class="font-title-md text-title-md" id="rev-def-name">{{ createCaseForm.get('defendantName')?.value || '--' }}</p>
+                <p class="text-sm text-on-surface-variant" id="rev-def-bank">{{ createCaseForm.get('defendantBankName')?.value }} ({{ createCaseForm.get('defendantAccountNumber')?.value }})</p>
+                <p class="text-sm text-on-surface-variant">Identity: {{ createCaseForm.get('defendantId')?.value || '--' }}</p>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Execution Details</p>
+                <div class="flex items-center gap-2">
+                  <span [class]="orderType === 'freeze' ? 'px-2 py-1 bg-error text-white text-[10px] font-bold rounded uppercase' : 'px-2 py-1 bg-primary text-white text-[10px] font-bold rounded uppercase'" id="rev-order-type-chip">
+                    {{ orderType === 'freeze' ? 'Freeze Account' : 'Balance Enquiry' }}
+                  </span>
+                  <span class="font-code text-code text-primary font-bold" id="rev-amount">
+                    {{ orderType === 'freeze' ? (createCaseForm.get('freezeAmount')?.value ? '₹' + createCaseForm.get('freezeAmount')?.value : 'FULL BALANCE') : 'N/A' }}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Attachments</p>
+                <p class="text-sm">{{ uploadedFiles.length }} File(s) Selected</p>
+                <ul class="text-xs text-on-surface-variant list-disc pl-4 mt-1">
+                  <li *ngFor="let f of uploadedFiles">{{ f.name }}</li>
+                </ul>
+              </div>
+            </div>
+            <div class="border-t border-outline-variant pt-lg flex items-start gap-4">
+              <input class="mt-1 rounded text-primary border-outline-variant" formControlName="declaration" id="declaration" type="checkbox"/>
+              <label class="text-sm text-on-surface-variant" for="declaration">
+                I hereby certify that the information provided is accurate and corresponds directly to the official judicial order issued by the competent court of law. Unauthorized account freezing is a punishable offense.
+              </label>
+            </div>
+            <p *ngIf="createCaseForm.get('declaration')?.touched && createCaseForm.get('declaration')?.invalid" class="text-xs text-error font-bold">You must check the declaration to submit the case</p>
+          </div>
+        </div>
+
+        <!-- Navigation Footer -->
+        <div class="mt-auto pt-lg border-t border-outline-variant flex justify-between items-center">
+          <button type="button" class="flex items-center gap-2 px-6 py-2.5 text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container rounded-full transition-all" 
+                  [class.opacity-0]="currentStep === 1" 
+                  [class.pointer-events-none]="currentStep === 1" 
+                  (click)="changeStep(-1)">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Previous
+          </button>
+          <div class="flex items-center gap-4">
+            <button type="button" class="flex items-center gap-2 px-8 py-2.5 text-white font-label-lg text-label-lg rounded-full shadow-lg hover:shadow-xl transition-all" 
+                    [class.bg-green-600]="currentStep === totalSteps" 
+                    [class.bg-primary]="currentStep !== totalSteps" 
+                    [disabled]="isSubmitting" 
+                    (click)="changeStep(1)">
+              <span>{{ currentStep === totalSteps ? (isSubmitting ? 'Submitting...' : 'Submit Case') : 'Continue' }}</span>
+              <span class="material-symbols-outlined">{{ currentStep === totalSteps ? 'send' : 'arrow_forward' }}</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>

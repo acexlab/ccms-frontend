@@ -14,6 +14,11 @@ export const appRoutes: Routes = [
     canActivate: [courtGuard]
   },
   { 
+    path: 'court/create-case', 
+    loadComponent: () => import('./components/create-case/create-case.component').then(m => m.CreateCaseComponent),
+    canActivate: [courtGuard]
+  },
+  { 
     path: 'bank/dashboard', 
     loadComponent: () => import('./components/bank-dashboard/bank-dashboard.component').then(m => m.BankDashboardComponent),
     canActivate: [bankGuard]
