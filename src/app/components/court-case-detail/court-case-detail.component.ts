@@ -1,7 +1,11 @@
-/*
- * File: court-case-detail.component.ts
- * Description: Controller for the Court Officer case details view.
- * To Implement: Display document download anchors and formal bank response metrics.
- */
-// Wait, let's use @angular/material/card
-// Note: Ensure correct material import: @angular/material/card
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-court-case-detail',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './court-case-detail.component.html',
+  styleUrls: ['./court-case-detail.component.scss']
+})
+export class CourtCaseDetailComponent {}

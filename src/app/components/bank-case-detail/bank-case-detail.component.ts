@@ -1,7 +1,11 @@
-/*
- * File: bank-case-detail.component.ts
- * Description: Controller for the Bank Officer case processing form.
- * To Implement: pre-fill matches based on order type, trigger confirmation dialog.
- */
-// BalanceEnquiry
-// Trigger Confirmation Dialog
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-bank-case-detail',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './bank-case-detail.component.html',
+  styleUrls: ['./bank-case-detail.component.scss']
+})
+export class BankCaseDetailComponent {}
