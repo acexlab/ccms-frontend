@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccms-frontend
+  labels:
+    app: ccms-frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ccms-frontend
+  template:
+    metadata:
+      labels:
+        app: ccms-frontend
+    spec:
+      containers:
+      - name: ccms-frontend
+        image: ccmsacr.azurecr.io/ccms-frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ccms-frontend-service
+spec:
+  selector:
+    app: ccms-frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
