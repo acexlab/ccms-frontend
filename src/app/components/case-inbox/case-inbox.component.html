@@ -4,7 +4,7 @@
     <p class="subtitle">Manage and validate incoming legal orders for recovery processing.</p>
   </div>
 
-  <mat-tab-group (selectedTabChange)="onTabChange($event)">
+  <mat-tab-group [selectedIndex]="currentTabIndex" (selectedTabChange)="onTabChange($event)">
     <mat-tab label="Awaiting Action ({{ inboxData.awaitingAction?.length || 0 }})"></mat-tab>
     <mat-tab label="Pending Batch ({{ inboxData.pendingBatch?.length || 0 }})"></mat-tab>
     <mat-tab label="Completed ({{ inboxData.completed?.length || 0 }})"></mat-tab>
@@ -37,7 +37,7 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef> Status </th>
         <td mat-cell *matCellDef="let element"> 
-          <span class="badge badge-status">{{element.status}}</span>
+          <app-status-badge [status]="element.status"></app-status-badge>
         </td>
       </ng-container>
 

@@ -4,11 +4,13 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CaseService } from '../../services/case.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-freeze-account-response',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './freeze-account-response.html',
   styleUrls: ['./freeze-account-response.scss']
 })
@@ -20,6 +22,10 @@ export class FreezeAccountResponse implements OnInit {
   
   freezeAmount: number | null = null;
   remarks: string = '';
+
+  isPdfLoading: boolean = true;
+  isSubmitting: boolean = false;
+  submitError: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -40,7 +46,7 @@ export class FreezeAccountResponse implements OnInit {
       next: (data) => {
         if (data.status !== 'AccountValidated') {
           // Prevent access to already responded cases
-          this.router.navigate(['/bank/inbox']);
+          this.router.navigate(['/bank/cases']);
           return;
         }
         this.caseDetails = data;
@@ -49,17 +55,34 @@ export class FreezeAccountResponse implements OnInit {
           // For demo, we assume the API provides a reliable download stream
           const url = `/api/cases/${this.caseNumber}/documents/${this.courtOrderDoc.id}/download`;
           this.courtOrderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        } else {
+          this.isPdfLoading = false; // no PDF to load
         }
       },
       error: (err) => console.error(err)
     });
   }
 
-  submitResponse(): void {
-    if (this.freezeAmount === null || this.freezeAmount < 0) {
-      alert('Please enter a valid freeze amount.');
-      return;
+  onPdfLoad(): void {
+    this.isPdfLoading = false;
+  }
+
+  downloadDocument(): void {
+    if (this.courtOrderDoc) {
+      const url = `/api/cases/${this.caseNumber}/documents/${this.courtOrderDoc.id}/download`;
+      window.open(url, '_blank');
     }
+  }
+
+  get isFormValid(): boolean {
+    return this.freezeAmount !== null && this.freezeAmount > 0 && !this.isPdfLoading;
+  }
+
+  submitResponse(): void {
+    if (!this.isFormValid) return;
+
+    this.isSubmitting = true;
+    this.submitError = '';
 
     const payload = {
       responseType: 'FreezeApplied',
@@ -69,20 +92,21 @@ export class FreezeAccountResponse implements OnInit {
 
     this.caseService.submitCaseResponse(this.caseNumber, payload).subscribe({
       next: () => {
-        this.router.navigate(['/bank/inbox']);
+        this.isSubmitting = false;
+        this.router.navigate(['/bank/cases'], { state: { activeTab: 2 } });
       },
       error: (err) => {
+        this.isSubmitting = false;
         if (err.status === 409) {
-          alert('A response already exists for this case.');
-          this.router.navigate(['/bank/inbox']);
+          this.submitError = 'A response has already been submitted for this case.';
         } else {
-          console.error(err);
+          this.submitError = 'Submission failed. Please try again.';
         }
       }
     });
   }
 
   cancel(): void {
-    this.router.navigate(['/bank/inbox']);
+    this.router.navigate(['/bank/cases']);
   }
 }

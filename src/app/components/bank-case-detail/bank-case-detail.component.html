@@ -1,128 +1,161 @@
-<div class="case-detail-container" *ngIf="caseDetails">
-  <div class="header">
-    <h1>{{ caseDetails.caseNumber }}</h1>
+<div class="max-w-7xl mx-auto" *ngIf="caseDetails">
+  
+  <!-- Header -->
+  <div class="mb-6">
+    <div class="text-xs font-bold text-blue-600 tracking-wider mb-1 uppercase">CASE ID: {{ caseDetails.caseNumber }}</div>
+    <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Case Details</h1>
   </div>
 
-  <div class="content-grid">
-    <div class="main-column">
-      <!-- Court Case Information Section -->
-      <div class="card">
-        <h3>Court Case Information</h3>
-        <div class="two-col">
-          <div class="col">
-            <label>COMPLAINANT</label>
-            <p>{{ caseDetails.complainantName }}</p>
-            <p class="identity-number">{{ caseDetails.complainantIdentityNumber }}</p>
+  <div class="flex flex-col lg:flex-row gap-6">
+    
+    <!-- Left Column -->
+    <div class="lg:w-2/3 space-y-6">
+      
+      <!-- Court Case Information -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <mat-icon class="text-blue-600 text-sm">gavel</mat-icon>
+          <h3 class="text-lg font-bold text-gray-900">Court Case Information</h3>
+        </div>
+        <div class="grid grid-cols-2 gap-8 mt-6">
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">COMPLAINANT</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.complainantName }}</div>
+            <div class="text-sm text-gray-500 mt-1">{{ caseDetails.complainantIdentityNumber }}</div>
           </div>
-          <div class="col">
-            <label>DEFENDANT</label>
-            <p>{{ caseDetails.defendantName }}</p>
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">DEFENDANT</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.defendantName }}</div>
           </div>
         </div>
       </div>
 
       <!-- Defendant Information Section -->
-      <div class="card">
-        <h3>Defendant Information</h3>
-        <div class="grid-four-col">
-          <div class="info-item">
-            <label>Account Holder Name</label>
-            <p>{{ caseDetails.defendantName }}</p>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <mat-icon class="text-blue-600 text-sm">person</mat-icon>
+          <h3 class="text-lg font-bold text-gray-900">Defendant Information</h3>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Account Holder Name</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.defendantName }}</div>
           </div>
-          <div class="info-item">
-            <label>Masked Aadhaar</label>
-            <p>{{ caseDetails.defendantAadhaar }}</p>
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Masked Aadhaar</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.defendantAadhaar }}</div>
           </div>
-          <div class="info-item">
-            <label>Masked PAN</label>
-            <p>{{ caseDetails.defendantPan }}</p>
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Masked PAN</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.defendantPan }}</div>
           </div>
-          <div class="info-item">
-            <label>Masked Account Number</label>
-            <p>{{ caseDetails.defendantAccountNumber }}</p>
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Masked Account Number</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.defendantAccountNumber }}</div>
           </div>
         </div>
       </div>
 
-      <!-- Case Documents Section -->
-      <div class="card">
-        <h3>Case Documents</h3>
-        <div class="document-list">
-          <div class="document-item" *ngFor="let doc of caseDetails.documents">
-            <div class="doc-icon">📄</div>
-            <div class="doc-info">
-              <p class="doc-title">{{ doc.documentType }}</p>
-              <p class="doc-meta">{{ doc.fileName }} • {{ (doc.fileSize / 1024).toFixed(1) }} KB</p>
+      <!-- Case Documents -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Case Documents</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div *ngFor="let doc of caseDetails.documents" class="border border-gray-100 rounded-lg p-4 bg-gray-50/50 flex flex-col items-center text-center">
+            <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded flex items-center justify-center mb-3">
+              <mat-icon>insert_drive_file</mat-icon>
             </div>
-            <div class="doc-actions">
-              <button class="btn-outline">Preview</button>
-              <button class="btn-outline" (click)="downloadDocument(doc.id)">Download</button>
+            <div class="font-bold text-sm text-gray-900 mb-1">{{ doc.documentType }}</div>
+            <div class="text-xs text-gray-500 mb-4">{{ doc.fileName }} • {{ (doc.fileSize / 1024).toFixed(1) }} KB</div>
+            <div class="flex gap-2 w-full mt-auto">
+              <button class="flex-1 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-colors">PREVIEW</button>
+              <button class="flex-1 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-colors" (click)="downloadDocument(doc.id)">DOWNLOAD</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Case Response Section -->
-      <div class="card response-section">
-        <h3>Case Response</h3>
+      <!-- Case Response -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+        <div class="flex items-center gap-2 mb-4">
+          <mat-icon class="text-blue-600 text-sm">reply</mat-icon>
+          <h3 class="text-lg font-bold text-gray-900">Case Response</h3>
+        </div>
         
-        <div *ngIf="isAwaitingAction">
-          <div class="form-group">
-            <label>Response Remarks</label>
-            <textarea [(ngModel)]="remarks" placeholder="Enter any additional notes or remarks regarding this action..."></textarea>
+        <div *ngIf="isAwaitingAction" class="mt-4">
+          <div class="mb-4">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">RESPONSE REMARKS</div>
+            <textarea [(ngModel)]="remarks" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter any additional notes or remarks regarding this action..."></textarea>
           </div>
-          <button class="btn-primary btn-submit" (click)="navigateToResponse()">Submit Response</button>
+          <button (click)="navigateToResponse()" class="w-full bg-[#0f2a55] hover:bg-[#153b75] text-white font-bold py-3 rounded-lg flex justify-center items-center gap-2 transition-colors">
+            <mat-icon class="text-sm">play_arrow</mat-icon> SUBMIT RESPONSE
+          </button>
         </div>
 
-        <div *ngIf="isResponded && caseDetails.response" class="read-only-response">
-          <div class="info-item">
-            <label>Response Type</label>
-            <p>{{ caseDetails.response.responseType }}</p>
+        <div *ngIf="isResponded && caseDetails.response" class="mt-4 grid grid-cols-2 gap-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Response Type</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.response.responseType }}</div>
           </div>
-          <div class="info-item" *ngIf="caseDetails.response.freezeAmountApplied !== null">
-            <label>Amount Frozen</label>
-            <p>₹ {{ caseDetails.response.freezeAmountApplied }}</p>
+          <div *ngIf="caseDetails.response.freezeAmountApplied !== null">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Amount Frozen</div>
+            <div class="font-semibold text-gray-900">₹ {{ caseDetails.response.freezeAmountApplied }}</div>
           </div>
-          <div class="info-item" *ngIf="caseDetails.response.balanceReported !== null">
-            <label>Balance Reported</label>
-            <p>₹ {{ caseDetails.response.balanceReported }}</p>
+          <div *ngIf="caseDetails.response.balanceReported !== null">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Balance Reported</div>
+            <div class="font-semibold text-gray-900">₹ {{ caseDetails.response.balanceReported }}</div>
           </div>
-          <div class="info-item">
-            <label>Remarks</label>
-            <p>{{ caseDetails.response.remarks }}</p>
+          <div class="col-span-2">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Remarks</div>
+            <div class="text-sm text-gray-700">{{ caseDetails.response.remarks }}</div>
           </div>
-          <div class="info-item">
-            <label>Submitted At</label>
-            <p>{{ caseDetails.response.submittedAt | date:'medium' }}</p>
+          <div class="col-span-2">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Submitted At</div>
+            <div class="text-sm text-gray-500">{{ caseDetails.response.submittedAt | date:'medium' }}</div>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- Validation Results Panel (Right Column) -->
-    <div class="side-column">
-      <div class="card dark-panel">
-        <h3>Validation Results</h3>
-        <div class="panel-content">
-          <div class="result-item">
-            <label>MATCHED ACCOUNT #</label>
-            <p class="large-text">{{ caseDetails.matchedAccountNumber }}</p>
+    <!-- Right Column (Validation Results) -->
+    <div class="lg:w-1/3">
+      <div class="bg-[#0f172a] rounded-xl shadow-lg p-6 text-white sticky top-24">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-lg font-bold">Validation Results</h3>
+          <mat-icon class="text-blue-400">verified_user</mat-icon>
+        </div>
+
+        <div class="space-y-6">
+          <!-- Matched Account -->
+          <div class="bg-[#1e293b] p-4 rounded-lg relative border border-gray-700">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">MATCHED ACCOUNT #</div>
+            <div class="text-xl font-bold font-mono tracking-wider">{{ caseDetails.matchedAccountNumber }}</div>
+            <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 text-green-400 text-sm">check_circle</mat-icon>
           </div>
-          <div class="result-item">
-            <label>ACCOUNT STATUS</label>
-            <p class="status-badge">{{ caseDetails.accountStatus }}</p>
+
+          <!-- Account Status -->
+          <div class="flex justify-between items-center border-b border-gray-700 pb-4">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">ACCOUNT STATUS</div>
+            <div class="px-2 py-1 text-xs font-bold rounded bg-blue-900 text-blue-200 uppercase">{{ caseDetails.accountStatus }}</div>
           </div>
-          <div class="result-item">
-            <label>CURRENT BALANCE (VERIFIED) <span class="read-only-tag">READ ONLY</span></label>
-            <p class="large-amount">₹ {{ caseDetails.currentBalance }}</p>
+
+          <!-- Current Balance -->
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">CURRENT BALANCE (VERIFIED)</div>
+              <span class="text-[8px] font-bold bg-green-900 text-green-400 px-1.5 py-0.5 rounded">READ ONLY</span>
+            </div>
+            <div class="text-2xl font-bold tracking-tight">₹{{ caseDetails.currentBalance }}</div>
           </div>
-          <div class="result-item">
-            <label>VALIDATION TIMESTAMP</label>
-            <p>{{ caseDetails.validationTimestamp | date:'medium' }}</p>
+
+          <!-- Validation Timestamp -->
+          <div class="pt-4 border-t border-gray-700">
+             <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">VALIDATION TIMESTAMP</div>
+             <div class="text-sm text-gray-300">{{ caseDetails.validationTimestamp | date:'medium' }}</div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </div>

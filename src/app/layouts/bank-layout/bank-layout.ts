@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-bank-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule],
+  imports: [CommonModule, RouterOutlet, RouterModule, MatIconModule],
   templateUrl: './bank-layout.html',
   styleUrls: ['./bank-layout.scss']
 })

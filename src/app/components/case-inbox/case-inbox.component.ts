@@ -5,11 +5,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { CaseService } from '../../services/case.service';
+import { StatusBadgeComponent } from '../status-badge/status-badge.component';
 
 @Component({
   selector: 'app-case-inbox',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatTabsModule, MatTableModule, MatPaginatorModule],
+  imports: [CommonModule, RouterModule, MatTabsModule, MatTableModule, MatPaginatorModule, StatusBadgeComponent],
   templateUrl: './case-inbox.component.html',
   styleUrls: ['./case-inbox.component.scss']
 })
@@ -31,6 +32,9 @@ export class CaseInboxComponent implements OnInit {
   constructor(private caseService: CaseService, private router: Router) {}
 
   ngOnInit(): void {
+    if (history.state && history.state.activeTab !== undefined) {
+      this.currentTabIndex = history.state.activeTab;
+    }
     this.loadInbox();
   }
 

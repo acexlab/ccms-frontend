@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CaseService } from '../../services/case.service';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-bank-case-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, MatIconModule],
   templateUrl: './bank-case-detail.component.html',
   styleUrls: ['./bank-case-detail.component.scss']
 })
