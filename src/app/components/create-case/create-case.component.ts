@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,11 +12,65 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './create-case.component.html',
   styleUrls: ['./create-case.component.scss']
 })
-export class CreateCaseComponent {
+export class CreateCaseComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly caseService = inject(CaseService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+
+  hasNotificationDot = false;
+  cases: any[] = [];
+
+  ngOnInit(): void {
+    this.loadNotificationStatus();
+  }
+
+  loadNotificationStatus(): void {
+    this.caseService.getMyCases().subscribe({
+      next: (data) => {
+        this.cases = data;
+        this.checkStatusUpdates(data);
+      },
+      error: () => {}
+    });
+  }
+
+  checkStatusUpdates(currentCases: any[]): void {
+    const stored = localStorage.getItem('ccms_cases_cache');
+    if (!stored) {
+      const cache: Record<string, string> = {};
+      for (const c of currentCases) {
+        cache[c.caseNumber] = c.status;
+      }
+      localStorage.setItem('ccms_cases_cache', JSON.stringify(cache));
+      this.hasNotificationDot = false;
+      return;
+    }
+
+    try {
+      const lastKnown = JSON.parse(stored) as Record<string, string>;
+      let hasChanges = false;
+      for (const c of currentCases) {
+        const lastStatus = lastKnown[c.caseNumber];
+        if (lastStatus && lastStatus.toLowerCase() !== c.status.toLowerCase()) {
+          hasChanges = true;
+        }
+      }
+      this.hasNotificationDot = hasChanges;
+    } catch (e) {
+      this.hasNotificationDot = false;
+    }
+  }
+
+  clearNotification(): void {
+    this.hasNotificationDot = false;
+    const cache: Record<string, string> = {};
+    for (const c of this.cases) {
+      cache[c.caseNumber] = c.status;
+    }
+    localStorage.setItem('ccms_cases_cache', JSON.stringify(cache));
+  }
+
 
   currentStep = 1;
   totalSteps = 4;
