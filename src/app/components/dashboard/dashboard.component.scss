@@ -1,0 +1,11 @@
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// Override material spinner color when inside the custom blue button
+::ng-deep .mat-mdc-progress-spinner circle {
+  stroke: white !important;
+}

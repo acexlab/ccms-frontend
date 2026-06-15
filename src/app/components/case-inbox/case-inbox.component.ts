@@ -1,5 +1,11 @@
-/*
- * File: case-inbox.component.ts
- * Description: Controller for the Bank Officer cases inbox.
- * To Implement: Keep tab lists synchronized with backend state values.
- */
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-case-inbox',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './case-inbox.component.html',
+  styleUrls: ['./case-inbox.component.scss']
+})
+export class CaseInboxComponent {}
