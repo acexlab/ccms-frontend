@@ -1,0 +1,150 @@
+<div class="login-container">
+  <!-- Left Column: Sign In Form -->
+  <div class="form-section">
+    <div class="form-wrapper">
+      <!-- Logo Header -->
+      <div class="logo-header">
+        <div class="logo-box">
+          <!-- SVG Bank/Court building logo -->
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7V9H22V7L12 2Z" fill="currentColor"/>
+            <path d="M4 11H7V18H4V11ZM10 11H14V18H10V11ZM17 11H20V18H17V11Z" fill="currentColor"/>
+            <path d="M2 20V22H22V20H2Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="logo-text">CCMS</span>
+      </div>
+
+      <!-- Form Headings -->
+      <h1 class="form-title">Sign in to your account</h1>
+      <p class="form-subtitle">Access the Court Case Management System</p>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="error-banner">
+        <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Sign In Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <!-- Username Input -->
+        <div class="input-group">
+          <label for="username">Username</label>
+          <div class="input-wrapper">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <input 
+              id="username" 
+              type="text" 
+              formControlName="username" 
+              placeholder="e.g. officer_smith"
+              [class.error]="loginForm.get('username')?.touched && loginForm.get('username')?.invalid"
+            />
+          </div>
+          <div *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')" class="validation-message">
+            Username is required.
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div class="input-group">
+          <div class="label-row">
+            <label for="password">Password</label>
+            <a href="#" class="forgot-link" (click)="$event.preventDefault()">Forgot password?</a>
+          </div>
+          <div class="input-wrapper">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input 
+              id="password" 
+              [type]="showPassword ? 'text' : 'password'" 
+              formControlName="password" 
+              placeholder="••••••••"
+              [class.error]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+            />
+            <button type="button" class="eye-toggle" (click)="togglePasswordVisibility()">
+              <!-- Eye open / closed icons -->
+              <svg *ngIf="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg *ngIf="!showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            </button>
+          </div>
+          <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')" class="validation-message">
+            Password is required.
+          </div>
+        </div>
+
+        <!-- Keep me signed in -->
+        <div class="checkbox-group">
+          <input id="remember" type="checkbox" formControlName="rememberMe" />
+          <label for="remember">Keep me signed in for 8 hours</label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn" [disabled]="isSubmitting">
+          <span *ngIf="!isSubmitting">Sign In</span>
+          <div *ngIf="isSubmitting" class="spinner-row">
+            <span>Authenticating...</span>
+            <div class="spinner"></div>
+          </div>
+        </button>
+      </form>
+
+      <!-- Footer Policy Notice -->
+      <p class="policy-notice">
+        Authorized use only. By signing in, you agree to the <br />
+        <a href="#" class="policy-link" (click)="$event.preventDefault()">Terms of Service</a> and 
+        <a href="#" class="policy-link" (click)="$event.preventDefault()">Privacy Policy</a>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Right Column: Visual Info Section -->
+  <div class="visual-section">
+    <div class="overlay"></div>
+    <div class="visual-content">
+      <!-- Glassmorphic shield card -->
+      <div class="glass-card">
+        <!-- Floating sub-card "COURT" -->
+        <div class="badge-card">
+          <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+          <span class="badge-text">COURT</span>
+        </div>
+
+        <!-- Centered Shield Check Graphic -->
+        <div class="shield-container">
+          <div class="shield-icon-wrapper">
+            <svg class="shield-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" fill="rgba(255, 255, 255, 0.15)" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9 11L11 13L15 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Platform Info Text -->
+      <div class="text-container">
+        <h2 class="visual-title">Digitizing Court-to-Bank Legal Communications</h2>
+        <p class="visual-description">
+          A secure, end-to-end platform for judicial orders, financial recoveries, and inter-institutional compliance.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
