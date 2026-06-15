@@ -1,0 +1,54 @@
+/*
+ * File: batch-processing.component.scss
+ * Description: Stylesheet for custom animations, layout positioning, and Material button overrides.
+ */
+
+.stat-card {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// Force the spinner circle inside primary action buttons to be white
+::ng-deep .mat-mdc-progress-spinner circle {
+  stroke: currentColor !important;
+}
+
+// Custom status badge pills
+.status-badge-success {
+  background-color: #e6f7ed;
+  color: #10b981;
+}
+
+.status-badge-failed {
+  background-color: #fdf2f2;
+  color: #ef4444;
+}
+
+.status-badge-partial {
+  background-color: #fffbeb;
+  color: #f59e0b;
+}
+
+.status-badge-running {
+  background-color: #eff6ff;
+  color: #3b82f6;
+}
+
+// Custom scrollbar for table container
+.overflow-x-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+  
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 3px;
+  }
+}

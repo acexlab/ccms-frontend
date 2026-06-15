@@ -44,5 +44,10 @@ export const appRoutes: Routes = [
     loadComponent: () => import('./components/bank-case-detail/bank-case-detail.component').then(m => m.BankCaseDetailComponent),
     canActivate: [bankGuard]
   },
+  { 
+    path: 'bank/batch-processing', 
+    loadComponent: () => import('./components/batch-processing/batch-processing.component').then(m => m.BatchProcessingComponent),
+    canActivate: [bankGuard]
+  },
   { path: '**', redirectTo: 'login' }
 ];
