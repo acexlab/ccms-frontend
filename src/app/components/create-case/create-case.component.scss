@@ -1,1 +1,11 @@
-/* Stepper Form Layout */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.step-transition {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #00236f !important;
+    box-shadow: 0 0 0 1px #00236f !important;
+}
