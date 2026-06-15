@@ -1,4 +1,64 @@
-<!-- Tab 1: Awaiting Action -->
-<!-- Tab 2: Completed -->
-<!-- Tab 3: Auto-Resolved -->
-<!-- Tab 4: Pending Batch -->
+<div class="inbox-container">
+  <div class="header">
+    <h1>Case Inbox</h1>
+    <p class="subtitle">Manage and validate incoming legal orders for recovery processing.</p>
+  </div>
+
+  <mat-tab-group (selectedTabChange)="onTabChange($event)">
+    <mat-tab label="Awaiting Action ({{ inboxData.awaitingAction?.length || 0 }})"></mat-tab>
+    <mat-tab label="Pending Batch ({{ inboxData.pendingBatch?.length || 0 }})"></mat-tab>
+    <mat-tab label="Completed ({{ inboxData.completed?.length || 0 }})"></mat-tab>
+    <mat-tab label="Auto Resolved ({{ inboxData.autoResolved?.length || 0 }})"></mat-tab>
+  </mat-tab-group>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <!-- Case Number Column -->
+      <ng-container matColumnDef="caseNumber">
+        <th mat-header-cell *matHeaderCellDef> Case Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.caseNumber}} </td>
+      </ng-container>
+
+      <!-- Defendant Column -->
+      <ng-container matColumnDef="defendantName">
+        <th mat-header-cell *matHeaderCellDef> Defendant </th>
+        <td mat-cell *matCellDef="let element"> {{element.defendantName}} </td>
+      </ng-container>
+
+      <!-- Order Type Column -->
+      <ng-container matColumnDef="orderType">
+        <th mat-header-cell *matHeaderCellDef> Order Type </th>
+        <td mat-cell *matCellDef="let element"> 
+          <span class="badge badge-order">{{ getOrderTypeDisplay(element.orderType) }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let element"> 
+          <span class="badge badge-status">{{element.status}}</span>
+        </td>
+      </ng-container>
+
+      <!-- Validation Date Column -->
+      <ng-container matColumnDef="validationDate">
+        <th mat-header-cell *matHeaderCellDef> Validation Date </th>
+        <td mat-cell *matCellDef="let element"> {{element.validationDate | date:'yyyy-MM-dd HH:mm'}} </td>
+      </ng-container>
+
+      <!-- Action Column -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element">
+          <button *ngIf="currentTabIndex === 0" class="btn-review" (click)="reviewCase(element.caseNumber)">Review</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

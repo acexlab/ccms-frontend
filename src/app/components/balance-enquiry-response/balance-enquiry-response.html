@@ -1,0 +1,58 @@
+<div class="response-container" *ngIf="caseDetails">
+  <div class="breadcrumb">
+    <a routerLink="/bank/inbox">Case Inbox</a> &gt; Balance Enquiry Response
+  </div>
+  
+  <div class="header">
+    <h1>Case #{{ caseNumber }}</h1>
+    <p class="subtitle">Request received from Court Division on {{ caseDetails.validationTimestamp | date:'mediumDate' }}</p>
+  </div>
+
+  <div class="form-grid">
+    <!-- Left Side -->
+    <div class="left-panel card">
+      <h3>REQUEST DETAILS</h3>
+      <div class="info-group">
+        <label>Account Holder</label>
+        <p>{{ caseDetails.defendantName }}</p>
+      </div>
+      <div class="info-group">
+        <label>Account Number</label>
+        <p>{{ caseDetails.defendantAccountNumber }}</p>
+      </div>
+    </div>
+
+    <!-- Right Side -->
+    <div class="right-panel card">
+      <div class="form-group locked-group">
+        <label>Current System Balance</label>
+        <div class="locked-input">
+          <span class="currency">₹</span>
+          <input type="text" [value]="caseDetails.currentBalance" disabled />
+          <span class="lock-icon">🔒</span>
+        </div>
+        <small>Last synchronized: 2 minutes ago</small>
+      </div>
+
+      <div class="form-group">
+        <label>Verified Balance (As of Statement Date)</label>
+        <div class="input-wrapper">
+          <span class="currency">₹</span>
+          <input type="number" [(ngModel)]="verifiedBalance" />
+          <span class="edit-icon">✏️</span>
+        </div>
+        <small>Enter the audited balance from the verified ledger.</small>
+      </div>
+
+      <div class="form-group">
+        <label>Response Remarks</label>
+        <textarea [(ngModel)]="remarks" placeholder="Enter case notes, adjustments, or additional legal disclosure here..."></textarea>
+      </div>
+
+      <div class="button-group">
+        <button class="btn-secondary" (click)="cancel()">Cancel</button>
+        <button class="btn-primary" (click)="submitResponse()">Submit Response</button>
+      </div>
+    </div>
+  </div>
+</div>
