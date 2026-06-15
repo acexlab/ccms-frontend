@@ -3,19 +3,3 @@
  * Description: Core Angular ApplicationConfig registering HttpClient, routing, and animations.
  * To Implement: Keep interceptors in sync.
  */
-
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { appRoutes } from './app.routes';
-import { jwtInterceptor } from './interceptors/jwt.interceptor';
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(appRoutes, withComponentInputBinding()),
-    provideHttpClient(withInterceptors([jwtInterceptor])),
-    provideAnimationsAsync()
-  ]
-};
