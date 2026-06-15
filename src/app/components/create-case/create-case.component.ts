@@ -25,15 +25,18 @@ export class CreateCaseComponent {
   submitSuccess = false;
   referenceId = '';
 
-  uploadedFiles: File[] = [];
+  // Dedicated file properties for individual uploads
+  courtOrderFile: File | null = null;
+  aadhaarFile: File | null = null;
+  panFile: File | null = null;
 
   createCaseForm: FormGroup = this.fb.group({
-    complainantName: ['', [Validators.required]],
-    complainantId: ['', [Validators.required]],
-    defendantName: ['', [Validators.required]],
-    defendantId: ['', [Validators.required]],
-    defendantAccountNumber: ['', [Validators.required]],
-    defendantBankName: ['', [Validators.required]],
+    complainantName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]{3,100}$/)]],
+    complainantId: ['', [Validators.required, Validators.pattern(/^(?:\d{12}|[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1})$/i)]],
+    defendantName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]{3,100}$/)]],
+    defendantId: ['', [Validators.required, Validators.pattern(/^(?:\d{12}|[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1})$/i)]],
+    defendantAccountNumber: ['', [Validators.required, Validators.pattern(/^\d{9,18}$/)]],
+    defendantBankName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]{3,100}$/)]],
     orderType: ['freeze', [Validators.required]],
     freezeAmount: [null, [Validators.min(0)]],
     declaration: [false, [Validators.requiredTrue]]
@@ -44,25 +47,27 @@ export class CreateCaseComponent {
   }
 
   goToStep(step: number): void {
-    if (step <= this.totalSteps) {
-      this.currentStep = step;
-      if (this.currentStep === 4) {
-        this.populateReview();
+    if (step > this.currentStep) {
+      // Direct jump forward: sequentially validate each preceding step
+      const originalCurrent = this.currentStep;
+      for (let i = originalCurrent; i < step; i++) {
+        this.currentStep = i;
+        if (!this.validateCurrentStep()) {
+          this.currentStep = i; // Lock user at the invalid step
+          return;
+        }
       }
     }
+    this.currentStep = step;
   }
 
   changeStep(delta: number): void {
     const nextStep = this.currentStep + delta;
     if (nextStep >= 1 && nextStep <= this.totalSteps) {
-      // Validate steps before proceeding
       if (delta > 0 && !this.validateCurrentStep()) {
-        return;
+        return; // Navigation blocked due to validation errors
       }
       this.currentStep = nextStep;
-      if (this.currentStep === 4) {
-        this.populateReview();
-      }
     } else if (this.currentStep === this.totalSteps && delta === 1) {
       this.submitCase();
     }
@@ -99,8 +104,16 @@ export class CreateCaseComponent {
       return true;
     }
     if (this.currentStep === 3) {
-      if (this.uploadedFiles.length === 0) {
-        alert('Please upload the mandatory Court Order file.');
+      if (!this.courtOrderFile) {
+        alert('Please upload the mandatory Court Order PDF.');
+        return false;
+      }
+      if (!this.aadhaarFile) {
+        alert('Please upload the Aadhaar Copy PDF/Image.');
+        return false;
+      }
+      if (!this.panFile) {
+        alert('Please upload the PAN Copy PDF/Image.');
         return false;
       }
       return true;
@@ -122,29 +135,33 @@ export class CreateCaseComponent {
     amountControl?.updateValueAndValidity();
   }
 
-  handleDrop(e: DragEvent): void {
-    e.preventDefault();
-    if (e.dataTransfer && e.dataTransfer.files) {
-      this.handleFiles(e.dataTransfer.files);
-    }
-  }
-
-  handleFiles(files: FileList | File[]): void {
-    Array.from(files).forEach((file: File) => {
+  onFileSelected(event: any, type: string): void {
+    const input = event.target as HTMLInputElement;
+    if (input && input.files && input.files.length > 0) {
+      const file = input.files[0];
       if (file.size > 5 * 1024 * 1024) {
         alert(`File ${file.name} exceeds the 5MB limit.`);
         return;
       }
-      this.uploadedFiles.push(file);
-    });
+      
+      if (type === 'courtOrder') {
+        this.courtOrderFile = file;
+      } else if (type === 'aadhaar') {
+        this.aadhaarFile = file;
+      } else if (type === 'pan') {
+        this.panFile = file;
+      }
+    }
   }
 
-  removeFile(index: number): void {
-    this.uploadedFiles.splice(index, 1);
-  }
-
-  populateReview(): void {
-    // Handled dynamically via Angular template bindings of form values
+  removeFile(type: string): void {
+    if (type === 'courtOrder') {
+      this.courtOrderFile = null;
+    } else if (type === 'aadhaar') {
+      this.aadhaarFile = null;
+    } else if (type === 'pan') {
+      this.panFile = null;
+    }
   }
 
   onLogout(): void {
@@ -158,6 +175,11 @@ export class CreateCaseComponent {
       return;
     }
 
+    if (!this.courtOrderFile || !this.aadhaarFile || !this.panFile) {
+      alert('Please upload all three mandatory files before submitting.');
+      return;
+    }
+
     this.isSubmitting = true;
 
     const formData = new FormData();
@@ -168,7 +190,6 @@ export class CreateCaseComponent {
     formData.append('defendantAccountNumber', this.createCaseForm.get('defendantAccountNumber')?.value || '');
     formData.append('defendantBankName', this.createCaseForm.get('defendantBankName')?.value || '');
     
-    // Map order type to expected backend names
     const mappedOrderType = this.orderType === 'freeze' ? 'FreezeAccount' : 'BalanceEnquiry';
     formData.append('orderType', mappedOrderType);
 
@@ -177,10 +198,10 @@ export class CreateCaseComponent {
       formData.append('freezeAmount', amount.toString());
     }
 
-    // Append files
-    this.uploadedFiles.forEach((file) => {
-      formData.append('files', file);
-    });
+    // Append dedicated files individually
+    formData.append('courtOrderFile', this.courtOrderFile);
+    formData.append('aadhaarFile', this.aadhaarFile);
+    formData.append('panFile', this.panFile);
 
     this.caseService.createCase(formData).subscribe({
       next: (res) => {
