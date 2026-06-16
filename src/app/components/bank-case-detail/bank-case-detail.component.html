@@ -2,7 +2,7 @@
   
   <!-- Header -->
   <div class="mb-6">
-    <div class="text-xs font-bold text-blue-600 tracking-wider mb-1 uppercase">CASE ID: {{ caseDetails.caseNumber }}</div>
+    <div class="text-xs font-bold text-primary tracking-wider mb-1 uppercase">CASE ID: {{ caseDetails.caseNumber }}</div>
     <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Case Details</h1>
   </div>
 
@@ -14,7 +14,7 @@
       <!-- Court Case Information -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center gap-2 mb-4">
-          <mat-icon class="text-blue-600 text-sm">gavel</mat-icon>
+          <mat-icon class="text-primary text-sm">gavel</mat-icon>
           <h3 class="text-lg font-bold text-gray-900">Court Case Information</h3>
         </div>
         <div class="grid grid-cols-2 gap-8 mt-6">
@@ -33,7 +33,7 @@
       <!-- Defendant Information Section -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center gap-2 mb-4">
-          <mat-icon class="text-blue-600 text-sm">person</mat-icon>
+          <mat-icon class="text-primary text-sm">person</mat-icon>
           <h3 class="text-lg font-bold text-gray-900">Defendant Information</h3>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
@@ -61,14 +61,14 @@
         <h3 class="text-lg font-bold text-gray-900 mb-4">Case Documents</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div *ngFor="let doc of caseDetails.documents" class="border border-gray-100 rounded-lg p-4 bg-gray-50/50 flex flex-col items-center text-center">
-            <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded flex items-center justify-center mb-3">
+            <div class="w-10 h-10 bg-primary-light text-primary rounded flex items-center justify-center mb-3">
               <mat-icon>insert_drive_file</mat-icon>
             </div>
             <div class="font-bold text-sm text-gray-900 mb-1">{{ doc.documentType }}</div>
             <div class="text-xs text-gray-500 mb-4">{{ doc.fileName }} • {{ (doc.fileSize / 1024).toFixed(1) }} KB</div>
             <div class="flex gap-2 w-full mt-auto">
-              <button class="flex-1 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-colors">PREVIEW</button>
-              <button class="flex-1 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-colors" (click)="downloadDocument(doc.id)">DOWNLOAD</button>
+              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors">PREVIEW</button>
+              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors" (click)="downloadDocument(doc.id)">DOWNLOAD</button>
             </div>
           </div>
         </div>
@@ -77,16 +77,16 @@
       <!-- Case Response -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
         <div class="flex items-center gap-2 mb-4">
-          <mat-icon class="text-blue-600 text-sm">reply</mat-icon>
+          <mat-icon class="text-primary text-sm">reply</mat-icon>
           <h3 class="text-lg font-bold text-gray-900">Case Response</h3>
         </div>
         
         <div *ngIf="isAwaitingAction" class="mt-4">
           <div class="mb-4">
             <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">RESPONSE REMARKS</div>
-            <textarea [(ngModel)]="remarks" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter any additional notes or remarks regarding this action..."></textarea>
+            <textarea [(ngModel)]="remarks" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter any additional notes or remarks regarding this action..."></textarea>
           </div>
-          <button (click)="navigateToResponse()" class="w-full bg-[#0f2a55] hover:bg-[#153b75] text-white font-bold py-3 rounded-lg flex justify-center items-center gap-2 transition-colors">
+          <button (click)="navigateToResponse()" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-3 rounded-lg flex justify-center items-center gap-2 transition-colors">
             <mat-icon class="text-sm">play_arrow</mat-icon> SUBMIT RESPONSE
           </button>
         </div>
@@ -122,21 +122,21 @@
       <div class="bg-[#0f172a] rounded-xl shadow-lg p-6 text-white sticky top-24">
         <div class="flex justify-between items-center mb-6">
           <h3 class="text-lg font-bold">Validation Results</h3>
-          <mat-icon class="text-blue-400">verified_user</mat-icon>
+          <mat-icon class="text-primary-light">verified_user</mat-icon>
         </div>
 
         <div class="space-y-6">
           <!-- Matched Account -->
           <div class="bg-[#1e293b] p-4 rounded-lg relative border border-gray-700">
             <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">MATCHED ACCOUNT #</div>
-            <div class="text-xl font-bold font-mono tracking-wider">{{ caseDetails.matchedAccountNumber }}</div>
+            <div class="text-xl font-bold font-mono tracking-wider break-all">{{ caseDetails.matchedAccountNumber }}</div>
             <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 text-green-400 text-sm">check_circle</mat-icon>
           </div>
 
           <!-- Account Status -->
           <div class="flex justify-between items-center border-b border-gray-700 pb-4">
             <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">ACCOUNT STATUS</div>
-            <div class="px-2 py-1 text-xs font-bold rounded bg-blue-900 text-blue-200 uppercase">{{ caseDetails.accountStatus }}</div>
+            <div class="px-2 py-1 text-xs font-bold rounded bg-primary-light text-primary uppercase">{{ caseDetails.accountStatus }}</div>
           </div>
 
           <!-- Current Balance -->
