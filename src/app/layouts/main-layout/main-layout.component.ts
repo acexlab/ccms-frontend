@@ -36,10 +36,7 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
               <span class="material-symbols-outlined text-base">dashboard</span>
               Dashboard
             </a>
-            <a routerLink="/court/dashboard" fragment="cases-section" routerLinkActive="active-nav-link" class="nav-link">
-              <span class="material-symbols-outlined text-base">gavel</span>
-              Cases
-            </a>
+
             <a routerLink="/court/create-case" routerLinkActive="active-nav-link" class="nav-link">
               <span class="material-symbols-outlined text-base">add_box</span>
               Create Case
