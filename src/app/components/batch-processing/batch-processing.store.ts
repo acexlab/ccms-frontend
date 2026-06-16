@@ -4,9 +4,9 @@
  */
 
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { BatchProcessingService } from './batch-processing.service';
 import { BatchStatisticsDto, BatchExecutionHistoryDto } from './batch-processing.model';
+import { NotificationService } from '../../services/notification.service';
 
 export interface BatchProcessingState {
   statistics: BatchStatisticsDto | null;
@@ -25,7 +25,7 @@ export interface BatchProcessingState {
 })
 export class BatchProcessingStore {
   private service = inject(BatchProcessingService);
-  private snackBar = inject(MatSnackBar);
+  private notificationService = inject(NotificationService);
 
   // Initial State
   private state = signal<BatchProcessingState>({
@@ -82,7 +82,7 @@ export class BatchProcessingStore {
           error: err.message || 'Failed to load batch execution history.',
           loading: false
         }));
-        this.snackBar.open('Failed to load execution history.', 'Close', { duration: 3000 });
+        this.notificationService.error('Failed to load execution history.');
       }
     });
   }
@@ -92,12 +92,7 @@ export class BatchProcessingStore {
 
     this.service.runBatch().subscribe({
       next: (res) => {
-        this.snackBar.open(res.message || 'Batch Job Started Successfully', 'Close', {
-          duration: 3000,
-          horizontalPosition: 'right',
-          verticalPosition: 'top',
-          panelClass: ['success-snackbar']
-        });
+        this.notificationService.success(res.message || 'Batch Job Started Successfully');
         
         this.state.update(s => ({ ...s, runningBatch: false }));
         // Refresh statistics and history list
@@ -105,11 +100,7 @@ export class BatchProcessingStore {
         this.loadHistory();
       },
       error: (err) => {
-        this.snackBar.open(err.error?.message || 'Failed to trigger batch job execution.', 'Close', {
-          duration: 3000,
-          horizontalPosition: 'right',
-          verticalPosition: 'top'
-        });
+        this.notificationService.error(err.error?.message || 'Failed to trigger batch job execution.');
         this.state.update(s => ({ ...s, runningBatch: false }));
       }
     });

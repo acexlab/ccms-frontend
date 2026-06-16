@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CaseService } from '../../services/case.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NotificationService } from '../../services/notification.service';
+import { LoadingButtonComponent } from '../loading-button/loading-button.component';
 
 @Component({
   selector: 'app-balance-enquiry-response',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [CommonModule, RouterModule, FormsModule, MatIconModule, MatProgressSpinnerModule, LoadingButtonComponent],
   templateUrl: './balance-enquiry-response.html',
   styleUrls: ['./balance-enquiry-response.scss']
 })
@@ -24,11 +26,10 @@ export class BalanceEnquiryResponse implements OnInit {
   isSubmitting: boolean = false;
   submitError: string = '';
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private caseService: CaseService
-  ) {}
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly caseService = inject(CaseService);
+  private readonly notificationService = inject(NotificationService);
 
   ngOnInit(): void {
     this.caseNumber = this.route.snapshot.paramMap.get('caseNumber') || '';
@@ -75,8 +76,11 @@ export class BalanceEnquiryResponse implements OnInit {
 
     this.caseService.submitCaseResponse(this.caseNumber, payload).subscribe({
       next: () => {
-        this.isSubmitting = false;
-        this.router.navigate(['/bank/cases'], { state: { activeTab: 2 } });
+        this.notificationService.success('Balance Response submitted successfully.');
+        setTimeout(() => {
+          this.isSubmitting = false;
+          this.router.navigate(['/bank/cases'], { state: { activeTab: 2 } });
+        }, 400);
       },
       error: (err) => {
         this.isSubmitting = false;
@@ -85,6 +89,7 @@ export class BalanceEnquiryResponse implements OnInit {
         } else {
           this.submitError = 'Submission failed. Please try again.';
         }
+        this.notificationService.error(this.submitError);
       }
     });
   }

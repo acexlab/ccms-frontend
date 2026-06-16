@@ -1,4 +1,5 @@
-<div class="max-w-7xl mx-auto" *ngIf="caseDetails">
+<div class="p-8" *ngIf="caseDetails">
+  <div class="max-w-7xl mx-auto">
   
   <!-- Header -->
   <div class="mb-6">
@@ -56,6 +57,48 @@
         </div>
       </div>
 
+      <!-- Case Timeline -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center gap-2 mb-6 border-b border-gray-100 pb-3">
+          <mat-icon class="text-primary text-sm">timeline</mat-icon>
+          <h3 class="text-lg font-bold text-gray-900">Case Timeline</h3>
+        </div>
+        <div class="relative pl-6 border-l-2 border-slate-100 space-y-6 ml-3">
+          <!-- Step 1: Case Created -->
+          <div class="relative">
+            <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-green-500 border-4 border-white flex items-center justify-center shadow-sm"></div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-800">Case Created</h4>
+              <p class="text-xs text-slate-500 mt-1 font-medium">{{ caseDetails.createdAt | date:'d MMMM yyyy, h:mm a':'+0530' }} IST</p>
+            </div>
+          </div>
+
+          <!-- Step 2: Account Validated -->
+          <div class="relative">
+            <div [ngClass]="(caseDetails.status !== 'Pending') ? 'bg-green-500' : 'bg-slate-300'" class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full border-4 border-white flex items-center justify-center shadow-sm"></div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-800">Account Validated</h4>
+              <p class="text-xs text-slate-500 mt-1 font-medium">
+                {{ caseDetails.validationTimestamp ? (caseDetails.validationTimestamp | date:'d MMMM yyyy, h:mm a':'+0530') + ' IST' : 'Awaiting batch validation' }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3: Compliance Action -->
+          <div class="relative">
+            <div [ngClass]="caseDetails.response ? 'bg-green-500' : 'bg-slate-300'" class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full border-4 border-white flex items-center justify-center shadow-sm"></div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-800">
+                {{ caseDetails.response ? (caseDetails.response.responseType === 'FreezeApplied' ? 'Freeze Applied' : (caseDetails.response.responseType === 'BalanceProvided' ? 'Balance Provided' : 'Account Not Found')) : 'Compliance Action' }}
+              </h4>
+              <p class="text-xs text-slate-500 mt-1 font-medium">
+                {{ caseDetails.response ? (caseDetails.response.submittedAt | date:'d MMMM yyyy, h:mm a':'+0530') + ' IST' : 'Awaiting response submission' }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Case Documents -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <h3 class="text-lg font-bold text-gray-900 mb-4">Case Documents</h3>
@@ -64,11 +107,11 @@
             <div class="w-10 h-10 bg-primary-light text-primary rounded flex items-center justify-center mb-3">
               <mat-icon>insert_drive_file</mat-icon>
             </div>
-            <div class="font-bold text-sm text-gray-900 mb-1">{{ doc.documentType }}</div>
+            <div class="font-bold text-sm text-gray-900 mb-1">{{ doc.documentType === 'CourtOrder' ? 'Court Order' : (doc.documentType === 'AadhaarCopy' ? 'Aadhaar Copy' : 'PAN Copy') }}</div>
             <div class="text-xs text-gray-500 mb-4">{{ doc.fileName }} • {{ (doc.fileSize / 1024).toFixed(1) }} KB</div>
             <div class="flex gap-2 w-full mt-auto">
-              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors">PREVIEW</button>
-              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors" (click)="downloadDocument(doc.id)">DOWNLOAD</button>
+              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors cursor-pointer" (click)="previewDocument(doc)">View</button>
+              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors cursor-pointer" (click)="downloadDocument(doc)">Download</button>
             </div>
           </div>
         </div>
@@ -110,7 +153,7 @@
           </div>
           <div class="col-span-2">
             <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Submitted At</div>
-            <div class="text-sm text-gray-500">{{ caseDetails.response.submittedAt | date:'medium' }}</div>
+            <div class="text-sm text-gray-500">{{ caseDetails.response.submittedAt | date:'medium':'+0530' }} IST</div>
           </div>
         </div>
 
@@ -151,11 +194,12 @@
           <!-- Validation Timestamp -->
           <div class="pt-4 border-t border-gray-700">
              <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">VALIDATION TIMESTAMP</div>
-             <div class="text-sm text-gray-300">{{ caseDetails.validationTimestamp | date:'medium' }}</div>
+             <div class="text-sm text-gray-300">{{ caseDetails.validationTimestamp | date:'medium':'+0530' }} IST</div>
           </div>
         </div>
       </div>
     </div>
 
+  </div>
   </div>
 </div>

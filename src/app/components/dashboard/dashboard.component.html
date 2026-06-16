@@ -1,4 +1,5 @@
-      <div class="max-w-7xl mx-auto space-y-8">
+<div class="p-8">
+  <div class="max-w-7xl mx-auto space-y-8">
         
         <!-- Header Section -->
         <div>
@@ -29,75 +30,75 @@
         <ng-container *ngIf="!store.isLoading() && store.data() as data">
           
           <!-- Statistics Cards Row -->
-          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             
             <!-- Pending -->
-            <mat-card class="stat-card rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default overflow-hidden">
+            <mat-card class="stat-card cursor-default overflow-hidden border-t-4 border-orange-500">
               <mat-card-content class="p-6 relative">
-                <div class="flex justify-between items-start mb-6">
-                  <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-500">
+                <div class="flex justify-between items-start mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600">
                     <mat-icon>assignment</mat-icon>
                   </div>
-                  <span class="text-xs font-medium text-gray-500 flex items-center gap-1"><mat-icon class="text-[14px] w-[14px] h-[14px]">history</mat-icon> 12%</span>
                 </div>
                 <div class="text-sm font-medium text-gray-500 mb-1">Pending</div>
-                <div class="text-3xl font-bold text-gray-900">{{data.pending}}</div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">{{data.pending}}</div>
+                <p class="text-xs text-gray-400 font-semibold m-0 leading-tight">{{data.pending}} cases awaiting batch validation</p>
               </mat-card-content>
             </mat-card>
 
             <!-- Account Validated -->
-            <mat-card class="stat-card rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default overflow-hidden">
+            <mat-card class="stat-card cursor-default overflow-hidden border-t-4 border-blue-500">
               <mat-card-content class="p-6 relative">
-                <div class="flex justify-between items-start mb-6">
+                <div class="flex justify-between items-start mb-4">
                   <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
                     <mat-icon>verified_user</mat-icon>
                   </div>
-                  <span class="text-xs font-medium text-green-600 flex items-center gap-1"><mat-icon class="text-[14px] w-[14px] h-[14px]">trending_up</mat-icon> 8.2%</span>
                 </div>
                 <div class="text-sm font-medium text-gray-500 mb-1">Account Validated</div>
-                <div class="text-3xl font-bold text-gray-900">{{data.accountValidated | number}}</div>
-              </mat-card-content>
-            </mat-card>
-
-            <!-- Account Not Found -->
-            <mat-card class="stat-card rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default overflow-hidden">
-              <mat-card-content class="p-6 relative">
-                <div class="flex justify-between items-start mb-6">
-                  <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-red-500">
-                    <mat-icon>person_off</mat-icon>
-                  </div>
-                  <span class="text-xs font-medium text-gray-400">Steady</span>
-                </div>
-                <div class="text-sm font-medium text-gray-500 mb-1">Account Not Found</div>
-                <div class="text-3xl font-bold text-gray-900">{{data.accountNotFound}}</div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">{{data.accountValidated | number}}</div>
+                <p class="text-xs text-gray-400 font-semibold m-0 leading-tight">{{data.accountValidated}} cases awaiting bank action</p>
               </mat-card-content>
             </mat-card>
 
             <!-- Freeze Applied -->
-            <mat-card class="stat-card rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default overflow-hidden">
+            <mat-card class="stat-card cursor-default overflow-hidden border-t-4 border-red-500">
               <mat-card-content class="p-6 relative">
-                <div class="flex justify-between items-start mb-6">
-                  <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                <div class="flex justify-between items-start mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-red-500">
                     <mat-icon>ac_unit</mat-icon>
                   </div>
-                  <span class="text-xs font-medium text-green-600 flex items-center gap-1"><mat-icon class="text-[14px] w-[14px] h-[14px]">trending_up</mat-icon> 15%</span>
                 </div>
                 <div class="text-sm font-medium text-gray-500 mb-1">Freeze Applied</div>
-                <div class="text-3xl font-bold text-gray-900">{{data.freezeApplied}}</div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">{{data.freezeApplied}}</div>
+                <p class="text-xs text-gray-400 font-semibold m-0 leading-tight">{{data.freezeApplied}} completed freeze orders</p>
               </mat-card-content>
             </mat-card>
 
             <!-- Balance Provided -->
-            <mat-card class="stat-card rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default overflow-hidden">
+            <mat-card class="stat-card cursor-default overflow-hidden border-t-4 border-green-500">
               <mat-card-content class="p-6 relative">
-                <div class="flex justify-between items-start mb-6">
+                <div class="flex justify-between items-start mb-4">
                   <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
                     <mat-icon>account_balance_wallet</mat-icon>
                   </div>
-                  <span class="text-xs font-medium text-green-600 flex items-center gap-1"><mat-icon class="text-[14px] w-[14px] h-[14px]">trending_up</mat-icon> 5.4%</span>
                 </div>
                 <div class="text-sm font-medium text-gray-500 mb-1">Balance Provided</div>
-                <div class="text-3xl font-bold text-gray-900">{{data.balanceProvided}}</div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">{{data.balanceProvided}}</div>
+                <p class="text-xs text-gray-400 font-semibold m-0 leading-tight">{{data.balanceProvided}} completed balance responses</p>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Account Not Found -->
+            <mat-card class="stat-card cursor-default overflow-hidden border-t-4 border-gray-400">
+              <mat-card-content class="p-6 relative">
+                <div class="flex justify-between items-start mb-4">
+                  <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
+                    <mat-icon>person_off</mat-icon>
+                  </div>
+                </div>
+                <div class="text-sm font-medium text-gray-500 mb-1">Account Not Found</div>
+                <div class="text-3xl font-bold text-gray-900 mb-2">{{data.accountNotFound}}</div>
+                <p class="text-xs text-gray-400 font-semibold m-0 leading-tight">{{data.accountNotFound}} automatically resolved cases</p>
               </mat-card-content>
             </mat-card>
 
@@ -105,7 +106,7 @@
 
           <!-- Batch Processing Status Card -->
           <div class="mt-8 max-w-md">
-            <mat-card class="rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <mat-card class="stat-card overflow-hidden">
               <!-- Header -->
               <div class="p-5 bg-gray-50/50 border-b border-gray-100 flex justify-between items-center">
                 <h3 class="font-semibold text-gray-800 text-lg">Batch Processing Status</h3>
@@ -117,7 +118,7 @@
                 <div class="flex gap-8 mb-6">
                   <div>
                     <div class="text-xs text-gray-500 font-medium mb-1">Last Run Time</div>
-                    <div class="font-semibold text-gray-900">{{ data.lastRunTime ? (data.lastRunTime | date:'shortTime') : 'Never' }}</div>
+                    <div class="font-semibold text-gray-900">{{ data.lastRunTime ? (data.lastRunTime | date:'shortTime':'+0530') + ' IST' : 'Never' }}</div>
                     <div class="text-xs text-gray-400 font-medium">{{ data.lastRunTime ? 'Today' : '' }}</div>
                   </div>
                   <div>
@@ -148,7 +149,7 @@
               <!-- Footer Actions -->
               <div class="p-5 bg-white border-t border-gray-100">
                 <button mat-flat-button color="primary" 
-                        class="w-full h-12 !rounded-lg !bg-primary !text-white font-medium shadow-sm hover:shadow-md transition-shadow"
+                        class="w-full h-12 !rounded-lg !bg-primary !text-white font-medium shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                         [disabled]="store.isBatchRunning()"
                         (click)="runManualBatch()">
                   <div class="flex items-center justify-center gap-2">
@@ -165,4 +166,4 @@
         </ng-container>
 
       </div>
-
+</div>
