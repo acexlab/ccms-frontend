@@ -11,9 +11,9 @@ variables:
   kubernetesServiceConnection: 'ccms-aks-conn'
   
   # ACR Details
-  containerRegistry: 'ccmsacr.azurecr.io'
+  containerRegistry: 'ccmsacr9596.azurecr.io'
   imageRepository: 'ccms-frontend'
-  imagePullSecret: 'ccmsacr-pull-secret'
+  imagePullSecret: 'ccmsacr9596-pull-secret'
   
   # Workspace paths
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
@@ -70,3 +70,4 @@ stages:
           $(imagePullSecret)
         containers: |
           $(containerRegistry)/$(imageRepository):$(tag)
+
