@@ -1,4 +1,5 @@
-<div class="max-w-6xl mx-auto py-8" *ngIf="caseDetails">
+<div class="p-8" *ngIf="caseDetails">
+  <div class="max-w-6xl mx-auto">
   <!-- Breadcrumb -->
   <div class="text-sm text-gray-500 mb-6">
     <a routerLink="/bank/cases" class="hover:text-primary transition-colors">Case Inbox</a> 
@@ -9,7 +10,7 @@
   <!-- Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Case #{{ caseNumber }}</h1>
-    <p class="text-gray-500 mt-1">Request received from Central Court Division on {{ caseDetails.validationTimestamp | date:'mediumDate' }}</p>
+    <p class="text-gray-500 mt-1">Request received from Central Court Division on {{ caseDetails.validationTimestamp | date:'mediumDate':'+0530' }} IST</p>
   </div>
 
   <div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row overflow-hidden">
@@ -69,16 +70,20 @@
 
       <!-- Actions -->
       <div class="mt-8 flex justify-end gap-4 border-t border-gray-100 pt-6">
-        <button class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-colors" (click)="cancel()">Cancel</button>
-        <button 
-          class="px-8 py-2.5 bg-primary text-white rounded-lg font-bold hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2" 
-          [disabled]="!isFormValid || isSubmitting" 
-          (click)="submitResponse()">
-          <mat-spinner *ngIf="isSubmitting" diameter="16" class="text-white"></mat-spinner>
-          <mat-icon *ngIf="!isSubmitting" class="text-sm">play_arrow</mat-icon> Submit Response
-        </button>
+        <button class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-colors cursor-pointer" (click)="cancel()">Cancel</button>
+        <app-loading-button
+          [loading]="isSubmitting"
+          [disabled]="!isFormValid"
+          text="Submit Response"
+          loadingText="Submitting..."
+          icon="play_arrow"
+          color="primary"
+          (onClick)="submitResponse()"
+          customClass="!bg-primary hover:!bg-primary-hover !text-white !rounded-lg !px-8"
+        ></app-loading-button>
       </div>
 
     </div>
+  </div>
   </div>
 </div>

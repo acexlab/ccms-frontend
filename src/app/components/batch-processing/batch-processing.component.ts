@@ -10,10 +10,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BatchProcessingStore } from './batch-processing.store';
 import { AuthService } from '../../services/auth.service';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 @Component({
   selector: 'app-batch-processing',
@@ -25,8 +27,9 @@ import { AuthService } from '../../services/auth.service';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDialogModule,
+    EmptyStateComponent
   ],
   templateUrl: './batch-processing.component.html',
   styleUrls: ['./batch-processing.component.scss'],
@@ -36,6 +39,7 @@ export class BatchProcessingComponent implements OnInit {
   readonly store = inject(BatchProcessingStore);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
 
   ngOnInit() {
     this.store.init();
@@ -47,7 +51,22 @@ export class BatchProcessingComponent implements OnInit {
   }
 
   runManualBatch() {
-    this.store.runBatch();
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '380px',
+      data: {
+        title: 'Start Batch Processing?',
+        message: 'This will trigger the manual batch verification job. All pending judicial recovery orders will be processed. Proceed?',
+        confirmText: 'Start Batch',
+        cancelText: 'Cancel',
+        confirmColor: 'primary'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.store.runBatch();
+      }
+    });
   }
 
   onFilterStatus(status: string) {
