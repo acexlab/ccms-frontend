@@ -1,2 +1,232 @@
-<!-- Card 1: Case Details -->
-<!-- Card 2: Bank Response -->
+<div class="min-h-screen bg-[#f8fafc] flex flex-col text-slate-800 font-sans">
+  <!-- Top Navigation Bar -->
+  <header class="flex justify-between items-center w-full px-8 sticky top-0 z-50 bg-white border-b border-gray-200 h-16 shadow-sm">
+    <div class="flex items-center gap-4">
+      <span class="font-bold text-2xl text-[#0b2265] tracking-tight">CCMS</span>
+      <div class="h-8 w-px bg-gray-200 mx-2"></div>
+      <span class="text-xs font-semibold px-2 py-0.5 bg-blue-100 text-[#0b2265] rounded">Court Panel</span>
+    </div>
+
+    <div class="flex items-center gap-6">
+      <button (click)="onLogout()" class="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all font-medium">
+        <mat-icon class="text-sm">logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1">
+    <!-- Left Sidebar -->
+    <aside class="w-[280px] bg-white border-r border-gray-200 flex flex-col pt-8 pb-6 sticky top-16 h-[calc(100vh-64px)]">
+      <div class="px-6 mb-8 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-[#0b2265] flex items-center justify-center shadow-sm">
+          <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1;">gavel</span>
+        </div>
+        <div>
+          <p class="font-bold text-gray-800 text-sm leading-tight">Court Officer</p>
+          <p class="text-xs text-gray-500">Legal Division</p>
+        </div>
+      </div>
+      
+      <nav class="flex-1 space-y-1.5">
+        <a class="flex items-center gap-3 py-3 px-6 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg mx-3 transition-all cursor-pointer" routerLink="/court/dashboard" routerLinkActive="bg-[#dbeafe] text-[#1e40af] font-semibold">
+          <mat-icon class="text-sm">dashboard</mat-icon>
+          <span class="text-sm">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 py-3 px-6 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg mx-3 transition-all cursor-pointer" routerLink="/court/create-case" routerLinkActive="bg-[#dbeafe] text-[#1e40af] font-semibold">
+          <mat-icon class="text-sm">add_box</mat-icon>
+          <span class="text-sm">Create Case</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+      <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- Back Link -->
+        <div class="flex items-center gap-3">
+          <a routerLink="/court/dashboard" class="flex items-center gap-1.5 text-blue-700 hover:text-blue-950 transition-colors text-sm font-semibold">
+            <mat-icon class="text-base">arrow_back</mat-icon>
+            Back to Dashboard
+          </a>
+        </div>
+
+        <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-24">
+          <span class="material-icons animate-spin text-[#0b2265] text-5xl mb-4">sync</span>
+          <p class="text-gray-500 text-sm">Loading judicial case details...</p>
+        </div>
+
+        <div *ngIf="!isLoading && caseDetails" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <!-- Left Column: Case details and attachments -->
+          <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Case Info Card -->
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
+              <div class="flex justify-between items-start border-b border-gray-100 pb-4">
+                <div>
+                  <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Reference Case Number</span>
+                  <h3 class="text-2xl font-bold text-[#0b2265]">{{ caseDetails.caseNumber }}</h3>
+                </div>
+                <span [ngClass]="{
+                  'bg-amber-100 text-amber-800 border-amber-200': caseDetails.status === 'Pending',
+                  'bg-blue-100 text-blue-800 border-blue-200': caseDetails.status === 'AccountValidated',
+                  'bg-red-100 text-red-800 border-red-200': caseDetails.status === 'AccountNotFound',
+                  'bg-green-100 text-green-800 border-green-200': caseDetails.status === 'FreezeApplied' || caseDetails.status === 'BalanceProvided'
+                }" class="px-3 py-1 rounded text-xs font-extrabold uppercase tracking-wider border shadow-sm">
+                  {{ caseDetails.status }}
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <span class="text-xs text-gray-400 font-semibold block uppercase">Order Type</span>
+                  <span class="font-bold text-gray-800 text-sm">
+                    {{ caseDetails.orderType === 'FreezeAccount' || caseDetails.orderType === 0 ? 'Account Freeze' : 'Balance Enquiry' }}
+                  </span>
+                </div>
+                <div *ngIf="isFreezeOrder()">
+                  <span class="text-xs text-gray-400 font-semibold block uppercase">Requested Freeze Amount</span>
+                  <span class="font-extrabold text-red-600 text-sm">₹{{ caseDetails.freezeAmount | number:'1.2-2' }}</span>
+                </div>
+                <div>
+                  <span class="text-xs text-gray-400 font-semibold block uppercase">Date Created</span>
+                  <span class="font-bold text-gray-800 text-sm">{{ caseDetails.createdAt | date:'mediumDate' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Parties Involved Card -->
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6">
+              <h4 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">Parties Details</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Complainant -->
+                <div class="space-y-3">
+                  <h5 class="text-xs font-bold text-blue-800 uppercase tracking-wider">Complainant / Issuer</h5>
+                  <div class="space-y-1">
+                    <p class="text-xs text-gray-400">FullName</p>
+                    <p class="font-bold text-gray-800 text-sm">{{ caseDetails.complainant?.fullName }}</p>
+                  </div>
+                  <div class="space-y-1">
+                    <p class="text-xs text-gray-400">Identity Number</p>
+                    <p class="font-semibold text-gray-700 text-sm">{{ caseDetails.complainant?.identityNumber }}</p>
+                  </div>
+                </div>
+
+                <!-- Defendant -->
+                <div class="space-y-3">
+                  <h5 class="text-xs font-bold text-red-800 uppercase tracking-wider">Defendant (Target)</h5>
+                  <div class="space-y-1">
+                    <p class="text-xs text-gray-400">FullName</p>
+                    <p class="font-bold text-gray-800 text-sm">{{ caseDetails.defendant?.fullName }}</p>
+                  </div>
+                  <div class="space-y-1">
+                    <p class="text-xs text-gray-400">Identity Number (Masked)</p>
+                    <p class="font-mono font-semibold text-gray-700 text-sm">{{ caseDetails.defendant?.identityNumber }}</p>
+                  </div>
+                  <div class="space-y-1">
+                    <p class="text-xs text-gray-400">Bank Account Number (Masked)</p>
+                    <p class="font-mono font-semibold text-gray-700 text-sm">{{ caseDetails.defendant?.bankAccountNumber }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Documents Attached Card -->
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
+              <h4 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">Supporting Documents</h4>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div *ngFor="let doc of caseDetails.documents" class="border border-gray-200 rounded-lg p-4 flex items-center justify-between hover:border-blue-400 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <mat-icon class="text-blue-800">description</mat-icon>
+                    <div>
+                      <p class="font-semibold text-gray-800 text-xs truncate max-w-[120px]">{{ doc.fileName }}</p>
+                      <p class="text-[10px] text-gray-400 font-medium">
+                        {{ doc.documentType === 'CourtOrder' ? 'Court Order' : doc.documentType === 'AadhaarCopy' ? 'Aadhaar' : 'PAN' }}
+                      </p>
+                    </div>
+                  </div>
+                  <a [href]="getDownloadUrl(doc.filePath)" target="_blank" class="p-1.5 hover:bg-gray-100 rounded-full text-blue-800 transition-all">
+                    <mat-icon class="text-sm">download</mat-icon>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Bank Resolution Status -->
+          <div class="space-y-6">
+            
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
+              <h4 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3 flex items-center gap-2">
+                <mat-icon class="text-[#0b2265]">account_balance</mat-icon>
+                Bank Response Status
+              </h4>
+
+              <!-- Case has been responded by Bank -->
+              <div *ngIf="caseDetails.response" class="space-y-4 text-sm">
+                <div class="p-3 bg-green-50 rounded-lg border border-green-200 flex items-center gap-2 text-green-800">
+                  <mat-icon>check_circle</mat-icon>
+                  <span class="font-bold text-xs uppercase">RESOLUTION COMPLETED</span>
+                </div>
+
+                <div class="space-y-2 border-b border-gray-100 pb-3" *ngIf="caseDetails.response.responseType === 'FreezeApplied' || caseDetails.response.responseType === 0">
+                  <p class="text-xs text-gray-400 font-semibold uppercase">Freeze Amount Applied</p>
+                  <p class="font-extrabold text-red-600 text-base">₹{{ caseDetails.response.freezeAmountApplied | number:'1.2-2' }}</p>
+                </div>
+
+                <div class="space-y-2 border-b border-gray-100 pb-3" *ngIf="caseDetails.response.responseType === 'BalanceProvided' || caseDetails.response.responseType === 1">
+                  <p class="text-xs text-gray-400 font-semibold uppercase">Reported Account Balance</p>
+                  <p class="font-extrabold text-green-800 text-base">₹{{ caseDetails.response.balanceReported | number:'1.2-2' }}</p>
+                </div>
+
+                <div class="space-y-2 border-b border-gray-100 pb-3">
+                  <p class="text-xs text-gray-400 font-semibold uppercase">Bank Remarks</p>
+                  <p class="text-gray-700 text-xs italic">"{{ caseDetails.response.remarks }}"</p>
+                </div>
+
+                <div class="space-y-1">
+                  <p class="text-[10px] text-gray-400 font-semibold uppercase">Resolution Timestamp</p>
+                  <p class="text-gray-500 text-xs">{{ caseDetails.response.submittedAt | date:'medium' }}</p>
+                </div>
+              </div>
+
+              <!-- Case has failed validation (Auto-closed) -->
+              <div *ngIf="!caseDetails.response && caseDetails.status === 'AccountNotFound'" class="space-y-4 text-sm">
+                <div class="p-3 bg-red-50 rounded-lg border border-red-200 flex items-center gap-2 text-red-800">
+                  <mat-icon>cancel</mat-icon>
+                  <span class="font-bold text-xs uppercase">AUTO-CLOSED (NO ACCOUNT)</span>
+                </div>
+                <p class="text-xs text-gray-600 italic">
+                  The automated batch customer matching job could not identify a valid bank customer account using the provided defendant identity criteria. Case closed automatically.
+                </p>
+              </div>
+
+              <!-- Case is awaiting validation -->
+              <div *ngIf="!caseDetails.response && caseDetails.status === 'Pending'" class="text-center py-6">
+                <mat-icon class="text-4xl text-amber-500 mb-2">hourglass_empty</mat-icon>
+                <p class="text-xs text-gray-500 font-semibold leading-relaxed">
+                  Awaiting background matching validation. The bank's validation scheduler has not executed matching for this case yet.
+                </p>
+              </div>
+
+              <!-- Case is validated and awaiting bank response -->
+              <div *ngIf="!caseDetails.response && caseDetails.status === 'AccountValidated'" class="text-center py-6">
+                <mat-icon class="text-4xl text-blue-500 mb-2">pending_actions</mat-icon>
+                <p class="text-xs text-gray-500 font-semibold leading-relaxed">
+                  Account has been validated by the batch job. Awaiting manual review and formal resolution from a bank officer.
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>

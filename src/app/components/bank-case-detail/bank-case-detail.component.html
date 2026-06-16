@@ -1,5 +1,466 @@
-<!-- Card 1: Court Order Details -->
-<!-- Card 2: Batch Validation Result -->
-<!-- Card 3: Response (Interactive Form or Read-only) -->
-<!-- Interactive Form -->
-<!-- Read-only View -->
+<div class="min-h-screen bg-slate-50 flex flex-col text-[#0f172a] font-sans antialiased">
+  <!-- Top Navigation Bar -->
+  <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-8 sticky top-0 z-50 shadow-sm">
+    <div class="flex items-center gap-10">
+      <h1 class="text-blue-700 text-2xl font-black tracking-wider">CCMS</h1>
+      <div class="border-b-2 border-blue-700 h-16 flex items-center px-4">
+        <span class="text-blue-950 font-bold text-sm">Case Details</span>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-6">
+      <button class="hover:text-blue-600 transition-colors p-1.5 rounded-full hover:bg-slate-100 relative"><mat-icon class="text-slate-600">notifications</mat-icon></button>
+      <button class="hover:text-blue-600 transition-colors p-1.5 rounded-full hover:bg-slate-100"><mat-icon class="text-slate-600">account_circle</mat-icon></button>
+      <button (click)="onLogout()" class="hover:text-red-600 transition-colors p-1.5 rounded-full hover:bg-red-50"><mat-icon class="text-slate-600">logout</mat-icon></button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Left Sidebar -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex-shrink-0 flex flex-col pt-8 pb-6 hidden md:flex">
+      <div class="px-6 mb-8 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 shadow-sm border border-blue-200">
+          <mat-icon class="text-blue-700">account_balance</mat-icon>
+        </div>
+        <div>
+          <div class="font-bold text-slate-900 leading-tight text-sm">Bank Officer</div>
+          <div class="text-[10px] text-slate-400 font-bold tracking-wider uppercase">Financial Recoveries</div>
+        </div>
+      </div>
+      <nav class="flex-1 p-3 space-y-1.5">
+        <a routerLink="/bank/dashboard" routerLinkActive="bg-blue-50 text-blue-700 font-semibold" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg text-sm font-semibold transition-colors">
+          <mat-icon class="text-slate-500">grid_view</mat-icon>
+          Dashboard
+        </a>
+        <a routerLink="/bank/cases" routerLinkActive="bg-blue-50 text-blue-700 font-semibold" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg text-sm font-semibold transition-colors">
+          <mat-icon class="text-slate-500">inbox</mat-icon>
+          Case Inbox
+        </a>
+        <a routerLink="/bank/batch-processing" routerLinkActive="bg-blue-50 text-blue-700 font-semibold" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg text-sm font-semibold transition-colors">
+          <mat-icon class="text-slate-500">layers</mat-icon>
+          Batch Processing
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-10 bg-slate-50">
+      <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-32">
+        <span class="material-icons animate-spin text-blue-600 text-5xl mb-4">sync</span>
+        <p class="text-slate-500 text-sm font-semibold">Loading case details...</p>
+      </div>
+
+      <div *ngIf="!isLoading && caseDetails" class="max-w-7xl mx-auto space-y-6">
+
+        <!-- ========================================================================= -->
+        <!-- STATE 1 & 2: AWAITING ACTION (Form Active)                                -->
+        <!-- ========================================================================= -->
+        <ng-container *ngIf="isAwaitingResponse()">
+          
+          <!-- STATE 1: Balance Enquiry Form (Image 3) -->
+          <div *ngIf="!isFreezeOrder()" class="space-y-6">
+            <!-- Breadcrumbs & Header -->
+            <div>
+              <div class="text-xs font-semibold text-slate-400 mb-2 flex items-center gap-1.5">
+                <a routerLink="/bank/cases" class="hover:underline">Case Inbox</a>
+                <mat-icon class="text-[12px] w-3 h-3 flex items-center justify-center">chevron_right</mat-icon>
+                <span class="text-slate-600">Balance Enquiry Response</span>
+              </div>
+              <h2 class="text-3xl font-extrabold text-slate-900 mb-1 tracking-tight">Case #{{ caseDetails.caseNumber }}</h2>
+              <p class="text-[#64748b] text-sm font-medium">Request received from {{ caseDetails.complainant?.fullName || 'Central Court Division' }} on {{ caseDetails.createdAt | date:'mediumDate' }}</p>
+            </div>
+
+            <!-- Form Card Layout -->
+            <div class="border border-slate-200 rounded-xl bg-white shadow-sm overflow-hidden p-8">
+              <form [formGroup]="responseForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+                
+                <!-- Left Request Details Section -->
+                <div class="lg:col-span-2 bg-[#f0f4ff]/70 border border-blue-100 rounded-xl p-6 h-fit space-y-4">
+                  <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">REQUEST DETAILS</h4>
+                  
+                  <div class="space-y-1">
+                    <p class="text-xs font-bold text-slate-400">Account Holder</p>
+                    <p class="font-extrabold text-slate-800 text-sm">{{ caseDetails.validationResult?.accountHolderName || caseDetails.defendant?.fullName }}</p>
+                  </div>
+                  
+                  <div class="space-y-1">
+                    <p class="text-xs font-bold text-slate-400">Account Number</p>
+                    <p class="font-mono font-extrabold text-slate-800 text-sm tracking-tight">{{ caseDetails.validationResult?.matchedAccountNumber || caseDetails.defendant?.bankAccountNumber }}</p>
+                  </div>
+                </div>
+
+                <!-- Right Inputs Section -->
+                <div class="lg:col-span-3 space-y-6">
+                  
+                  <!-- Current System Balance (Read Only Locked) -->
+                  <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Current System Balance</label>
+                    <div class="relative">
+                      <input type="text" [value]="'₹ ' + (caseDetails.validationResult?.currentBalance | number:'1.2-2')" disabled class="w-full bg-[#f1f5f9] border border-slate-200 rounded-lg py-3 pl-4 pr-12 text-sm font-bold text-slate-500 cursor-not-allowed">
+                      <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-base">lock</mat-icon>
+                    </div>
+                    <span class="text-[10px] text-slate-400 font-bold block">Last synchronized: 2 minutes ago</span>
+                  </div>
+
+                  <!-- Verified Balance (As of Statement Date) -->
+                  <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Verified Balance (As of Statement Date)</label>
+                    <div class="relative">
+                      <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-800">₹</span>
+                      <input type="number" formControlName="balanceReported" class="w-full bg-white border border-slate-300 rounded-lg py-3 pl-8 pr-12 text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all">
+                      <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-base">edit</mat-icon>
+                    </div>
+                    <span class="text-[10px] text-slate-400 font-bold block">Enter the audited balance from the verified ledger.</span>
+                    <span *ngIf="responseForm.get('balanceReported')?.touched && responseForm.get('balanceReported')?.invalid" class="text-xs text-red-500 font-semibold block">
+                      Please enter a valid verified balance.
+                    </span>
+                  </div>
+
+                  <!-- Response Remarks -->
+                  <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Response Remarks</label>
+                    <textarea formControlName="remarks" rows="5" placeholder="Enter case notes, adjustments, or additional legal disclosure here..." class="w-full bg-white border border-slate-300 rounded-lg p-4 text-xs font-medium text-slate-700 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all"></textarea>
+                    <span *ngIf="responseForm.get('remarks')?.touched && responseForm.get('remarks')?.invalid" class="text-xs text-red-500 font-semibold block">
+                      Remarks are required (max 500 characters).
+                    </span>
+                  </div>
+
+                  <!-- Actions Row -->
+                  <div class="flex items-center gap-4 pt-4 border-t border-slate-100">
+                    <a routerLink="/bank/cases" class="border border-slate-200 hover:bg-slate-50 text-slate-700 px-6 py-2.5 rounded text-xs font-bold transition-all shadow-sm">
+                      Cancel
+                    </a>
+                    <button type="submit" [disabled]="isSubmitting" class="bg-[#0b2265] hover:bg-[#06143c] text-white px-6 py-2.5 rounded text-xs font-bold transition-all shadow-sm flex items-center gap-2 disabled:opacity-50">
+                      <mat-icon class="text-sm">play_arrow</mat-icon>
+                      SUBMIT RESPONSE
+                    </button>
+                  </div>
+
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- STATE 2: Freeze Account Form (Image 4) -->
+          <div *ngIf="isFreezeOrder()" class="space-y-6">
+            <!-- Breadcrumbs & Header -->
+            <div>
+              <div class="text-xs font-semibold text-slate-400 mb-2 flex items-center gap-1.5">
+                <a routerLink="/bank/cases" class="hover:underline">Case Inbox</a>
+                <mat-icon class="text-[12px] w-3 h-3 flex items-center justify-center">chevron_right</mat-icon>
+                <span>Case #{{ caseDetails.caseNumber }}</span>
+                <mat-icon class="text-[12px] w-3 h-3 flex items-center justify-center">chevron_right</mat-icon>
+                <span class="text-slate-600">Freeze Account Response</span>
+              </div>
+              <h2 class="text-3xl font-extrabold text-slate-900 mb-1 tracking-tight">Freeze Account Response Form</h2>
+              <p class="text-[#64748b] text-sm font-medium">Review the court mandate and provide institutional compliance details.</p>
+            </div>
+
+            <!-- Side-by-side Layout (PDF on left, Inputs on right) -->
+            <form [formGroup]="responseForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+              
+              <!-- Left Column: PDF Document Viewer -->
+              <div class="lg:col-span-3 border border-slate-200 rounded-xl bg-white shadow-sm overflow-hidden flex flex-col h-[620px]">
+                <!-- PDF Viewer Toolbar -->
+                <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-slate-700">
+                    <mat-icon class="text-red-600 text-lg">picture_as_pdf</mat-icon>
+                    <span class="text-xs font-bold truncate max-w-[250px]">Court_Order_{{ caseDetails.caseNumber }}_Final.pdf</span>
+                  </div>
+                  <div class="flex items-center gap-3 text-slate-500">
+                    <button type="button" class="hover:bg-slate-200 p-1 rounded transition-colors"><mat-icon class="text-sm">zoom_in</mat-icon></button>
+                    <button type="button" class="hover:bg-slate-200 p-1 rounded transition-colors"><mat-icon class="text-sm">zoom_out</mat-icon></button>
+                    <div class="w-px h-4 bg-slate-300"></div>
+                    <button type="button" class="hover:bg-slate-200 p-1 rounded transition-colors"><mat-icon class="text-sm">print</mat-icon></button>
+                    <button type="button" class="hover:bg-slate-200 p-1 rounded transition-colors"><mat-icon class="text-sm">download</mat-icon></button>
+                  </div>
+                </div>
+                <!-- Scrollable Document Body (Styled to simulate real PDF layout) -->
+                <div class="bg-slate-600 p-8 overflow-y-auto flex-1 flex justify-center">
+                  <div class="bg-white max-w-[500px] w-full p-8 shadow-md border border-slate-400/30 text-[10px] text-slate-800 font-sans space-y-6 leading-relaxed relative min-h-[550px]">
+                    
+                    <div class="text-center space-y-1 border-b border-slate-200 pb-4">
+                      <h4 class="font-extrabold text-sm tracking-wider uppercase text-slate-900">ORDER TO FREEZE ASSETS</h4>
+                      <p class="text-[8px] text-slate-400 font-semibold tracking-widest uppercase">Central Court Division</p>
+                    </div>
+
+                    <p class="font-medium text-[9px] text-justify text-slate-600">
+                      Pursuant to Section 14-B of the Financial Crimes Act, this Court hereby directs the responding financial institution to immediately restrict all outgoing transactions from the following account(s) pending further legal review of suspected irregular activities.
+                    </p>
+
+                    <div class="bg-slate-50 border border-slate-100 rounded p-4 space-y-3 font-mono">
+                      <div class="grid grid-cols-3">
+                        <span class="text-slate-400 font-bold">TARGET NAME:</span>
+                        <span class="col-span-2 text-slate-900 font-extrabold">{{ caseDetails.defendant?.fullName }}</span>
+                      </div>
+                      <div class="grid grid-cols-3">
+                        <span class="text-slate-400 font-bold">ACCOUNT NUMBER:</span>
+                        <span class="col-span-2 text-slate-900 font-extrabold">{{ caseDetails.validationResult?.matchedAccountNumber || caseDetails.defendant?.bankAccountNumber }}</span>
+                      </div>
+                      <div class="grid grid-cols-3">
+                        <span class="text-slate-400 font-bold">ORDER STATUS:</span>
+                        <span class="col-span-2 text-red-600 font-black">URGENT COMPLIANCE</span>
+                      </div>
+                    </div>
+
+                    <p class="font-medium text-[9px] text-justify text-slate-600">
+                      The institution is required to freeze a total amount of <strong>₹{{ caseDetails.freezeAmount | number:'1.2-2' }}</strong> (or the total balance available if less than the specified amount). A response must be submitted within 24 hours of receipt of this notice.
+                    </p>
+
+                    <div class="absolute bottom-8 left-8 right-8 border-t border-slate-200 pt-4 flex justify-between text-[7px] text-slate-400 font-semibold uppercase tracking-wider">
+                      <span>Ref: CCMS-API-VERIFIED</span>
+                      <span>Page 1 of 1</span>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Compliance Details Entry -->
+              <div class="lg:col-span-2 border border-slate-200 rounded-xl bg-white shadow-sm p-6 space-y-6 h-fit">
+                <div>
+                  <h4 class="font-extrabold text-slate-800 text-sm">Complete the following details to execute the freeze order.</h4>
+                </div>
+
+                <!-- Freeze Amount Input -->
+                <div class="space-y-2">
+                  <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Freeze Amount (INR)</label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-800">₹</span>
+                    <input type="number" formControlName="freezeAmountApplied" class="w-full bg-[#f8fafc] border border-slate-200 rounded-lg py-3 pl-8 pr-4 text-sm font-bold text-slate-800 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all">
+                  </div>
+                  <span *ngIf="responseForm.get('freezeAmountApplied')?.touched && responseForm.get('freezeAmountApplied')?.invalid" class="text-xs text-red-500 font-semibold block">
+                    Please provide a valid freeze amount.
+                  </span>
+                </div>
+
+                <!-- Remarks -->
+                <div class="space-y-2">
+                  <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Remarks</label>
+                  <textarea formControlName="remarks" rows="6" placeholder="Document any account discrepancies or additional holds here..." class="w-full bg-[#f8fafc] border border-slate-200 rounded-lg p-4 text-xs font-medium text-slate-700 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all"></textarea>
+                  <div class="flex justify-between items-center text-[10px] text-slate-400 font-bold">
+                    <span>Character count: {{ responseForm.get('remarks')?.value?.length || 0 }} / 500</span>
+                    <span *ngIf="responseForm.get('remarks')?.touched && responseForm.get('remarks')?.invalid" class="text-red-500">Remarks are required.</span>
+                  </div>
+                </div>
+
+                <!-- Buttons Row -->
+                <div class="flex items-center gap-4 pt-4 border-t border-slate-100">
+                  <button type="submit" [disabled]="isSubmitting" class="flex-1 bg-[#0b2265] hover:bg-[#06143c] text-white px-4 py-3 rounded text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50">
+                    <mat-icon class="text-sm">lock</mat-icon>
+                    Submit Response
+                  </button>
+                  <a routerLink="/bank/cases" class="border border-slate-200 hover:bg-slate-50 text-slate-700 px-5 py-3 rounded text-xs font-bold transition-all shadow-sm">
+                    Cancel
+                  </a>
+                </div>
+
+              </div>
+
+            </form>
+          </div>
+
+        </ng-container>
+
+        <!-- ========================================================================= -->
+        <!-- STATE 3: TERMINAL/COMPLETED CASE DETAILS VIEW (Image 1)                  -->
+        <!-- ========================================================================= -->
+        <ng-container *ngIf="isTerminalState()">
+          
+          <!-- Header info -->
+          <div>
+            <div class="text-xs font-semibold text-slate-400 mb-2 flex items-center gap-1.5">
+              <a routerLink="/bank/cases" class="hover:underline">Case Inbox</a>
+              <mat-icon class="text-[12px] w-3 h-3 flex items-center justify-center">chevron_right</mat-icon>
+              <span class="text-slate-600">Case Details</span>
+            </div>
+            
+            <div class="flex justify-between items-end">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">CASE ID: {{ caseDetails.caseNumber }} • Assigned: {{ caseDetails.createdAt | date:'mediumDate' }}</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-1 tracking-tight">Case Details</h2>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Layout Column splits -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left 2 Columns -->
+            <div class="lg:col-span-2 space-y-6">
+              
+              <!-- Court Case Info Card -->
+              <div class="border border-slate-200 rounded-xl bg-white shadow-sm p-6 space-y-6">
+                <div class="flex items-center gap-2 border-b border-slate-100 pb-4">
+                  <mat-icon class="text-slate-600">gavel</mat-icon>
+                  <h3 class="font-extrabold text-slate-800 text-sm tracking-tight">Court Case Information</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="space-y-1">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">COMPLAINANT</p>
+                    <p class="font-extrabold text-slate-800 text-sm">{{ caseDetails.complainant?.fullName || 'HDFC Bank Ltd.' }}</p>
+                  </div>
+                  
+                  <div class="space-y-1">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">DEFENDANT (TARGET)</p>
+                    <p class="font-extrabold text-slate-800 text-sm">{{ caseDetails.defendant?.fullName || 'Sharma Enterprise PVT LTD' }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Case Documents -->
+              <div class="border border-slate-200 rounded-xl bg-white shadow-sm p-6 space-y-6">
+                <h3 class="font-extrabold text-slate-800 text-sm border-b border-slate-100 pb-4">Case Documents</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  
+                  <!-- Court Order Doc -->
+                  <div class="border border-slate-200 rounded-xl p-4 flex flex-col justify-between min-h-[140px] bg-slate-50/50">
+                    <div class="flex items-start gap-3">
+                      <mat-icon class="text-slate-600 mt-0.5">description</mat-icon>
+                      <div class="space-y-0.5">
+                        <p class="font-extrabold text-slate-800 text-xs">Court Order</p>
+                        <p class="text-[10px] text-slate-400 font-bold">PDF • 2.4 MB • Certified</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-between mt-4">
+                      <button class="bg-[#f0f4ff]/80 hover:bg-[#e2ebff] text-blue-700 px-4 py-1.5 rounded text-[10px] font-extrabold transition-colors">PREVIEW</button>
+                      <button class="hover:bg-slate-200 p-1.5 rounded-full text-slate-500 transition-colors"><mat-icon class="text-base">vertical_align_bottom</mat-icon></button>
+                    </div>
+                  </div>
+
+                  <!-- Aadhaar KYC Doc -->
+                  <div class="border border-slate-200 rounded-xl p-4 flex flex-col justify-between min-h-[140px] bg-slate-50/50">
+                    <div class="flex items-start gap-3">
+                      <mat-icon class="text-slate-600 mt-0.5">badge</mat-icon>
+                      <div class="space-y-0.5">
+                        <p class="font-extrabold text-slate-800 text-xs">Aadhaar (KYC)</p>
+                        <p class="text-[10px] text-slate-400 font-bold">JPG • 840 KB • Verified</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-between mt-4">
+                      <button class="bg-[#f0f4ff]/80 hover:bg-[#e2ebff] text-blue-700 px-4 py-1.5 rounded text-[10px] font-extrabold transition-colors">PREVIEW</button>
+                      <button class="hover:bg-slate-200 p-1.5 rounded-full text-slate-500 transition-colors"><mat-icon class="text-base">vertical_align_bottom</mat-icon></button>
+                    </div>
+                  </div>
+
+                  <!-- PAN Card Doc -->
+                  <div class="border border-slate-200 rounded-xl p-4 flex flex-col justify-between min-h-[140px] bg-slate-50/50">
+                    <div class="flex items-start gap-3">
+                      <mat-icon class="text-slate-600 mt-0.5">payment</mat-icon>
+                      <div class="space-y-0.5">
+                        <p class="font-extrabold text-slate-800 text-xs">PAN Card</p>
+                        <p class="text-[10px] text-slate-400 font-bold">PDF • 1.1 MB • Validated</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-between mt-4">
+                      <button class="bg-[#f0f4ff]/80 hover:bg-[#e2ebff] text-blue-700 px-4 py-1.5 rounded text-[10px] font-extrabold transition-colors">PREVIEW</button>
+                      <button class="hover:bg-slate-200 p-1.5 rounded-full text-slate-500 transition-colors"><mat-icon class="text-base">vertical_align_bottom</mat-icon></button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right 1 Column -->
+            <div class="lg:col-span-1 space-y-6">
+              
+              <!-- Validation Results Box -->
+              <div class="bg-[#0b162f] rounded-xl text-white p-6 space-y-6 shadow-md relative overflow-hidden">
+                <div class="flex justify-between items-center">
+                  <h4 class="font-extrabold text-sm tracking-tight text-slate-200">Validation Results</h4>
+                  <mat-icon class="text-blue-400 text-base">verified</mat-icon>
+                </div>
+
+                <div class="space-y-4 pt-2">
+                  <div class="space-y-1">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">MATCHED ACCOUNT #</p>
+                    <div class="flex justify-between items-center bg-slate-900/40 border border-slate-800 rounded px-3 py-2">
+                      <span class="font-mono text-xs font-extrabold text-slate-100 tracking-wider">
+                        {{ caseDetails.validationResult?.matchedAccountNumber || '50200004558291' }}
+                      </span>
+                      <mat-icon class="text-emerald-500 text-sm">check_circle</mat-icon>
+                    </div>
+                  </div>
+
+                  <div class="space-y-1">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">CURRENT BALANCE (VERIFIED)</p>
+                    <div class="bg-[#122e23] border border-emerald-900 rounded-lg p-3 flex items-center justify-between">
+                      <span class="font-mono text-emerald-400 font-extrabold text-base">
+                        ₹{{ (caseDetails.validationResult?.currentBalance || 1452380) | number:'1.2-2' }}
+                      </span>
+                      <span class="text-[8px] bg-emerald-500 text-white font-extrabold px-1.5 py-0.5 rounded tracking-wide uppercase">READ ONLY</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Case Response Box -->
+              <div class="border border-slate-200 rounded-xl bg-white shadow-sm p-6 space-y-6">
+                <div class="flex items-center gap-2 border-b border-slate-100 pb-4">
+                  <mat-icon class="text-slate-600">reply</mat-icon>
+                  <h3 class="font-extrabold text-slate-800 text-sm tracking-tight">Case Response</h3>
+                </div>
+
+                <!-- Display submitted response details -->
+                <div class="space-y-4">
+                  <div class="space-y-1">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">RESPONSE REMARKS</p>
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 min-h-[100px] text-xs font-semibold text-slate-600 leading-normal">
+                      {{ caseDetails.response?.remarks || 'Formal compliance completed. Order has been executed.' }}
+                    </div>
+                  </div>
+
+                  <!-- Details depending on order type -->
+                  <div class="bg-blue-50/50 border border-blue-100 rounded-lg p-3 text-xs" *ngIf="caseDetails.response">
+                    <div class="flex justify-between items-center" *ngIf="caseDetails.response.responseType === 'FreezeApplied' || caseDetails.response.responseType === 0">
+                      <span class="text-slate-500 font-bold">Freeze Applied:</span>
+                      <span class="font-extrabold text-red-600">₹{{ caseDetails.response.freezeAmountApplied | number:'1.2-2' }}</span>
+                    </div>
+                    <div class="flex justify-between items-center" *ngIf="caseDetails.response.responseType === 'BalanceProvided' || caseDetails.response.responseType === 1">
+                      <span class="text-slate-500 font-bold">Reported Balance:</span>
+                      <span class="font-extrabold text-emerald-700">₹{{ caseDetails.response.balanceReported | number:'1.2-2' }}</span>
+                    </div>
+                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-blue-100 text-[10px] text-slate-400 font-bold">
+                      <span>Officer Submitted:</span>
+                      <span>{{ caseDetails.response.submittedAt | date:'yyyy-MM-dd HH:mm' }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Standard Submission Button (Disabled visual placeholder to match Image 1 layout) -->
+                  <button type="button" disabled class="w-full bg-[#0b2265]/40 text-white py-3 rounded-lg text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2 cursor-not-allowed">
+                    <mat-icon class="text-sm">play_arrow</mat-icon>
+                    SUBMIT RESPONSE
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </ng-container>
+
+        <!-- ========================================================================= -->
+        <!-- STATE 4: AWAITING BACKGROUND MATCHING (Pending state)                   -->
+        <!-- ========================================================================= -->
+        <div *ngIf="isPendingState()" class="max-w-md mx-auto border border-slate-200 rounded-xl bg-white shadow-sm p-8 text-center space-y-4">
+          <mat-icon class="text-5xl text-amber-500">hourglass_top</mat-icon>
+          <h3 class="text-lg font-extrabold text-slate-900">Awaiting Validation Match</h3>
+          <p class="text-slate-500 text-xs font-medium leading-relaxed">
+            This case is currently waiting for the background scheduler to run the database check. No manual response is possible until matching executes.
+          </p>
+          <div class="pt-4 border-t border-slate-100 flex justify-center">
+            <a routerLink="/bank/cases" class="bg-[#0b2265] hover:bg-[#06143c] text-white px-6 py-2.5 rounded text-xs font-bold transition-all shadow-sm">
+              Back to Case Inbox
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>

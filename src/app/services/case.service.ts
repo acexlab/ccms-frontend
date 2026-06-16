@@ -27,4 +27,8 @@ export class CaseService {
   getCaseById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/cases/${id}`);
   }
+
+  submitResponse(id: number, data: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/cases/${id}/response`, data);
+  }
 }

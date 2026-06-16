@@ -189,7 +189,7 @@ import { CaseService } from '../../services/case.service';
                 </thead>
                 <tbody>
                   <tr *ngFor="let c of filteredCases" class="border-b border-gray-100 hover:bg-gray-50/50 transition-all">
-                    <td class="py-4 px-4 font-bold text-[#0b2265] hover:underline cursor-pointer">
+                    <td [routerLink]="['/court/cases', c.id]" class="py-4 px-4 font-bold text-[#0b2265] hover:underline cursor-pointer">
                       {{ c.caseNumber }}
                     </td>
                     <td class="py-4 px-4 text-gray-800 font-medium">{{ c.defendantName }}</td>
