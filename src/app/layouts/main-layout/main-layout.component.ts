@@ -81,10 +81,6 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
               <mat-icon class="!text-slate-500 !text-lg">person</mat-icon>
               <span>Profile</span>
             </button>
-            <button mat-menu-item class="!text-sm !font-semibold !text-slate-700" (click)="showChangePasswordInfo()">
-              <mat-icon class="!text-slate-500 !text-lg">lock</mat-icon>
-              <span>Change Password</span>
-            </button>
             <hr class="border-slate-100 my-1"/>
             <button mat-menu-item class="!text-sm !font-semibold !text-red-650" (click)="confirmLogout()">
               <mat-icon class="!text-red-500 !text-lg">logout</mat-icon>
