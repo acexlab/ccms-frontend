@@ -27,7 +27,7 @@ import { CaseService } from '../../services/case.service';
         <!-- Quick Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
           <!-- Card 1: Pending Cases -->
-          <div class="bg-white rounded-xl border border-gray-200 p-6 relative shadow-sm hover:shadow-md transition-shadow">
+          <div class="stat-card p-6 relative">
             <div class="flex justify-between items-start mb-6">
               <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Pending Cases</span>
               <span class="material-symbols-outlined text-amber-600 text-lg">schedule</span>
@@ -39,7 +39,7 @@ import { CaseService } from '../../services/case.service';
           </div>
 
           <!-- Card 2: Account Validated -->
-          <div class="bg-white rounded-xl border border-gray-200 p-6 relative shadow-sm hover:shadow-md transition-shadow">
+          <div class="stat-card p-6 relative">
             <div class="flex justify-between items-start mb-6">
               <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Account Validated</span>
               <span class="material-symbols-outlined text-blue-600 text-lg">verified</span>
@@ -51,7 +51,7 @@ import { CaseService } from '../../services/case.service';
           </div>
 
           <!-- Card 3: Freeze Applied -->
-          <div class="bg-white rounded-xl border border-gray-200 p-6 relative shadow-sm hover:shadow-md transition-shadow">
+          <div class="stat-card p-6 relative">
             <div class="flex justify-between items-start mb-6">
               <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Freeze Applied</span>
               <span class="material-symbols-outlined text-red-600 text-lg" style="font-variation-settings: 'FILL' 1;">ac_unit</span>
@@ -63,7 +63,7 @@ import { CaseService } from '../../services/case.service';
           </div>
 
           <!-- Card 4: Balance Provided -->
-          <div class="bg-white rounded-xl border border-gray-200 p-6 relative shadow-sm hover:shadow-md transition-shadow">
+          <div class="stat-card p-6 relative">
             <div class="flex justify-between items-start mb-6">
               <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Balance Provided</span>
               <span class="material-symbols-outlined text-green-600 text-lg">payments</span>
@@ -75,7 +75,7 @@ import { CaseService } from '../../services/case.service';
           </div>
 
           <!-- Card 5: Account Not Found -->
-          <div class="bg-white rounded-xl border border-gray-200 p-6 relative shadow-sm hover:shadow-md transition-shadow">
+          <div class="stat-card p-6 relative">
             <div class="flex justify-between items-start mb-6">
               <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Account Not Found</span>
               <span class="material-symbols-outlined text-gray-500 text-lg">warning</span>
@@ -88,7 +88,7 @@ import { CaseService } from '../../services/case.service';
         </div>
 
         <!-- Cases List -->
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+        <div class="stat-card p-6">
           <!-- Table Header with Search Bar and Status Filter Option -->
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <h2 class="text-lg font-bold text-gray-900">Recent Judicial Cases</h2>
