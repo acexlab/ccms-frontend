@@ -23,24 +23,29 @@ import { CommonModule } from '@angular/common';
       border-radius: 4px;
     }
     .badge-awaiting {
-      background-color: #fff3cd;
-      color: #856404;
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
     }
     .badge-pending {
-      background-color: #e2e3e5;
-      color: #383d41;
+      background-color: #fef3c7;
+      color: #d97706;
+      border: 1px solid #fde68a;
     }
     .badge-freeze {
-      background-color: #cce5ff;
-      color: #004085;
+      background-color: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fca5a5;
     }
     .badge-balance {
-      background-color: #d4edda;
-      color: #155724;
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
     }
     .badge-auto {
-      background-color: #f8d7da;
-      color: #721c24;
+      background-color: #f3f4f6;
+      color: #4b5563;
+      border: 1px solid #e5e7eb;
     }
     .badge-default {
       background-color: #e9ecef;

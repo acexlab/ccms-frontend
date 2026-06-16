@@ -35,4 +35,9 @@ export class AuthService {
   getUserRole(): UserRole | null {
     return this.tokenService.getRole();
   }
+
+  getUsername(): string | null {
+    const decoded = this.tokenService.getDecodedToken();
+    return decoded ? decoded.unique_name || null : null;
+  }
 }

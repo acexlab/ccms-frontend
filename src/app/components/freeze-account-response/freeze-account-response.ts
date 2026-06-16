@@ -52,9 +52,17 @@ export class FreezeAccountResponse implements OnInit {
         this.caseDetails = data;
         this.courtOrderDoc = data.documents?.find((d: any) => d.documentType === 'CourtOrder');
         if (this.courtOrderDoc) {
-          // For demo, we assume the API provides a reliable download stream
-          const url = `/api/cases/${this.caseNumber}/documents/${this.courtOrderDoc.id}/download`;
-          this.courtOrderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+          this.caseService.downloadAttachment(this.courtOrderDoc.id).subscribe({
+            next: (blob) => {
+              const url = window.URL.createObjectURL(blob);
+              this.courtOrderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+              this.isPdfLoading = false;
+            },
+            error: (err) => {
+              console.error('Error loading pdf preview', err);
+              this.isPdfLoading = false;
+            }
+          });
         } else {
           this.isPdfLoading = false; // no PDF to load
         }
@@ -69,8 +77,15 @@ export class FreezeAccountResponse implements OnInit {
 
   downloadDocument(): void {
     if (this.courtOrderDoc) {
-      const url = `/api/cases/${this.caseNumber}/documents/${this.courtOrderDoc.id}/download`;
-      window.open(url, '_blank');
+      this.caseService.downloadAttachment(this.courtOrderDoc.id).subscribe((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = this.courtOrderDoc.fileName || 'court-order.pdf';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
     }
   }
 

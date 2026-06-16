@@ -1,4 +1,5 @@
-<div class="max-w-7xl mx-auto" *ngIf="caseDetails">
+<div class="p-8" *ngIf="caseDetails">
+  <div class="max-w-7xl mx-auto">
   
   <!-- Header -->
   <div class="mb-6">
@@ -64,11 +65,11 @@
             <div class="w-10 h-10 bg-primary-light text-primary rounded flex items-center justify-center mb-3">
               <mat-icon>insert_drive_file</mat-icon>
             </div>
-            <div class="font-bold text-sm text-gray-900 mb-1">{{ doc.documentType }}</div>
+            <div class="font-bold text-sm text-gray-900 mb-1">{{ doc.documentType === 'CourtOrder' ? 'Court Order' : (doc.documentType === 'AadhaarCopy' ? 'Aadhaar Copy' : 'PAN Copy') }}</div>
             <div class="text-xs text-gray-500 mb-4">{{ doc.fileName }} • {{ (doc.fileSize / 1024).toFixed(1) }} KB</div>
             <div class="flex gap-2 w-full mt-auto">
-              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors">PREVIEW</button>
-              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors" (click)="downloadDocument(doc.id)">DOWNLOAD</button>
+              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors" (click)="previewDocument(doc)">PREVIEW</button>
+              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors" (click)="downloadDocument(doc)">DOWNLOAD</button>
             </div>
           </div>
         </div>
@@ -110,7 +111,7 @@
           </div>
           <div class="col-span-2">
             <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Submitted At</div>
-            <div class="text-sm text-gray-500">{{ caseDetails.response.submittedAt | date:'medium' }}</div>
+            <div class="text-sm text-gray-500">{{ caseDetails.response.submittedAt | date:'medium':'+0530' }} IST</div>
           </div>
         </div>
 
@@ -151,11 +152,12 @@
           <!-- Validation Timestamp -->
           <div class="pt-4 border-t border-gray-700">
              <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">VALIDATION TIMESTAMP</div>
-             <div class="text-sm text-gray-300">{{ caseDetails.validationTimestamp | date:'medium' }}</div>
+             <div class="text-sm text-gray-300">{{ caseDetails.validationTimestamp | date:'medium':'+0530' }} IST</div>
           </div>
         </div>
       </div>
     </div>
 
+  </div>
   </div>
 </div>
