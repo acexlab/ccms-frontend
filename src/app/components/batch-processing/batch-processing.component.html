@@ -1,265 +1,215 @@
-<div class="min-h-screen bg-gray-50 flex flex-col text-slate-800 font-sans">
-  <!-- Top Navigation Bar -->
-  <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6 sticky top-0 z-50">
-    <div class="flex items-center gap-8 w-1/3">
-      <h1 class="text-[#1a365d] text-2xl font-bold tracking-tight">CCMS</h1>
-      <div class="relative w-full max-w-md hidden md:block">
-        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">search</mat-icon>
-        <input type="text" placeholder="Search Cases (Cmd + K)" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-      </div>
-    </div>
-    <div class="flex items-center gap-4 text-gray-600">
-      <button class="hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-gray-50"><mat-icon>notifications_none</mat-icon></button>
-      <button class="hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-gray-50"><mat-icon>account_circle</mat-icon></button>
-      <button (click)="onLogout()" class="hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-gray-50"><mat-icon>logout</mat-icon></button>
-    </div>
-  </header>
-
-  <div class="flex flex-1 overflow-hidden">
-    <!-- Left Sidebar -->
-    <aside class="w-64 bg-white border-r border-gray-200 flex-shrink-0 flex flex-col hidden md:flex">
-      <div class="p-6 border-b border-gray-100 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold overflow-hidden shadow-sm">
-          <img src="https://i.pravatar.cc/150?img=11" alt="Officer" class="w-full h-full object-cover">
-        </div>
-        <div>
-          <div class="font-semibold text-gray-900 leading-tight">Bank Officer</div>
-          <div class="text-xs text-gray-500 font-medium">Financial Recoveries</div>
-        </div>
-      </div>
-      <nav class="flex-1 p-4 space-y-1">
-        <a routerLink="/bank/dashboard" routerLinkActive="bg-[#e8effd] text-[#1a365d]" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl font-medium transition-colors">
-          <mat-icon class="text-lg">dashboard</mat-icon>
-          Dashboard
-        </a>
-        <a routerLink="/bank/cases" routerLinkActive="bg-[#e8effd] text-[#1a365d]" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl font-medium transition-colors">
-          <mat-icon class="text-lg">inbox</mat-icon>
-          Case Inbox
-        </a>
-        <a routerLink="/bank/batch-processing" routerLinkActive="bg-[#e8effd] text-[#1a365d]" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl font-medium transition-colors">
-          <mat-icon class="text-lg">layers</mat-icon>
-          Batch Processing
-        </a>
-      </nav>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="flex-1 overflow-y-auto p-8 bg-gray-50/50">
-      <div class="max-w-7xl mx-auto space-y-8">
+<div class="max-w-7xl mx-auto space-y-8">
         
-        <!-- Header Section -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h2 class="text-3xl font-bold text-[#1a365d] mb-2 tracking-tight">Batch Processing</h2>
-            <p class="text-gray-500 text-sm">Automated legal-financial reconciliation engine. Runs every 15 minutes.</p>
-          </div>
-          <div>
-            <button mat-flat-button
-                    class="h-12 !px-6 !rounded-lg !bg-[#1a365d] !text-white font-semibold shadow-sm hover:shadow transition-all flex items-center gap-2"
-                    [disabled]="store.runningBatch()"
-                    (click)="runManualBatch()">
-              <mat-icon *ngIf="!store.runningBatch()">play_arrow</mat-icon>
-              <mat-spinner *ngIf="store.runningBatch()" diameter="20" class="text-white mr-1"></mat-spinner>
-              <span>Run Manual Batch Job</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Statistics Cards Grid -->
-        <div>
-          <!-- Skeleton Loading -->
-          <div *ngIf="!store.statistics()" class="grid grid-cols-1 md:grid-cols-4 gap-6 animate-pulse">
-            <mat-card *ngFor="let i of [1,2,3,4]" class="rounded-xl border border-gray-100 shadow-sm bg-white">
-              <mat-card-content class="p-6">
-                <div class="h-4 w-24 bg-gray-200 rounded mb-4"></div>
-                <div class="h-8 w-20 bg-gray-200 rounded"></div>
-              </mat-card-content>
-            </mat-card>
-          </div>
-
-          <!-- Statistics Content -->
-          <div *ngIf="store.statistics() as stats" class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            
-            <!-- Card 1: Cases Processed -->
-            <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
-              <mat-card-content class="p-6">
-                <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
-                  Cases Processed
-                  <mat-icon class="text-gray-400 text-lg">task_alt</mat-icon>
-                </div>
-                <div class="flex items-baseline gap-3">
-                  <span class="text-3xl font-bold text-[#1a365d] tracking-tight">{{ stats.casesProcessed | number }}</span>
-                  <span class="flex items-center gap-0.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                    <mat-icon class="text-[14px] w-[14px] h-[14px]">trending_up</mat-icon>
-                    +12%
-                  </span>
-                </div>
-              </mat-card-content>
-            </mat-card>
-
-            <!-- Card 2: Accounts Matched -->
-            <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
-              <mat-card-content class="p-6">
-                <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
-                  Accounts Matched
-                  <mat-icon class="text-gray-400 text-lg">verified</mat-icon>
-                </div>
-                <div class="flex flex-col">
-                  <span class="text-3xl font-bold text-[#1a365d] tracking-tight">{{ stats.accountsMatched | number }}</span>
-                  <span class="text-xs text-gray-500 font-medium mt-1">{{ stats.matchRate }}% Rate</span>
-                </div>
-              </mat-card-content>
-            </mat-card>
-
-            <!-- Card 3: Accounts Not Found -->
-            <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
-              <mat-card-content class="p-6">
-                <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
-                  Accounts Not Found
-                  <mat-icon class="text-gray-400 text-lg">person_off</mat-icon>
-                </div>
-                <div class="flex flex-col">
-                  <span class="text-3xl font-bold text-[#1a365d] tracking-tight">{{ stats.accountsNotFound | number }}</span>
-                  <span class="text-xs text-gray-500 font-medium mt-1">4.7% Rate</span>
-                </div>
-              </mat-card-content>
-            </mat-card>
-
-            <!-- Card 4: Duration -->
-            <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
-              <mat-card-content class="p-6">
-                <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
-                  Duration
-                  <mat-icon class="text-gray-400 text-lg">schedule</mat-icon>
-                </div>
-                <div class="flex flex-col">
-                  <span class="text-3xl font-bold text-[#1a365d] tracking-tight">{{ stats.duration }}</span>
-                  <span class="text-xs text-gray-500 font-medium mt-1">Avg: {{ stats.avgDuration }}</span>
-                </div>
-              </mat-card-content>
-            </mat-card>
-
-          </div>
-        </div>
-
-        <!-- History Table Section -->
-        <mat-card class="rounded-xl border border-gray-200 shadow-sm bg-white overflow-hidden">
-          <!-- Card Header with Filter -->
-          <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-white">
-            <h3 class="font-bold text-lg text-gray-900">Batch Execution History</h3>
-            
-            <!-- Filter Dropdown Button -->
-            <button mat-stroked-button [matMenuTriggerFor]="statusMenu" class="!rounded-lg !border-gray-200 !text-gray-700 !font-semibold">
-              <div class="flex items-center gap-1">
-                <mat-icon class="text-gray-500 text-lg">filter_alt</mat-icon>
-                <span>Status: {{ store.statusFilter() }}</span>
-              </div>
-            </button>
-            <mat-menu #statusMenu="matMenu" class="rounded-lg shadow-lg border border-gray-100">
-              <button mat-menu-item (click)="onFilterStatus('All')" class="!font-medium">All</button>
-              <button mat-menu-item (click)="onFilterStatus('SUCCESS')" class="!font-medium">Success</button>
-              <button mat-menu-item (click)="onFilterStatus('PARTIAL')" class="!font-medium">Partial</button>
-              <button mat-menu-item (click)="onFilterStatus('FAILED')" class="!font-medium">Failed</button>
-            </mat-menu>
-          </div>
-
-          <!-- Table Content / Loading Skeletons -->
-          <div class="relative min-h-[300px]">
-            <!-- Loading Indicator Overlay -->
-            <div *ngIf="store.loading()" class="absolute inset-0 bg-white/60 flex items-center justify-center z-10">
-              <mat-spinner diameter="40"></mat-spinner>
-            </div>
-
-            <!-- Empty State -->
-            <div *ngIf="!store.loading() && store.history().length === 0" class="flex flex-col items-center justify-center p-12 text-center">
-              <mat-icon class="text-5xl text-gray-300 mb-3">history_toggle_off</mat-icon>
-              <h4 class="font-semibold text-gray-900 text-lg mb-1">No execution history found</h4>
-              <p class="text-gray-400 text-sm max-w-sm">No batch execution records match the selected status filter or page configuration.</p>
-            </div>
-
-            <!-- Table Data -->
-            <div *ngIf="store.history().length > 0" class="overflow-x-auto">
-              <table class="w-full text-left border-collapse">
-                <thead>
-                  <tr class="bg-gray-50/50 border-b border-gray-100">
-                    <th class="p-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Run ID</th>
-                    <th class="p-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Start Time</th>
-                    <th class="p-5 text-xs font-bold text-gray-400 uppercase tracking-wider">End Time</th>
-                    <th class="p-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Duration</th>
-                    <th class="p-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Status</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                  <tr *ngFor="let run of store.history(); trackBy: trackByRunId" class="hover:bg-gray-50/30 transition-colors">
-                    <!-- Run ID in bold blue -->
-                    <td class="p-5 text-sm font-bold text-[#1a365d]">
-                      #{{ run.runId }}
-                    </td>
-                    <!-- Start Time -->
-                    <td class="p-5 text-sm text-gray-500 font-medium">
-                      {{ run.startTime | date:'MMM d, yyyy HH:mm:ss' }}
-                    </td>
-                    <!-- End Time -->
-                    <td class="p-5 text-sm text-gray-500 font-medium">
-                      {{ run.endTime ? (run.endTime | date:'MMM d, yyyy HH:mm:ss') : '--' }}
-                    </td>
-                    <!-- Duration -->
-                    <td class="p-5 text-sm text-gray-500 font-semibold">
-                      {{ run.duration }}
-                    </td>
-                    <!-- Status Badge -->
-                    <td class="p-5 text-right">
-                      <span [ngClass]="{
-                        'status-badge-success': run.status === 'SUCCESS',
-                        'status-badge-failed': run.status === 'FAILED',
-                        'status-badge-partial': run.status === 'PARTIAL',
-                        'status-badge-running': run.status === 'RUNNING'
-                      }" class="inline-flex items-center justify-center px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider uppercase">
-                        {{ run.status }}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Custom Pagination Footer -->
-          <div class="px-6 py-5 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white">
-            <div class="text-sm text-gray-500 font-medium">
-              Showing {{ getRangeText() }} of {{ store.totalCount() | number }} runs
-            </div>
-            
-            <div class="flex items-center gap-1.5" *ngIf="totalPages() > 1">
-              <!-- Previous Button -->
-              <button (click)="onSelectPage(store.page() - 1)"
-                      [disabled]="store.page() === 1"
-                      class="w-9 h-9 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:pointer-events-none">
-                <mat-icon class="text-lg">chevron_left</mat-icon>
-              </button>
-
-              <!-- Page Buttons -->
-              <button *ngFor="let p of getPagesArray()"
-                      (click)="onSelectPage(p)"
-                      [ngClass]="{
-                        'bg-[#1a365d] text-white border-[#1a365d] font-bold': store.page() === p,
-                        'text-gray-600 bg-white border border-gray-200 hover:bg-gray-50': store.page() !== p
-                      }"
-                      class="w-9 h-9 rounded-lg flex items-center justify-center transition-all border text-sm font-medium">
-                {{ p }}
-              </button>
-
-              <!-- Next Button -->
-              <button (click)="onSelectPage(store.page() + 1)"
-                      [disabled]="store.page() === totalPages()"
-                      class="w-9 h-9 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:pointer-events-none">
-                <mat-icon class="text-lg">chevron_right</mat-icon>
-              </button>
-            </div>
-          </div>
-        </mat-card>
-
-      </div>
-    </main>
+  <!-- Header Section -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <h2 class="text-3xl font-bold text-primary mb-2 tracking-tight">Batch Processing</h2>
+      <p class="text-gray-500 text-sm">Automated legal-financial reconciliation engine. Runs every 15 minutes.</p>
+    </div>
+    <div>
+      <button mat-flat-button
+              class="h-12 !px-6 !rounded-lg !bg-primary !text-white font-semibold shadow-sm hover:shadow transition-all flex items-center gap-2"
+              [disabled]="store.runningBatch()"
+              (click)="runManualBatch()">
+        <mat-icon *ngIf="!store.runningBatch()">play_arrow</mat-icon>
+        <mat-spinner *ngIf="store.runningBatch()" diameter="20" class="text-white mr-1"></mat-spinner>
+        <span>Run Manual Batch Job</span>
+      </button>
+    </div>
   </div>
+
+  <!-- Statistics Cards Grid -->
+  <div>
+    <!-- Skeleton Loading -->
+    <div *ngIf="!store.statistics()" class="grid grid-cols-1 md:grid-cols-4 gap-6 animate-pulse">
+      <mat-card *ngFor="let i of [1,2,3,4]" class="rounded-xl border border-gray-100 shadow-sm bg-white">
+        <mat-card-content class="p-6">
+          <div class="h-4 w-24 bg-gray-200 rounded mb-4"></div>
+          <div class="h-8 w-20 bg-gray-200 rounded"></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Statistics Content -->
+    <div *ngIf="store.statistics() as stats" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      
+      <!-- Card 1: Cases Processed -->
+      <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
+        <mat-card-content class="p-6">
+          <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
+            Cases Processed
+            <mat-icon class="text-gray-400 text-lg">task_alt</mat-icon>
+          </div>
+          <div class="flex items-baseline gap-3">
+            <span class="text-3xl font-bold text-primary tracking-tight">{{ stats.casesProcessed | number }}</span>
+            <span class="flex items-center gap-0.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+              <mat-icon class="text-[14px] w-[14px] h-[14px]">trending_up</mat-icon>
+              +12%
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Card 2: Accounts Matched -->
+      <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
+        <mat-card-content class="p-6">
+          <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
+            Accounts Matched
+            <mat-icon class="text-gray-400 text-lg">verified</mat-icon>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-3xl font-bold text-primary tracking-tight">{{ stats.accountsMatched | number }}</span>
+            <span class="text-xs text-gray-500 font-medium mt-1">{{ stats.matchRate }}% Rate</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Card 3: Accounts Not Found -->
+      <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
+        <mat-card-content class="p-6">
+          <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
+            Accounts Not Found
+            <mat-icon class="text-gray-400 text-lg">person_off</mat-icon>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-3xl font-bold text-primary tracking-tight">{{ stats.accountsNotFound | number }}</span>
+            <span class="text-xs text-gray-500 font-medium mt-1">4.7% Rate</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Card 4: Duration -->
+      <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
+        <mat-card-content class="p-6">
+          <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
+            Duration
+            <mat-icon class="text-gray-400 text-lg">schedule</mat-icon>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-3xl font-bold text-primary tracking-tight">{{ stats.duration }}</span>
+            <span class="text-xs text-gray-500 font-medium mt-1">Avg: {{ stats.avgDuration }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  </div>
+
+  <!-- History Table Section -->
+  <mat-card class="rounded-xl border border-gray-200 shadow-sm bg-white overflow-hidden">
+    <!-- Card Header with Filter -->
+    <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-white">
+      <h3 class="font-bold text-lg text-gray-900">Batch Execution History</h3>
+      
+      <!-- Filter Dropdown Button -->
+      <button mat-stroked-button [matMenuTriggerFor]="statusMenu" class="!rounded-lg !border-gray-200 !text-gray-700 !font-semibold">
+        <div class="flex items-center gap-1">
+          <mat-icon class="text-gray-500 text-lg">filter_alt</mat-icon>
+          <span>Status: {{ store.statusFilter() }}</span>
+        </div>
+      </button>
+      <mat-menu #statusMenu="matMenu" class="rounded-lg shadow-lg border border-gray-100">
+        <button mat-menu-item (click)="onFilterStatus('All')" class="!font-medium">All</button>
+        <button mat-menu-item (click)="onFilterStatus('SUCCESS')" class="!font-medium">Success</button>
+        <button mat-menu-item (click)="onFilterStatus('PARTIAL')" class="!font-medium">Partial</button>
+        <button mat-menu-item (click)="onFilterStatus('FAILED')" class="!font-medium">Failed</button>
+      </mat-menu>
+    </div>
+
+    <!-- Table Content / Loading Skeletons -->
+    <div class="relative min-h-[300px]">
+      <!-- Loading Indicator Overlay -->
+      <div *ngIf="store.loading()" class="absolute inset-0 bg-white/60 flex items-center justify-center z-10">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!store.loading() && store.history().length === 0" class="flex flex-col items-center justify-center p-12 text-center">
+        <mat-icon class="text-5xl text-gray-300 mb-3">history_toggle_off</mat-icon>
+        <h4 class="font-semibold text-gray-900 text-lg mb-1">No execution history found</h4>
+        <p class="text-gray-400 text-sm max-w-sm">No batch execution records match the selected status filter or page configuration.</p>
+      </div>
+
+      <!-- Table Data -->
+      <div *ngIf="store.history().length > 0" class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-50/50 border-b border-gray-100">
+              <th class="p-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Run ID</th>
+              <th class="p-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Start Time</th>
+              <th class="p-5 text-xs font-bold text-gray-400 uppercase tracking-wider">End Time</th>
+              <th class="p-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Duration</th>
+              <th class="p-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr *ngFor="let run of store.history(); trackBy: trackByRunId" class="hover:bg-gray-50/30 transition-colors">
+              <!-- Run ID in bold blue -->
+              <td class="p-5 text-sm font-bold text-primary">
+                #{{ run.runId }}
+              </td>
+              <!-- Start Time -->
+              <td class="p-5 text-sm text-gray-500 font-medium">
+                {{ run.startTime | date:'MMM d, yyyy HH:mm:ss' }}
+              </td>
+              <!-- End Time -->
+              <td class="p-5 text-sm text-gray-500 font-medium">
+                {{ run.endTime ? (run.endTime | date:'MMM d, yyyy HH:mm:ss') : '--' }}
+              </td>
+              <!-- Duration -->
+              <td class="p-5 text-sm text-gray-500 font-semibold">
+                {{ run.duration }}
+              </td>
+              <!-- Status Badge -->
+              <td class="p-5 text-right">
+                <span [ngClass]="{
+                  'status-badge-success': run.status === 'SUCCESS',
+                  'status-badge-failed': run.status === 'FAILED',
+                  'status-badge-partial': run.status === 'PARTIAL',
+                  'status-badge-running': run.status === 'RUNNING'
+                }" class="inline-flex items-center justify-center px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider uppercase">
+                  {{ run.status }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Custom Pagination Footer -->
+    <div class="px-6 py-5 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white">
+      <div class="text-sm text-gray-500 font-medium">
+        Showing {{ getRangeText() }} of {{ store.totalCount() | number }} runs
+      </div>
+      
+      <div class="flex items-center gap-1.5" *ngIf="totalPages() > 1">
+        <!-- Previous Button -->
+        <button (click)="onSelectPage(store.page() - 1)"
+                [disabled]="store.page() === 1"
+                class="w-9 h-9 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:pointer-events-none">
+          <mat-icon class="text-lg">chevron_left</mat-icon>
+        </button>
+
+        <!-- Page Buttons -->
+        <button *ngFor="let p of getPagesArray()"
+                (click)="onSelectPage(p)"
+                [ngClass]="{
+                  'bg-primary text-white border-primary font-bold': store.page() === p,
+                  'text-gray-600 bg-white border border-gray-200 hover:bg-gray-50': store.page() !== p
+                }"
+                class="w-9 h-9 rounded-lg flex items-center justify-center transition-all border text-sm font-medium">
+          {{ p }}
+        </button>
+
+        <!-- Next Button -->
+        <button (click)="onSelectPage(store.page() + 1)"
+                [disabled]="store.page() === totalPages()"
+                class="w-9 h-9 rounded-lg flex items-center justify-center border border-gray-200 text-gray-500 bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:pointer-events-none">
+          <mat-icon class="text-lg">chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+
 </div>

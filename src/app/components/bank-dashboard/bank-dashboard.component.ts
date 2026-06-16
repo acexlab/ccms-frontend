@@ -8,82 +8,21 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="dashboard-container">
-      <header class="dashboard-header">
-        <div class="logo">
-          <span class="logo-text">CCMS</span>
-          <span class="badge">BANK</span>
-        </div>
-        <button class="logout-btn" (click)="onLogout()">Logout</button>
-      </header>
-
-      <main class="dashboard-main">
-        <div class="welcome-card">
-          <h1>Welcome, Bank Officer!</h1>
-          <p>This is a sample Bank Dashboard proving redirection works successfully.</p>
-          <div class="status-indicator">
-            <span class="dot active"></span>
-            <span class="status-text">Connection Secure: Local MySQL DB</span>
-          </div>
-        </div>
-      </main>
+    <div class="welcome-card">
+      <h1>Welcome, Bank Officer!</h1>
+      <p>This is a sample Bank Dashboard proving redirection works successfully.</p>
+      <div class="status-indicator">
+        <span class="dot active"></span>
+        <span class="status-text">Connection Secure: Local MySQL DB</span>
+      </div>
     </div>
   `,
   styles: [`
-    .dashboard-container {
-      min-height: 100vh;
-      background-color: #f1f5f9;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-    }
-    .dashboard-header {
-      background-color: #0d9488;
-      color: white;
-      padding: 16px 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .logo-text {
-      font-size: 20px;
-      font-weight: 700;
-    }
-    .badge {
-      background-color: #0f766e;
-      font-size: 11px;
-      font-weight: bold;
-      padding: 4px 8px;
-      border-radius: 4px;
-      letter-spacing: 0.5px;
-    }
-    .logout-btn {
-      background-color: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-    .logout-btn:hover {
-      background-color: white;
-      color: #0d9488;
-      border-color: white;
-    }
-    .dashboard-main {
-      flex: 1;
-      padding: 40px;
+    :host {
       display: flex;
       justify-content: center;
       align-items: center;
+      min-height: 100%;
     }
     .welcome-card {
       background-color: white;
@@ -125,11 +64,5 @@ import { AuthService } from '../../services/auth.service';
   `]
 })
 export class BankDashboardComponent {
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
-
-  onLogout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
-  }
+  // No methods needed now
 }
