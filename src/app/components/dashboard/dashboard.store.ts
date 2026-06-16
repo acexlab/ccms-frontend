@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { DashboardDto } from './dashboard.model';
 import { DashboardService } from './dashboard.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationService } from '../../services/notification.service';
 
 export interface DashboardState {
   data: DashboardDto | null;
@@ -15,7 +15,7 @@ export interface DashboardState {
 })
 export class DashboardStore {
   private service = inject(DashboardService);
-  private snackBar = inject(MatSnackBar);
+  private notificationService = inject(NotificationService);
 
   // State
   private state = signal<DashboardState>({
@@ -46,13 +46,13 @@ export class DashboardStore {
     
     this.service.runManualBatch().subscribe({
       next: (res) => {
-        this.snackBar.open(res.message, 'Close', { duration: 3000 });
+        this.notificationService.success(res.message);
         this.state.update(s => ({ ...s, isBatchRunning: false }));
         // Reload dashboard to see updated stats
         this.loadDashboard();
       },
       error: (err) => {
-        this.snackBar.open('Failed to run batch job.', 'Close', { duration: 3000 });
+        this.notificationService.error(err.error?.message || 'Failed to run batch job.');
         this.state.update(s => ({ ...s, isBatchRunning: false }));
       }
     });

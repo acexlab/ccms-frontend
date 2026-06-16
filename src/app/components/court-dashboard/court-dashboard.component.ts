@@ -4,11 +4,12 @@ import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { CaseService } from '../../services/case.service';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 @Component({
   selector: 'app-court-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, EmptyStateComponent],
   template: `
     <div class="p-8">
       <div class="max-w-6xl mx-auto space-y-8">
@@ -18,72 +19,72 @@ import { CaseService } from '../../services/case.service';
             <h1 class="text-3xl font-bold text-gray-950 tracking-tight mb-1">Officer Overview</h1>
             <p class="text-sm text-gray-500">Welcome back. You have {{ countStatus('Pending') }} cases requiring immediate action.</p>
           </div>
-          <button routerLink="/court/create-case" class="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap">
+          <button routerLink="/court/create-case" class="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap cursor-pointer">
             <span class="material-symbols-outlined text-base">add</span>
             New Judicial Order
           </button>
         </div>
 
         <!-- Quick Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           <!-- Card 1: Pending Cases -->
-          <div class="stat-card p-6 relative">
-            <div class="flex justify-between items-start mb-6">
-              <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Pending Cases</span>
-              <span class="material-symbols-outlined text-amber-600 text-lg">schedule</span>
+          <div class="stat-card p-6 relative border-t-4 border-orange-500 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Pending</span>
+                <span class="material-symbols-outlined text-orange-600 text-lg">schedule</span>
+              </div>
+              <p class="text-3xl font-extrabold text-gray-800 mt-2">{{ countStatus('Pending') }}</p>
             </div>
-            <p class="text-3xl font-extrabold text-gray-800 mt-2">{{ countStatus('Pending') }}</p>
-            <div class="mt-3">
-              <span class="inline-block px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-md border border-amber-200">+12% vs last week</span>
-            </div>
+            <p class="text-[10px] text-gray-500 font-semibold leading-tight mt-3">{{ countStatus('Pending') }} cases awaiting batch validation</p>
           </div>
 
           <!-- Card 2: Account Validated -->
-          <div class="stat-card p-6 relative">
-            <div class="flex justify-between items-start mb-6">
-              <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Account Validated</span>
-              <span class="material-symbols-outlined text-blue-600 text-lg">verified</span>
+          <div class="stat-card p-6 relative border-t-4 border-blue-500 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Account Validated</span>
+                <span class="material-symbols-outlined text-blue-600 text-lg">verified</span>
+              </div>
+              <p class="text-3xl font-extrabold text-gray-800 mt-2">{{ countStatus('AccountValidated') }}</p>
             </div>
-            <p class="text-3xl font-extrabold text-gray-800 mt-2">{{ countStatus('AccountValidated') }}</p>
-            <div class="mt-3">
-              <span class="inline-block px-2 py-0.5 bg-blue-50 text-[#1e40af] text-[10px] font-bold rounded-md border border-blue-200">Steady activity</span>
-            </div>
+            <p class="text-[10px] text-gray-500 font-semibold leading-tight mt-3">{{ countStatus('AccountValidated') }} cases awaiting bank action</p>
           </div>
 
           <!-- Card 3: Freeze Applied -->
-          <div class="stat-card p-6 relative">
-            <div class="flex justify-between items-start mb-6">
-              <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Freeze Applied</span>
-              <span class="material-symbols-outlined text-red-600 text-lg" style="font-variation-settings: 'FILL' 1;">ac_unit</span>
+          <div class="stat-card p-6 relative border-t-4 border-red-500 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Freeze Applied</span>
+                <span class="material-symbols-outlined text-red-500 text-lg" style="font-variation-settings: 'FILL' 1;">ac_unit</span>
+              </div>
+              <p class="text-3xl font-extrabold text-gray-800 mt-2">{{ countStatus('FreezeApplied') }}</p>
             </div>
-            <p class="text-3xl font-extrabold text-gray-800 mt-2">{{ countStatus('FreezeApplied') }}</p>
-            <div class="mt-3">
-              <span class="inline-block px-2 py-0.5 bg-red-50 text-red-700 text-[10px] font-bold rounded-md border border-red-200">8 Active today</span>
-            </div>
+            <p class="text-[10px] text-gray-500 font-semibold leading-tight mt-3">{{ countStatus('FreezeApplied') }} completed freeze orders</p>
           </div>
 
           <!-- Card 4: Balance Provided -->
-          <div class="stat-card p-6 relative">
-            <div class="flex justify-between items-start mb-6">
-              <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Balance Provided</span>
-              <span class="material-symbols-outlined text-green-600 text-lg">payments</span>
+          <div class="stat-card p-6 relative border-t-4 border-green-500 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Balance Provided</span>
+                <span class="material-symbols-outlined text-green-600 text-lg">payments</span>
+              </div>
+              <p class="text-3xl font-extrabold text-gray-800 mt-2">{{ countStatus('BalanceProvided') }}</p>
             </div>
-            <p class="text-3xl font-extrabold text-gray-800 mt-2">{{ countStatus('BalanceProvided') }}</p>
-            <div class="mt-3">
-              <span class="inline-block px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-bold rounded-md border border-green-200">Target achieved</span>
-            </div>
+            <p class="text-[10px] text-gray-500 font-semibold leading-tight mt-3">{{ countStatus('BalanceProvided') }} completed balance responses</p>
           </div>
 
           <!-- Card 5: Account Not Found -->
-          <div class="stat-card p-6 relative">
-            <div class="flex justify-between items-start mb-6">
-              <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Account Not Found</span>
-              <span class="material-symbols-outlined text-gray-500 text-lg">warning</span>
+          <div class="stat-card p-6 relative border-t-4 border-gray-400 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Account Not Found</span>
+                <span class="material-symbols-outlined text-gray-500 text-lg">warning</span>
+              </div>
+              <p class="text-3xl font-extrabold text-gray-800 mt-2">{{ countStatus('AccountNotFound') }}</p>
             </div>
-            <p class="text-3xl font-extrabold text-gray-800 mt-2">{{ countStatus('AccountNotFound') }}</p>
-            <div class="mt-3">
-              <span class="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 text-[10px] font-bold rounded-md border border-gray-200">Requires review</span>
-            </div>
+            <p class="text-[10px] text-gray-500 font-semibold leading-tight mt-3">{{ countStatus('AccountNotFound') }} automatically resolved cases</p>
           </div>
         </div>
 
@@ -122,10 +123,14 @@ import { CaseService } from '../../services/case.service';
             <p class="text-gray-500 text-sm mt-2">Loading cases...</p>
           </div>
           
-          <div *ngIf="!isLoading && filteredCases.length === 0" class="text-center py-12 border border-dashed border-gray-200 rounded-xl bg-gray-50">
-            <span class="material-symbols-outlined text-gray-400 text-5xl mb-2">folder_open</span>
-            <p class="font-semibold text-gray-700">No matching cases found</p>
-            <p class="text-gray-500 text-xs mt-1">Try adjusting your search query or status filter.</p>
+          <div *ngIf="!isLoading && filteredCases.length === 0" class="my-4">
+            <app-empty-state
+              icon="folder_open"
+              title="No Cases Found"
+              description="No judicial cases available matching your query. Create a new case to begin."
+              actionText="Create Case"
+              (actionClicked)="navigateToCreateCase()"
+            ></app-empty-state>
           </div>
 
           <div *ngIf="!isLoading && filteredCases.length > 0" class="overflow-x-auto">
@@ -137,11 +142,14 @@ import { CaseService } from '../../services/case.service';
                   <th class="py-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Order Type</th>
                   <th class="py-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
                   <th class="py-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Created Date</th>
+                  <th class="py-3 px-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let c of filteredCases" class="border-b border-gray-100 hover:bg-gray-50/50 transition-all">
-                  <td class="py-4 px-4 font-bold text-primary hover:underline cursor-pointer" [routerLink]="['/court/cases', c.caseNumber]">
+                <tr *ngFor="let c of filteredCases" 
+                    class="border-b border-gray-100 hover:bg-[#e8effd]/35 transition-all cursor-pointer"
+                    [routerLink]="['/court/cases', c.caseNumber]">
+                  <td class="py-4 px-4 font-bold text-primary">
                     {{ c.caseNumber }}
                   </td>
                   <td class="py-4 px-4 text-gray-800 font-medium">{{ c.defendantName }}</td>
@@ -154,6 +162,11 @@ import { CaseService } from '../../services/case.service';
                     </span>
                   </td>
                   <td class="py-4 px-4 text-sm text-gray-500">{{ c.createdAt | date:'yyyy-MM-dd HH:mm:ss':'+0530' }} IST</td>
+                  <td class="py-4 px-4 text-right">
+                    <button [routerLink]="['/court/cases', c.caseNumber]" class="text-xs font-bold text-primary hover:text-primary-hover px-3 py-1.5 border border-slate-200 rounded-lg bg-white hover:bg-slate-50 transition-all cursor-pointer">
+                      View Details
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -199,6 +212,10 @@ export class CourtDashboardComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  navigateToCreateCase(): void {
+    this.router.navigate(['/court/create-case']);
   }
 
   checkStatusUpdates(currentCases: any[]): void {

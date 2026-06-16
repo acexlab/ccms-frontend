@@ -76,6 +76,48 @@
               </div>
             </div>
 
+            <!-- Case Timeline -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-150 p-6">
+              <div class="flex items-center gap-2 mb-6 border-b border-gray-100 pb-3">
+                <span class="material-symbols-outlined text-primary text-lg">timeline</span>
+                <h3 class="text-lg font-bold text-gray-900">Case Timeline</h3>
+              </div>
+              <div class="relative pl-6 border-l-2 border-slate-100 space-y-6 ml-3">
+                <!-- Step 1: Case Created -->
+                <div class="relative">
+                  <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-green-500 border-4 border-white flex items-center justify-center shadow-sm"></div>
+                  <div>
+                    <h4 class="text-sm font-bold text-slate-800">Case Created</h4>
+                    <p class="text-xs text-slate-500 mt-1 font-medium">{{ caseDetails.createdAt | date:'d MMMM yyyy, h:mm a':'+0530' }} IST</p>
+                  </div>
+                </div>
+
+                <!-- Step 2: Account Validated -->
+                <div class="relative">
+                  <div [ngClass]="(caseDetails.status !== 'Pending') ? 'bg-green-500' : 'bg-slate-300'" class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full border-4 border-white flex items-center justify-center shadow-sm"></div>
+                  <div>
+                    <h4 class="text-sm font-bold text-slate-800">Account Validated</h4>
+                    <p class="text-xs text-slate-500 mt-1 font-medium">
+                      {{ caseDetails.validationTimestamp ? (caseDetails.validationTimestamp | date:'d MMMM yyyy, h:mm a':'+0530') + ' IST' : 'Awaiting batch validation' }}
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Step 3: Compliance Action -->
+                <div class="relative">
+                  <div [ngClass]="caseDetails.response ? 'bg-green-500' : 'bg-slate-300'" class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full border-4 border-white flex items-center justify-center shadow-sm"></div>
+                  <div>
+                    <h4 class="text-sm font-bold text-slate-800">
+                      {{ caseDetails.response ? (caseDetails.response.responseType === 'FreezeApplied' ? 'Freeze Applied' : (caseDetails.response.responseType === 'BalanceProvided' ? 'Balance Provided' : 'Account Not Found')) : 'Compliance Action' }}
+                    </h4>
+                    <p class="text-xs text-slate-500 mt-1 font-medium">
+                      {{ caseDetails.response ? (caseDetails.response.submittedAt | date:'d MMMM yyyy, h:mm a':'+0530') + ' IST' : 'Awaiting response submission' }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Case Documents -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-150 p-6">
               <div class="flex items-center gap-2 mb-4 border-b border-gray-100 pb-3">
@@ -90,8 +132,8 @@
                   <div class="font-bold text-sm text-gray-950 mb-1 leading-tight">{{ doc.documentType === 'CourtOrder' ? 'Court Order' : (doc.documentType === 'AadhaarCopy' ? 'Aadhaar Copy' : 'PAN Copy') }}</div>
                   <div class="text-[11px] text-gray-500 mb-4 truncate w-full" [title]="doc.fileName">{{ doc.fileName }}</div>
                   <div class="flex gap-2 w-full mt-auto">
-                    <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors" (click)="previewDocument(doc)">PREVIEW</button>
-                    <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors" (click)="downloadDocument(doc)">DOWNLOAD</button>
+                    <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors cursor-pointer" (click)="previewDocument(doc)">View</button>
+                    <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors cursor-pointer" (click)="downloadDocument(doc)">Download</button>
                   </div>
                 </div>
               </div>

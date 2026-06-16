@@ -58,3 +58,48 @@ body {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 16px -6px rgba(0, 0, 0, 0.05) !important;
   transform: translateY(-2px) !important;
 }
+
+/* Centralized Notification Service (SnackBar Overrides) */
+.cdk-overlay-pane {
+  max-width: 420px !important;
+}
+
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: transparent !important;
+  --mdc-snackbar-supporting-text-color: transparent !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.mat-mdc-snack-bar-container .mdc-snackbar__label {
+  padding: 0 !important;
+  width: 100%;
+}
+
+.mat-mdc-snack-bar-container .mdc-snackbar__actions {
+  display: none !important;
+}
+
+/* Premium Table Interactions */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+tr.mat-mdc-row:hover, tr.hover\:bg-gray-50\/30:hover {
+  background-color: rgba(14, 165, 233, 0.04) !important;
+}
+
+/* Transition Smoothness */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}

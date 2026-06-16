@@ -6,11 +6,12 @@ import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { CaseService } from '../../services/case.service';
 import { StatusBadgeComponent } from '../status-badge/status-badge.component';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 @Component({
   selector: 'app-case-inbox',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatTabsModule, MatTableModule, MatPaginatorModule, StatusBadgeComponent],
+  imports: [CommonModule, RouterModule, MatTabsModule, MatTableModule, MatPaginatorModule, StatusBadgeComponent, EmptyStateComponent],
   templateUrl: './case-inbox.component.html',
   styleUrls: ['./case-inbox.component.scss']
 })

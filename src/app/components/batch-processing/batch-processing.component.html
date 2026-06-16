@@ -126,10 +126,12 @@
       </div>
 
       <!-- Empty State -->
-      <div *ngIf="!store.loading() && store.history().length === 0" class="flex flex-col items-center justify-center p-12 text-center">
-        <mat-icon class="text-5xl text-gray-300 mb-3">history_toggle_off</mat-icon>
-        <h4 class="font-semibold text-gray-900 text-lg mb-1">No execution history found</h4>
-        <p class="text-gray-400 text-sm max-w-sm">No batch execution records match the selected status filter or page configuration.</p>
+      <div *ngIf="!store.loading() && store.history().length === 0" class="p-6">
+        <app-empty-state
+          icon="history_toggle_off"
+          title="No execution history found"
+          description="No batch execution records match the selected status filter or page configuration."
+        ></app-empty-state>
       </div>
 
       <!-- Table Data -->

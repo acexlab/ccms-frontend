@@ -61,7 +61,7 @@ describe('LoginComponent', () => {
       password: 'Password@123'
     });
 
-    const authResult = { token: 'mock-jwt', role: 'Court', redirectUrl: '/court/dashboard' };
+    const authResult = { token: 'mock-jwt', role: 'Court' as const, redirectUrl: '/court/dashboard' };
     authServiceSpy.login.and.returnValue(of(authResult));
 
     component.onSubmit();
@@ -69,8 +69,7 @@ describe('LoginComponent', () => {
     expect(component.isSubmitting).toBeTrue();
     expect(authServiceSpy.login).toHaveBeenCalledWith({
       username: 'court.user',
-      password: 'Password@123',
-      rememberMe: false
+      password: 'Password@123'
     });
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/court/dashboard']);
   });

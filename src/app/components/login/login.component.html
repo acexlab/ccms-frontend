@@ -94,13 +94,13 @@
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="submit-btn" [disabled]="isSubmitting">
-          <span *ngIf="!isSubmitting">Sign In</span>
-          <div *ngIf="isSubmitting" class="spinner-row">
-            <span>Authenticating...</span>
-            <div class="spinner"></div>
-          </div>
-        </button>
+        <app-loading-button
+          type="submit"
+          [loading]="isSubmitting"
+          text="Sign In"
+          loadingText="Signing In..."
+          customClass="w-full flex justify-center !py-3 !text-base !bg-primary !text-white hover:!bg-primary-hover"
+        ></app-loading-button>
       </form>
 
       <!-- Footer Policy Notice -->

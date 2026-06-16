@@ -14,27 +14,34 @@
             <span *ngIf="currentStep > 1" class="material-symbols-outlined text-white text-base">check</span>
             <span *ngIf="currentStep <= 1">1</span>
           </div>
-          <span [class]="currentStep === 1 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Case Parties</span>
+          <span [class]="currentStep === 1 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Complainant</span>
         </div>
         <div class="flex flex-col items-center gap-2 group cursor-pointer" id="step-pill-2" (click)="goToStep(2)">
           <div [class]="currentStep === 2 ? 'w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : (currentStep > 2 ? 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : 'w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all')">
             <span *ngIf="currentStep > 2" class="material-symbols-outlined text-white text-base">check</span>
             <span *ngIf="currentStep <= 2">2</span>
           </div>
-          <span [class]="currentStep === 2 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Order Details</span>
+          <span [class]="currentStep === 2 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Defendant</span>
         </div>
         <div class="flex flex-col items-center gap-2 group cursor-pointer" id="step-pill-3" (click)="goToStep(3)">
           <div [class]="currentStep === 3 ? 'w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : (currentStep > 3 ? 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : 'w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all')">
             <span *ngIf="currentStep > 3" class="material-symbols-outlined text-white text-base">check</span>
             <span *ngIf="currentStep <= 3">3</span>
           </div>
-          <span [class]="currentStep === 3 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Documents</span>
+          <span [class]="currentStep === 3 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Order Details</span>
         </div>
         <div class="flex flex-col items-center gap-2 group cursor-pointer" id="step-pill-4" (click)="goToStep(4)">
-          <div [class]="currentStep === 4 ? 'w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : 'w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all'">
-            <span>4</span>
+          <div [class]="currentStep === 4 ? 'w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : (currentStep > 4 ? 'w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : 'w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all')">
+            <span *ngIf="currentStep > 4" class="material-symbols-outlined text-white text-base">check</span>
+            <span *ngIf="currentStep <= 4">4</span>
           </div>
-          <span [class]="currentStep === 4 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Review</span>
+          <span [class]="currentStep === 4 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Documents</span>
+        </div>
+        <div class="flex flex-col items-center gap-2 group cursor-pointer" id="step-pill-5" (click)="goToStep(5)">
+          <div [class]="currentStep === 5 ? 'w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all' : 'w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-lg ring-4 ring-white transition-all'">
+            <span>5</span>
+          </div>
+          <span [class]="currentStep === 5 ? 'font-label-md text-label-md text-primary font-bold' : 'font-label-md text-label-md text-on-surface-variant'">Review</span>
         </div>
       </div>
       <!-- Connecting Lines -->
@@ -45,15 +52,15 @@
 
     <!-- Form Card -->
     <form [formGroup]="createCaseForm" class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg min-h-[500px] flex flex-col">
-      <!-- Step 1: Complainant & Defendant Details -->
+      <!-- Step 1: Complainant Details -->
       <div *ngIf="currentStep === 1" class="step-transition step-active" id="step-content-1">
         <div class="flex items-center gap-2 mb-lg">
-          <span class="material-symbols-outlined text-primary">group</span>
-          <h2 class="font-title-lg text-title-lg">Step 1: Case Parties Details</h2>
+          <span class="material-symbols-outlined text-primary">person</span>
+          <h2 class="font-title-lg text-title-lg">Step 1: Complainant Information</h2>
         </div>
         <div class="space-y-lg">
           <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant">
-            <h3 class="font-title-md mb-4 text-primary">Complainant Information</h3>
+            <h3 class="font-title-md mb-4 text-primary">Complainant Details</h3>
             <div class="grid grid-cols-2 gap-lg">
               <div class="col-span-2 md:col-span-1">
                 <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Full Name</label>
@@ -67,8 +74,18 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Defendant Details -->
+      <div *ngIf="currentStep === 2" class="step-transition step-active" id="step-content-2">
+        <div class="flex items-center gap-2 mb-lg">
+          <span class="material-symbols-outlined text-primary">group</span>
+          <h2 class="font-title-lg text-title-lg">Step 2: Defendant Information</h2>
+        </div>
+        <div class="space-y-lg">
           <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant">
-            <h3 class="font-title-md mb-4 text-primary">Defendant Information</h3>
+            <h3 class="font-title-md mb-4 text-primary">Defendant Details</h3>
             <div class="grid grid-cols-2 gap-lg">
               <div class="col-span-2 md:col-span-1">
                 <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Full Name</label>
@@ -95,11 +112,11 @@
         </div>
       </div>
 
-      <!-- Step 2: Order Info -->
-      <div *ngIf="currentStep === 2" class="step-transition step-active" id="step-content-2">
+      <!-- Step 3: Order Info -->
+      <div *ngIf="currentStep === 3" class="step-transition step-active" id="step-content-3">
         <div class="flex items-center gap-2 mb-lg">
           <span class="material-symbols-outlined text-primary">gavel</span>
-          <h2 class="font-title-lg text-title-lg">Step 2: Judicial Order Specifications</h2>
+          <h2 class="font-title-lg text-title-lg">Step 3: Judicial Order Specifications</h2>
         </div>
         <div class="grid grid-cols-2 gap-lg">
           <div class="col-span-2">
@@ -144,11 +161,11 @@
         </div>
       </div>
 
-      <!-- Step 3: Document Upload -->
-      <div *ngIf="currentStep === 3" class="step-transition step-active" id="step-content-3">
+      <!-- Step 4: Document Upload -->
+      <div *ngIf="currentStep === 4" class="step-transition step-active" id="step-content-4">
         <div class="flex items-center gap-2 mb-lg">
           <span class="material-symbols-outlined text-primary">cloud_upload</span>
-          <h2 class="font-title-lg text-title-lg">Step 3: Evidence & Verification</h2>
+          <h2 class="font-title-lg text-title-lg">Step 4: Evidence & Verification</h2>
         </div>
         <div class="space-y-6">
           <!-- Dedicated Upload for Aadhaar Copy -->
@@ -213,11 +230,11 @@
         </div>
       </div>
 
-      <!-- Step 4: Review & Submit -->
-      <div *ngIf="currentStep === 4" class="step-transition step-active" id="step-content-4">
+      <!-- Step 5: Review & Submit -->
+      <div *ngIf="currentStep === 5" class="step-transition step-active" id="step-content-5">
         <div class="flex items-center gap-2 mb-lg">
           <span class="material-symbols-outlined text-primary">task_alt</span>
-          <h2 class="font-title-lg text-title-lg">Step 4: Final Review</h2>
+          <h2 class="font-title-lg text-title-lg">Step 5: Final Review</h2>
         </div>
         <div class="bg-surface-container-low rounded-xl border border-outline-variant p-lg space-y-lg">
           <div class="grid grid-cols-2 gap-xl">
@@ -281,13 +298,23 @@
           Previous
         </button>
         <div class="flex items-center gap-4">
-          <button type="button" class="flex items-center gap-2 px-8 py-2.5 text-white font-label-lg text-label-lg rounded-full shadow-lg hover:shadow-xl transition-all" 
-                  [class.bg-green-600]="currentStep === totalSteps" 
-                  [class.bg-primary]="currentStep !== totalSteps" 
-                  [disabled]="isSubmitting" 
+          <app-loading-button
+            *ngIf="currentStep === totalSteps"
+            [loading]="isSubmitting"
+            text="Submit Case"
+            loadingText="Submitting..."
+            icon="send"
+            color="primary"
+            (onClick)="changeStep(1)"
+            customClass="!bg-green-600 hover:!bg-green-700 !text-white !rounded-full !shadow-lg hover:!shadow-xl"
+          ></app-loading-button>
+          
+          <button type="button" 
+                  *ngIf="currentStep !== totalSteps"
+                  class="flex items-center gap-2 px-8 py-2.5 bg-primary text-white font-label-lg text-label-lg rounded-full shadow-lg hover:shadow-xl transition-all" 
                   (click)="changeStep(1)">
-            <span>{{ currentStep === totalSteps ? (isSubmitting ? 'Submitting...' : 'Submit Case') : 'Continue' }}</span>
-            <span class="material-symbols-outlined">{{ currentStep === totalSteps ? 'send' : 'arrow_forward' }}</span>
+            <span>Continue</span>
+            <span class="material-symbols-outlined">arrow_forward</span>
           </button>
         </div>
       </div>

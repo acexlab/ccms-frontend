@@ -70,16 +70,19 @@ describe('CourtDashboardComponent', () => {
   it('should filter cases by search query and status dropdown', () => {
     // Search query match
     component.searchQuery = 'C1';
+    component.applyFilter();
     expect(component.filteredCases.length).toBe(1);
     expect(component.filteredCases[0].caseNumber).toBe('C1');
 
     // Status filter match
     component.searchQuery = '';
-    component.statusFilter = 'Pending';
+    component.selectedStatus = 'Pending';
+    component.applyFilter();
     expect(component.filteredCases.length).toBe(2);
 
     // No search query matches
     component.searchQuery = 'Non-existent';
+    component.applyFilter();
     expect(component.filteredCases.length).toBe(0);
   });
 

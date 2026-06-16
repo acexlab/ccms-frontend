@@ -125,7 +125,7 @@ describe('CreateCaseComponent', () => {
     component.aadhaarFile = new File([new ArrayBuffer(100)], 'aadhaar.jpg');
     component.panFile = new File([new ArrayBuffer(100)], 'pan.png');
 
-    caseServiceSpy.createCase.and.returnValue(of({ caseNumber: 'CCMS-20260616-0001' }));
+    caseServiceSpy.createCase.and.returnValue(of({ caseNumber: 'CCMS-20260616-0001', id: 1 }));
 
     component.submitCase();
 

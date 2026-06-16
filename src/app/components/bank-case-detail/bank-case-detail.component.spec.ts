@@ -32,7 +32,7 @@ describe('BankCaseDetailComponent', () => {
   };
 
   beforeEach(async () => {
-    caseServiceSpy = jasmine.createSpyObj('CaseService', ['getCaseDetails', 'downloadDocument']);
+    caseServiceSpy = jasmine.createSpyObj('CaseService', ['getCaseDetails', 'downloadAttachment']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     caseServiceSpy.getCaseDetails.and.returnValue(of(mockCaseDetails));

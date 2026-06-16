@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
+import { LoadingButtonComponent } from '../loading-button/loading-button.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LoadingButtonComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -15,6 +17,7 @@ export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly notificationService = inject(NotificationService);
 
   loginForm: FormGroup = this.fb.group({
     username: ['', [Validators.required]],
@@ -39,20 +42,29 @@ export class LoginComponent {
     this.isSubmitting = true;
     this.errorMessage = null;
 
-    this.authService.login(this.loginForm.value).subscribe({
+    const credentials = {
+      username: this.loginForm.value.username,
+      password: this.loginForm.value.password
+    };
+    this.authService.login(credentials).subscribe({
       next: (result) => {
-        // Redirect based on the backend response redirectUrl or role mapping
-        if (result.redirectUrl) {
-          this.router.navigate([result.redirectUrl]);
-        } else {
-          // Fallback
-          const route = result.role === 'Court' ? '/court/dashboard' : '/bank/dashboard';
-          this.router.navigate([route]);
-        }
+        this.notificationService.success('Login successful');
+        setTimeout(() => {
+          this.isSubmitting = false;
+          if (result.redirectUrl) {
+            this.router.navigate([result.redirectUrl]);
+          } else {
+            // Fallback
+            const route = result.role === 'Court' ? '/court/dashboard' : '/bank/dashboard';
+            this.router.navigate([route]);
+          }
+        }, 400);
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.errorMessage = err.error?.message || 'Invalid username or password.';
+        const msg = err.error?.message || 'Invalid username or password.';
+        this.errorMessage = msg;
+        this.notificationService.error(msg);
       }
     });
   }
