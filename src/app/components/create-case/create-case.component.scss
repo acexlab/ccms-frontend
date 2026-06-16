@@ -6,6 +6,6 @@
 }
 input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: #00236f !important;
-    box-shadow: 0 0 0 1px #00236f !important;
+    border-color: var(--ccms-primary) !important;
+    box-shadow: 0 0 0 1px var(--ccms-primary) !important;
 }
