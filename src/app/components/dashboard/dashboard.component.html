@@ -1,0 +1,168 @@
+      <div class="max-w-7xl mx-auto space-y-8">
+        
+        <!-- Header Section -->
+        <div>
+          <h2 class="text-3xl font-bold text-primary mb-2 tracking-tight">Bank Dashboard</h2>
+          <p class="text-gray-500">Summary of ongoing case resolutions and status across recovery batches.</p>
+        </div>
+
+        <!-- Skeleton Loader for Cards -->
+        <ng-container *ngIf="store.isLoading()">
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <mat-card *ngFor="let i of [1,2,3,4,5]" class="rounded-xl shadow-sm border border-gray-100 animate-pulse">
+              <mat-card-content class="p-6">
+                <div class="h-10 w-10 bg-gray-200 rounded-lg mb-4"></div>
+                <div class="h-4 w-24 bg-gray-200 rounded mb-2"></div>
+                <div class="h-8 w-16 bg-gray-200 rounded"></div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          
+          <div class="mt-8">
+            <mat-card class="max-w-md rounded-xl shadow-sm border border-gray-100 animate-pulse">
+               <div class="h-64 bg-gray-100 rounded-xl"></div>
+            </mat-card>
+          </div>
+        </ng-container>
+
+        <!-- Actual Data -->
+        <ng-container *ngIf="!store.isLoading() && store.data() as data">
+          
+          <!-- Statistics Cards Row -->
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            
+            <!-- Pending -->
+            <mat-card class="stat-card rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default overflow-hidden">
+              <mat-card-content class="p-6 relative">
+                <div class="flex justify-between items-start mb-6">
+                  <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-500">
+                    <mat-icon>assignment</mat-icon>
+                  </div>
+                  <span class="text-xs font-medium text-gray-500 flex items-center gap-1"><mat-icon class="text-[14px] w-[14px] h-[14px]">history</mat-icon> 12%</span>
+                </div>
+                <div class="text-sm font-medium text-gray-500 mb-1">Pending</div>
+                <div class="text-3xl font-bold text-gray-900">{{data.pending}}</div>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Account Validated -->
+            <mat-card class="stat-card rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default overflow-hidden">
+              <mat-card-content class="p-6 relative">
+                <div class="flex justify-between items-start mb-6">
+                  <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                    <mat-icon>verified_user</mat-icon>
+                  </div>
+                  <span class="text-xs font-medium text-green-600 flex items-center gap-1"><mat-icon class="text-[14px] w-[14px] h-[14px]">trending_up</mat-icon> 8.2%</span>
+                </div>
+                <div class="text-sm font-medium text-gray-500 mb-1">Account Validated</div>
+                <div class="text-3xl font-bold text-gray-900">{{data.accountValidated | number}}</div>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Account Not Found -->
+            <mat-card class="stat-card rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default overflow-hidden">
+              <mat-card-content class="p-6 relative">
+                <div class="flex justify-between items-start mb-6">
+                  <div class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-red-500">
+                    <mat-icon>person_off</mat-icon>
+                  </div>
+                  <span class="text-xs font-medium text-gray-400">Steady</span>
+                </div>
+                <div class="text-sm font-medium text-gray-500 mb-1">Account Not Found</div>
+                <div class="text-3xl font-bold text-gray-900">{{data.accountNotFound}}</div>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Freeze Applied -->
+            <mat-card class="stat-card rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default overflow-hidden">
+              <mat-card-content class="p-6 relative">
+                <div class="flex justify-between items-start mb-6">
+                  <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                    <mat-icon>ac_unit</mat-icon>
+                  </div>
+                  <span class="text-xs font-medium text-green-600 flex items-center gap-1"><mat-icon class="text-[14px] w-[14px] h-[14px]">trending_up</mat-icon> 15%</span>
+                </div>
+                <div class="text-sm font-medium text-gray-500 mb-1">Freeze Applied</div>
+                <div class="text-3xl font-bold text-gray-900">{{data.freezeApplied}}</div>
+              </mat-card-content>
+            </mat-card>
+
+            <!-- Balance Provided -->
+            <mat-card class="stat-card rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default overflow-hidden">
+              <mat-card-content class="p-6 relative">
+                <div class="flex justify-between items-start mb-6">
+                  <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                    <mat-icon>account_balance_wallet</mat-icon>
+                  </div>
+                  <span class="text-xs font-medium text-green-600 flex items-center gap-1"><mat-icon class="text-[14px] w-[14px] h-[14px]">trending_up</mat-icon> 5.4%</span>
+                </div>
+                <div class="text-sm font-medium text-gray-500 mb-1">Balance Provided</div>
+                <div class="text-3xl font-bold text-gray-900">{{data.balanceProvided}}</div>
+              </mat-card-content>
+            </mat-card>
+
+          </div>
+
+          <!-- Batch Processing Status Card -->
+          <div class="mt-8 max-w-md">
+            <mat-card class="rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <!-- Header -->
+              <div class="p-5 bg-gray-50/50 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-semibold text-gray-800 text-lg">Batch Processing Status</h3>
+                <span class="px-2.5 py-1 text-[10px] font-bold bg-primary-light text-primary rounded-full uppercase tracking-wider">Active</span>
+              </div>
+              
+              <!-- Content -->
+              <mat-card-content class="p-6">
+                <div class="flex gap-8 mb-6">
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">Last Run Time</div>
+                    <div class="font-semibold text-gray-900">{{ data.lastRunTime ? (data.lastRunTime | date:'shortTime') : 'Never' }}</div>
+                    <div class="text-xs text-gray-400 font-medium">{{ data.lastRunTime ? 'Today' : '' }}</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-gray-500 font-medium mb-1">Duration</div>
+                    <div class="font-semibold text-gray-900">{{ data.duration || '--' }}</div>
+                  </div>
+                </div>
+
+                <!-- Metrics -->
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-white shadow-sm">
+                    <div class="flex items-center gap-3 text-gray-600 font-medium text-sm">
+                      <mat-icon class="text-primary">check_circle_outline</mat-icon>
+                      Freeze Account Orders
+                    </div>
+                    <div class="font-bold text-gray-900">{{data.freezeOrders}}</div>
+                  </div>
+                  <div class="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-white shadow-sm">
+                    <div class="flex items-center gap-3 text-gray-600 font-medium text-sm">
+                      <mat-icon class="text-primary">account_balance</mat-icon>
+                      Balance Enquiry Orders
+                    </div>
+                    <div class="font-bold text-gray-900">{{data.balanceOrders}}</div>
+                  </div>
+                </div>
+              </mat-card-content>
+
+              <!-- Footer Actions -->
+              <div class="p-5 bg-white border-t border-gray-100">
+                <button mat-flat-button color="primary" 
+                        class="w-full h-12 !rounded-lg !bg-primary !text-white font-medium shadow-sm hover:shadow-md transition-shadow"
+                        [disabled]="store.isBatchRunning()"
+                        (click)="runManualBatch()">
+                  <div class="flex items-center justify-center gap-2">
+                    <mat-icon *ngIf="!store.isBatchRunning()">play_circle_outline</mat-icon>
+                    <mat-spinner *ngIf="store.isBatchRunning()" diameter="20" class="text-white"></mat-spinner>
+                    <span *ngIf="!store.isBatchRunning()">Run Manual Batch Job</span>
+                    <span *ngIf="store.isBatchRunning()">Running...</span>
+                  </div>
+                </button>
+              </div>
+            </mat-card>
+          </div>
+
+        </ng-container>
+
+      </div>
+

@@ -1,0 +1,103 @@
+<div class="max-w-7xl mx-auto py-8" *ngIf="caseDetails">
+  <!-- Breadcrumb -->
+  <div class="text-sm text-gray-500 mb-6">
+    <a routerLink="/bank/cases" class="hover:text-primary transition-colors">Case Inbox</a> 
+    <span class="mx-2">&gt;</span> 
+    <a [routerLink]="['/bank/cases', caseNumber]" class="hover:text-primary transition-colors">Case #{{ caseNumber }}</a>
+    <span class="mx-2">&gt;</span> 
+    <span class="text-gray-900 font-medium">Freeze Account Response</span>
+  </div>
+  
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Freeze Account Response Form</h1>
+    <p class="text-gray-500 mt-1">Review the court mandate and provide institutional compliance details.</p>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-8 items-start">
+    
+    <!-- Left Side: PDF Viewer -->
+    <div class="w-full lg:w-7/12 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[700px]">
+      
+      <!-- PDF Header -->
+      <div class="bg-gray-50 border-b border-gray-100 px-4 py-3 flex justify-between items-center" *ngIf="courtOrderDoc">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-primary text-sm">picture_as_pdf</mat-icon>
+          <span class="font-semibold text-gray-700 text-sm truncate max-w-[300px]">{{ courtOrderDoc.fileName }}</span>
+        </div>
+        <div class="flex gap-2">
+          <button class="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded transition-colors" title="Zoom In"><mat-icon class="text-sm">zoom_in</mat-icon></button>
+          <button class="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded transition-colors" title="Zoom Out"><mat-icon class="text-sm">zoom_out</mat-icon></button>
+          <button class="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded transition-colors" title="Print"><mat-icon class="text-sm">print</mat-icon></button>
+          <button class="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded transition-colors" title="Download" (click)="downloadDocument()"><mat-icon class="text-sm">file_download</mat-icon></button>
+        </div>
+      </div>
+
+      <!-- PDF Viewer Area -->
+      <div class="flex-1 relative bg-gray-200 flex flex-col justify-center items-center">
+        <!-- Loading Spinner -->
+        <div *ngIf="isPdfLoading && courtOrderUrl" class="absolute inset-0 flex flex-col justify-center items-center bg-gray-50 z-10">
+          <mat-spinner diameter="40" class="text-primary mb-4"></mat-spinner>
+          <p class="text-gray-500 font-medium text-sm">Loading Court Order...</p>
+        </div>
+        
+        <!-- Iframe -->
+        <iframe *ngIf="courtOrderUrl" [src]="courtOrderUrl" class="w-full h-full border-none" (load)="onPdfLoad()"></iframe>
+        
+        <!-- Fallback if no URL -->
+        <div *ngIf="!courtOrderUrl" class="text-gray-500 flex flex-col items-center">
+          <mat-icon class="text-4xl text-gray-400 mb-2">error_outline</mat-icon>
+          <p>Court Order PDF not available.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side: Form -->
+    <div class="w-full lg:w-5/12 bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+      
+      <p class="text-sm font-medium text-gray-700 mb-8 border-b border-gray-100 pb-4">Complete the following details to execute the freeze order.</p>
+
+      <div class="space-y-6">
+        <!-- Freeze Amount -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Freeze Amount (INR)</label>
+          <div class="relative bg-white border border-gray-300 rounded-lg flex items-center overflow-hidden shadow-sm focus-within:ring-2 focus-within:ring-primary focus-within:border-primary transition-all">
+            <span class="px-4 text-gray-500 font-medium border-r border-gray-200 bg-gray-50 h-full flex items-center">₹</span>
+            <input type="number" [(ngModel)]="freezeAmount" class="w-full bg-transparent py-3 px-4 text-gray-900 font-semibold focus:outline-none" placeholder="Enter amount from court order" />
+          </div>
+        </div>
+
+        <!-- Remarks -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Remarks</label>
+          <textarea [(ngModel)]="remarks" rows="5" maxlength="500" class="w-full bg-white border border-gray-200 rounded-lg p-4 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all shadow-sm" placeholder="Document any account discrepancies or additional holds here..."></textarea>
+          
+          <div class="flex justify-end mt-1">
+            <span class="text-xs font-medium" [ngClass]="{'text-red-500': remarks.length > 450, 'text-gray-400': remarks.length <= 450}">
+              {{ remarks.length }} / 500
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="submitError" class="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-center gap-2">
+        <mat-icon class="text-red-500 text-sm">error_outline</mat-icon>
+        {{ submitError }}
+      </div>
+
+      <!-- Actions -->
+      <div class="mt-8 flex flex-col sm:flex-row justify-end gap-4 border-t border-gray-100 pt-6">
+        <button class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-colors w-full sm:w-auto text-center" (click)="cancel()">Cancel</button>
+        <button 
+          class="px-8 py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 w-full sm:w-auto" 
+          [disabled]="!isFormValid || isSubmitting" 
+          (click)="submitResponse()">
+          <mat-spinner *ngIf="isSubmitting" diameter="16" class="text-white"></mat-spinner>
+          <mat-icon *ngIf="!isSubmitting" class="text-sm">lock</mat-icon> Submit Response
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

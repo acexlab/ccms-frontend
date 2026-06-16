@@ -1,9 +1,3 @@
-/*
- * File: auth.guard.ts
- * Description: Guard checking for valid authentication token before accessing secured routes.
- * To Implement: Redirects unauthenticated users to login page.
- */
-
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { TokenService } from '../services/token.service';

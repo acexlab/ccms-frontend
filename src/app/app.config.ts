@@ -1,9 +1,3 @@
-/*
- * File: app.config.ts
- * Description: Core Angular ApplicationConfig registering HttpClient, routing, and animations.
- * To Implement: Keep interceptors in sync.
- */
-
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';

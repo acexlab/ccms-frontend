@@ -1,9 +1,3 @@
-/*
- * File: app.component.ts
- * Description: Root application component hosting the router outlet.
- * To Implement: Keep styles minimal.
- */
-
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 

@@ -1,67 +1,75 @@
-/*
- * File: status-badge.component.ts
- * Description: Standalone status chip displaying color indicators for Case status values.
- * To Implement: Keep CSS rules consistent.
- */
-
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatChipsModule } from '@angular/material/chips';
-import { CaseStatus } from '../../models/case.model';
 
 @Component({
   selector: 'app-status-badge',
   standalone: true,
-  imports: [CommonModule, MatChipsModule],
+  imports: [CommonModule],
   template: `
-    <span class="badge" [ngClass]="getBadgeClass(status)">
-      {{ status }}
+    <span class="badge" [ngClass]="getBadgeClass()">
+      {{ getDisplayStatus() }}
     </span>
   `,
   styles: [`
     .badge {
       display: inline-block;
-      padding: 6px 12px;
+      padding: 0.25em 0.6em;
       font-size: 12px;
-      font-weight: 500;
-      border-radius: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-weight: 600;
+      line-height: 1;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: baseline;
+      border-radius: 4px;
     }
-    .badge-grey {
-      background-color: #e0e0e0;
-      color: #616161;
+    .badge-awaiting {
+      background-color: #fff3cd;
+      color: #856404;
     }
-    .badge-blue {
-      background-color: #e3f2fd;
-      color: #1565c0;
+    .badge-pending {
+      background-color: #e2e3e5;
+      color: #383d41;
     }
-    .badge-red {
-      background-color: #ffebee;
-      color: #c62828;
+    .badge-freeze {
+      background-color: #cce5ff;
+      color: #004085;
     }
-    .badge-green {
-      background-color: #e8f5e9;
-      color: #2e7d32;
+    .badge-balance {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .badge-auto {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .badge-default {
+      background-color: #e9ecef;
+      color: #495057;
     }
   `]
 })
 export class StatusBadgeComponent {
-  @Input() status: CaseStatus = 'Pending';
+  @Input() status: string = '';
 
-  getBadgeClass(status: CaseStatus): string {
-    switch (status) {
-      case 'Pending':
-        return 'badge-grey';
-      case 'AccountValidated':
-        return 'badge-blue';
-      case 'AccountNotFound':
-        return 'badge-red';
-      case 'FreezeApplied':
-      case 'BalanceProvided':
-        return 'badge-green';
-      default:
-        return 'badge-grey';
+  getDisplayStatus(): string {
+    switch (this.status) {
+      case 'AccountValidated': return 'Awaiting Action';
+      case 'Pending': return 'Pending Batch';
+      case 'FreezeApplied': return 'Freeze Applied';
+      case 'BalanceProvided': return 'Balance Provided';
+      case 'AccountNotFound': return 'Auto Resolved';
+      default: return this.status || 'Unknown';
     }
   }
-}
+
+  getBadgeClass(): string {
+    switch (this.status) {
+      case 'AccountValidated': return 'badge-awaiting';
+      case 'Pending': return 'badge-pending';
+      case 'FreezeApplied': return 'badge-freeze';
+      case 'BalanceProvided': return 'badge-balance';
+      case 'AccountNotFound': return 'badge-auto';
+      default: return 'badge-default';
+    }
+  }
+}

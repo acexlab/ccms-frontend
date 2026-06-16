@@ -1,9 +1,3 @@
-/*
- * File: token.service.ts
- * Description: Injectable service parsing and verifying JWT Bearer token claims on client side.
- * To Implement: Keep storage keys matching backend mappings.
- */
-
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { DecodedToken, UserRole } from '../models/user.model';

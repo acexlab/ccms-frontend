@@ -1,55 +1,98 @@
-/* Case Inbox layout */
-
 .inbox-container {
-  padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 32px;
 }
 
-h1 {
+.header {
   margin-bottom: 24px;
 }
 
-.tab-content {
-  padding: 24px 0;
+.header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
+}
+
+::ng-deep .mat-mdc-tab-labels {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+::ng-deep .mdc-tab__text-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+::ng-deep .mdc-tab--active .mdc-tab__text-label {
+  color: var(--ccms-primary) !important;
+}
+
+::ng-deep .mdc-tab-indicator__inner--content {
+  border-color: var(--ccms-primary) !important;
+}
+
+.table-container {
+  margin-top: 24px;
 }
 
 table {
   width: 100%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-.badge-count {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #ff4081;
-  color: white;
-  font-size: 11px;
+th.mat-header-cell {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 16px;
+}
+
+td.mat-cell {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  font-size: 14px;
+}
+
+.badge-order {
+  background-color: #f1f5f9;
+  color: #475569;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
   font-weight: 500;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  margin-left: 8px;
 }
 
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px;
-  color: #70757a;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.btn-review {
+  background-color: var(--ccms-primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.empty-state mat-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 16px;
-  color: #a0a0a0;
+.btn-review:hover {
+  background-color: var(--ccms-primary-hover);
+}
+
+::ng-deep .mat-mdc-paginator {
+  background-color: transparent;
+  color: #64748b;
+  border-top: 1px solid #e2e8f0;
 }

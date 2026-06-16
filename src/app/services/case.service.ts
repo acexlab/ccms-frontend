@@ -1,30 +1,45 @@
 /*
  * File: case.service.ts
- * Description: Injectable service wrapping court officer case listing, details, and creation API endpoints.
- * To Implement: Handle file upload progress indicators in UI components if needed.
+ * Description: Injectable service wrapping case listing, details, creation, and bank responses.
  */
 
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { CaseDetail, CaseSummary } from '../models/case.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CaseService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl;
 
   createCase(formData: FormData): Observable<{ caseNumber: string; id: number }> {
-    return this.http.post<{ caseNumber: string; id: number }>(`${environment.apiUrl}/cases`, formData);
+    return this.http.post<{ caseNumber: string; id: number }>(`${this.apiUrl}/cases`, formData);
   }
 
-  getMyCases(): Observable<CaseSummary[]> {
-    return this.http.get<CaseSummary[]>(`${environment.apiUrl}/cases`);
+  getMyCases(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/cases`);
   }
 
-  getCaseById(id: number): Observable<CaseDetail> {
-    return this.http.get<CaseDetail>(`${environment.apiUrl}/cases/${id}`);
+  getCaseById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/cases/${id}`);
+  }
+
+  getInboxCases(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/cases/inbox`);
+  }
+
+  getCaseDetails(caseNumber: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/cases/${caseNumber}`);
+  }
+
+  submitCaseResponse(caseNumber: string, payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/cases/${caseNumber}/response`, payload);
+  }
+
+  downloadDocument(caseNumber: string, documentId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/cases/${caseNumber}/documents/${documentId}/download`, { responseType: 'blob' });
   }
 }

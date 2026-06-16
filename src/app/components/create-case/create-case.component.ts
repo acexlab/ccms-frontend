@@ -1,140 +1,274 @@
-/*
- * File: create-case.component.ts
- * Description: Controller for the wizard step form to create a new case order.
- * To Implement: Handle file upload references and dynamic validator hooks.
- */
-
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Router, RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CaseService } from '../../services/case.service';
-import { FileUploadComponent } from '../file-upload/file-upload.component';
-import { NavbarComponent } from '../navbar/navbar.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-create-case',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatStepperModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    FileUploadComponent,
-    NavbarComponent
-  ],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './create-case.component.html',
   styleUrls: ['./create-case.component.scss']
 })
 export class CreateCaseComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private caseService = inject(CaseService);
-  private router = inject(Router);
-  private snackBar = inject(MatSnackBar);
+  private readonly fb = inject(FormBuilder);
+  private readonly caseService = inject(CaseService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  complainantForm!: FormGroup;
-  defendantForm!: FormGroup;
-  orderForm!: FormGroup;
+  hasNotificationDot = false;
+  cases: any[] = [];
 
+  ngOnInit(): void {
+    this.loadNotificationStatus();
+  }
+
+  loadNotificationStatus(): void {
+    this.caseService.getMyCases().subscribe({
+      next: (data) => {
+        this.cases = data;
+        this.checkStatusUpdates(data);
+      },
+      error: () => {}
+    });
+  }
+
+  checkStatusUpdates(currentCases: any[]): void {
+    const stored = localStorage.getItem('ccms_cases_cache');
+    if (!stored) {
+      const cache: Record<string, string> = {};
+      for (const c of currentCases) {
+        cache[c.caseNumber] = c.status;
+      }
+      localStorage.setItem('ccms_cases_cache', JSON.stringify(cache));
+      this.hasNotificationDot = false;
+      return;
+    }
+
+    try {
+      const lastKnown = JSON.parse(stored) as Record<string, string>;
+      let hasChanges = false;
+      for (const c of currentCases) {
+        const lastStatus = lastKnown[c.caseNumber];
+        if (lastStatus && lastStatus.toLowerCase() !== c.status.toLowerCase()) {
+          hasChanges = true;
+        }
+      }
+      this.hasNotificationDot = hasChanges;
+    } catch (e) {
+      this.hasNotificationDot = false;
+    }
+  }
+
+  clearNotification(): void {
+    this.hasNotificationDot = false;
+    const cache: Record<string, string> = {};
+    for (const c of this.cases) {
+      cache[c.caseNumber] = c.status;
+    }
+    localStorage.setItem('ccms_cases_cache', JSON.stringify(cache));
+  }
+
+
+  currentStep = 1;
+  totalSteps = 4;
+  orderType = 'freeze';
+  isSubmitting = false;
+  submitSuccess = false;
+  referenceId = '';
+
+  // Dedicated file properties for individual uploads
   courtOrderFile: File | null = null;
   aadhaarFile: File | null = null;
   panFile: File | null = null;
 
-  isLoading = false;
+  createCaseForm: FormGroup = this.fb.group({
+    complainantName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]{3,100}$/)]],
+    complainantId: ['', [Validators.required, Validators.pattern(/^(?:\d{12}|[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1})$/i)]],
+    defendantName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]{3,100}$/)]],
+    defendantId: ['', [Validators.required, Validators.pattern(/^(?:\d{12}|[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1})$/i)]],
+    defendantAccountNumber: ['', [Validators.required, Validators.pattern(/^\d{9,18}$/)]],
+    defendantBankName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]{3,100}$/)]],
+    orderType: ['freeze', [Validators.required]],
+    freezeAmount: [null, [Validators.min(0)]],
+    declaration: [false, [Validators.requiredTrue]]
+  });
 
-  ngOnInit(): void {
-    this.complainantForm = this.fb.group({
-      name: ['', Validators.required]
-    });
+  get progressPercentage(): number {
+    return ((this.currentStep - 1) / (this.totalSteps - 1)) * 100;
+  }
 
-    this.defendantForm = this.fb.group({
-      name: ['', Validators.required],
-      aadhaar: ['', [Validators.required, Validators.pattern(/^\d{12}$/)]],
-      pan: ['', [Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]],
-      accountNumber: ['', Validators.required],
-      bankCode: ['', Validators.required]
-    });
-
-    this.orderForm = this.fb.group({
-      orderType: ['', Validators.required],
-      freezeAmount: [null]
-    });
-
-    // Conditional Validator for freezeAmount
-    this.orderForm.get('orderType')?.valueChanges.subscribe((type) => {
-      const amountCtrl = this.orderForm.get('freezeAmount');
-      if (type === 'FreezeAccount') {
-        amountCtrl?.setValidators([Validators.required, Validators.min(1)]);
-      } else {
-        amountCtrl?.clearValidators();
+  goToStep(step: number): void {
+    if (step > this.currentStep) {
+      // Direct jump forward: sequentially validate each preceding step
+      const originalCurrent = this.currentStep;
+      for (let i = originalCurrent; i < step; i++) {
+        this.currentStep = i;
+        if (!this.validateCurrentStep()) {
+          this.currentStep = i; // Lock user at the invalid step
+          return;
+        }
       }
-      amountCtrl?.updateValueAndValidity();
-    });
+    }
+    this.currentStep = step;
   }
 
-  onCourtOrderSelected(file: File): void {
-    this.courtOrderFile = file;
-  }
-
-  onAadhaarSelected(file: File): void {
-    this.aadhaarFile = file;
-  }
-
-  onPanSelected(file: File): void {
-    this.panFile = file;
-  }
-
-  areDocumentsUploaded(): boolean {
-    return !!(this.courtOrderFile && this.aadhaarFile && this.panFile);
-  }
-
-  onSubmit(): void {
-    if (
-      this.complainantForm.valid &&
-      this.defendantForm.valid &&
-      this.orderForm.valid &&
-      this.areDocumentsUploaded()
-    ) {
-      this.isLoading = true;
-
-      const formData = new FormData();
-      formData.append('complainantName', this.complainantForm.value.name);
-      formData.append('defendantName', this.defendantForm.value.name);
-      formData.append('defendantAadhaar', this.defendantForm.value.aadhaar);
-      formData.append('defendantPan', this.defendantForm.value.pan);
-      formData.append('defendantAccountNumber', this.defendantForm.value.accountNumber);
-      formData.append('bankCode', this.defendantForm.value.bankCode);
-      formData.append('orderType', this.orderForm.value.orderType);
-      
-      if (this.orderForm.value.freezeAmount) {
-        formData.append('freezeAmount', this.orderForm.value.freezeAmount.toString());
+  changeStep(delta: number): void {
+    const nextStep = this.currentStep + delta;
+    if (nextStep >= 1 && nextStep <= this.totalSteps) {
+      if (delta > 0 && !this.validateCurrentStep()) {
+        return; // Navigation blocked due to validation errors
       }
+      this.currentStep = nextStep;
+    } else if (this.currentStep === this.totalSteps && delta === 1) {
+      this.submitCase();
+    }
+  }
 
-      formData.append('courtOrderFile', this.courtOrderFile!);
-      formData.append('aadhaarFile', this.aadhaarFile!);
-      formData.append('panFile', this.panFile!);
-
-      this.caseService.createCase(formData).subscribe({
-        next: (result) => {
-          this.isLoading = false;
-          this.snackBar.open(`Case raised successfully! ID: ${result.caseNumber}`, 'Close', { duration: 5000 });
-          this.router.navigate(['/court/cases', result.id]);
-        },
-        error: (err) => {
-          this.isLoading = false;
-          this.snackBar.open(err.error?.Message || 'An error occurred creating the case.', 'Close', { duration: 5000 });
+  validateCurrentStep(): boolean {
+    if (this.currentStep === 1) {
+      const step1Fields = [
+        'complainantName',
+        'complainantId',
+        'defendantName',
+        'defendantId',
+        'defendantAccountNumber',
+        'defendantBankName'
+      ];
+      let isValid = true;
+      step1Fields.forEach(field => {
+        const control = this.createCaseForm.get(field);
+        if (control) {
+          control.markAsTouched();
+          if (control.invalid) {
+            isValid = false;
+          }
         }
       });
+      return isValid;
     }
+    if (this.currentStep === 2) {
+      const control = this.createCaseForm.get('freezeAmount');
+      if (this.orderType === 'freeze' && control) {
+        control.markAsTouched();
+        return control.valid;
+      }
+      return true;
+    }
+    if (this.currentStep === 3) {
+      if (!this.courtOrderFile) {
+        alert('Please upload the mandatory Court Order PDF.');
+        return false;
+      }
+      if (!this.aadhaarFile) {
+        alert('Please upload the Aadhaar Copy PDF/Image.');
+        return false;
+      }
+      if (!this.panFile) {
+        alert('Please upload the PAN Copy PDF/Image.');
+        return false;
+      }
+      return true;
+    }
+    return true;
+  }
+
+  setOrderType(type: string): void {
+    this.orderType = type;
+    this.createCaseForm.get('orderType')?.setValue(type);
+    
+    const amountControl = this.createCaseForm.get('freezeAmount');
+    if (type === 'enquiry') {
+      amountControl?.clearValidators();
+      amountControl?.setValue(null);
+    } else {
+      amountControl?.setValidators([Validators.min(0)]);
+    }
+    amountControl?.updateValueAndValidity();
+  }
+
+  onFileSelected(event: any, type: string): void {
+    const input = event.target as HTMLInputElement;
+    if (input && input.files && input.files.length > 0) {
+      const file = input.files[0];
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`File ${file.name} exceeds the 5MB limit.`);
+        return;
+      }
+      
+      if (type === 'courtOrder') {
+        this.courtOrderFile = file;
+      } else if (type === 'aadhaar') {
+        this.aadhaarFile = file;
+      } else if (type === 'pan') {
+        this.panFile = file;
+      }
+    }
+  }
+
+  removeFile(type: string): void {
+    if (type === 'courtOrder') {
+      this.courtOrderFile = null;
+    } else if (type === 'aadhaar') {
+      this.aadhaarFile = null;
+    } else if (type === 'pan') {
+      this.panFile = null;
+    }
+  }
+
+  onLogout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  submitCase(): void {
+    if (this.createCaseForm.invalid) {
+      this.createCaseForm.markAllAsTouched();
+      return;
+    }
+
+    if (!this.courtOrderFile || !this.aadhaarFile || !this.panFile) {
+      alert('Please upload all three mandatory files before submitting.');
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    const formData = new FormData();
+    formData.append('complainantName', this.createCaseForm.get('complainantName')?.value || '');
+    formData.append('complainantId', this.createCaseForm.get('complainantId')?.value || '');
+    formData.append('defendantName', this.createCaseForm.get('defendantName')?.value || '');
+    formData.append('defendantId', this.createCaseForm.get('defendantId')?.value || '');
+    formData.append('defendantAccountNumber', this.createCaseForm.get('defendantAccountNumber')?.value || '');
+    formData.append('defendantBankName', this.createCaseForm.get('defendantBankName')?.value || '');
+    
+    const mappedOrderType = this.orderType === 'freeze' ? 'FreezeAccount' : 'BalanceEnquiry';
+    formData.append('orderType', mappedOrderType);
+
+    const amount = this.createCaseForm.get('freezeAmount')?.value;
+    if (amount !== null && amount !== undefined && this.orderType === 'freeze') {
+      formData.append('freezeAmount', amount.toString());
+    }
+
+    // Append dedicated files individually
+    formData.append('courtOrderFile', this.courtOrderFile);
+    formData.append('aadhaarFile', this.aadhaarFile);
+    formData.append('panFile', this.panFile);
+
+    this.caseService.createCase(formData).subscribe({
+      next: (res) => {
+        this.isSubmitting = false;
+        this.submitSuccess = true;
+        this.referenceId = res.caseNumber;
+        alert(`Case Submitted Successfully. Reference ID: ${this.referenceId}`);
+        this.router.navigate(['/court/dashboard']);
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        alert(err.error?.message || 'An error occurred while submitting the case.');
+      }
+    });
   }
 }

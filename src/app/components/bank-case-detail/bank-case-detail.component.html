@@ -1,206 +1,161 @@
-<app-navbar></app-navbar>
-
-<div class="detail-container" *ngIf="caseDetail">
-  <div class="header-nav">
-    <button mat-button routerLink="/bank/cases">
-      <mat-icon>arrow_back</mat-icon>
-      Back to Inbox
-    </button>
+<div class="max-w-7xl mx-auto" *ngIf="caseDetails">
+  
+  <!-- Header -->
+  <div class="mb-6">
+    <div class="text-xs font-bold text-primary tracking-wider mb-1 uppercase">CASE ID: {{ caseDetails.caseNumber }}</div>
+    <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Case Details</h1>
   </div>
 
-  <div class="cards-layout">
+  <div class="flex flex-col lg:flex-row gap-6">
     
-    <div class="left-cards">
-      <!-- Card 1: Court Order Details -->
-      <mat-card class="detail-card">
-        <mat-card-header>
-          <div class="card-header-title">
-            <mat-card-title>Order details: {{ caseDetail.caseNumber }}</mat-card-title>
-            <app-status-badge [status]="caseDetail.status"></app-status-badge>
+    <!-- Left Column -->
+    <div class="lg:w-2/3 space-y-6">
+      
+      <!-- Court Case Information -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <mat-icon class="text-primary text-sm">gavel</mat-icon>
+          <h3 class="text-lg font-bold text-gray-900">Court Case Information</h3>
+        </div>
+        <div class="grid grid-cols-2 gap-8 mt-6">
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">COMPLAINANT</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.complainantName }}</div>
+            <div class="text-sm text-gray-500 mt-1">{{ caseDetails.complainantIdentityNumber }}</div>
           </div>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="info-grid">
-            <div class="info-item">
-              <span class="label">Complainant</span>
-              <span class="val">{{ caseDetail.complainantName }}</span>
-            </div>
-            <div class="info-item">
-              <span class="label">Defendant</span>
-              <span class="val">{{ caseDetail.defendantName }}</span>
-            </div>
-            <div class="info-item">
-              <span class="label">Target Account</span>
-              <app-masked-text [value]="caseDetail.defendantAccountNumber"></app-masked-text>
-            </div>
-            <div class="info-item">
-              <span class="label">Order Type</span>
-              <span class="val">{{ caseDetail.orderType }}</span>
-            </div>
-            <div class="info-item" *ngIf="caseDetail.orderType === 'FreezeAccount'">
-              <span class="label">Requested Freeze Limit</span>
-              <span class="val">{{ caseDetail.freezeAmount | currency:'INR':'symbol' }}</span>
-            </div>
-            <div class="info-item">
-              <span class="label">Received At</span>
-              <span class="val">{{ caseDetail.createdAt | date:'medium' }}</span>
-            </div>
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">DEFENDANT</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.defendantName }}</div>
           </div>
+        </div>
+      </div>
 
-          <hr />
+      <!-- Defendant Information Section -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <mat-icon class="text-primary text-sm">person</mat-icon>
+          <h3 class="text-lg font-bold text-gray-900">Defendant Information</h3>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Account Holder Name</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.defendantName }}</div>
+          </div>
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Masked Aadhaar</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.defendantAadhaar }}</div>
+          </div>
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Masked PAN</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.defendantPan }}</div>
+          </div>
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Masked Account Number</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.defendantAccountNumber }}</div>
+          </div>
+        </div>
+      </div>
 
-          <h3>Legal Document Attachments</h3>
-          <div class="docs-list">
-            <div class="doc-item" *ngFor="let doc of caseDetail.documents">
+      <!-- Case Documents -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Case Documents</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div *ngFor="let doc of caseDetails.documents" class="border border-gray-100 rounded-lg p-4 bg-gray-50/50 flex flex-col items-center text-center">
+            <div class="w-10 h-10 bg-primary-light text-primary rounded flex items-center justify-center mb-3">
               <mat-icon>insert_drive_file</mat-icon>
-              <div class="doc-info">
-                <span class="doc-type">{{ doc.documentType }}</span>
-                <a [href]="doc.fileUrl" target="_blank" class="doc-link">{{ doc.fileName }}</a>
-              </div>
+            </div>
+            <div class="font-bold text-sm text-gray-900 mb-1">{{ doc.documentType }}</div>
+            <div class="text-xs text-gray-500 mb-4">{{ doc.fileName }} • {{ (doc.fileSize / 1024).toFixed(1) }} KB</div>
+            <div class="flex gap-2 w-full mt-auto">
+              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors">PREVIEW</button>
+              <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors" (click)="downloadDocument(doc.id)">DOWNLOAD</button>
             </div>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
 
-      <!-- Card 2: Batch Validation Result -->
-      <mat-card class="detail-card validation-card">
-        <mat-card-header>
-          <mat-card-title>Automated Batch Validation Result</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="info-grid" *ngIf="caseDetail.matchedAccountNumber">
-            <div class="info-item">
-              <span class="label">Matched Account Number</span>
-              <app-masked-text [value]="caseDetail.matchedAccountNumber"></app-masked-text>
-            </div>
-            <div class="info-item">
-              <span class="label">Available Balance</span>
-              <span class="val">{{ caseDetail.matchedBalance | currency:'INR':'symbol' }}</span>
-            </div>
-            <div class="info-item">
-              <span class="label">Account Status</span>
-              <span class="val active-status">{{ caseDetail.matchedAccountStatus }}</span>
-            </div>
+      <!-- Case Response -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+        <div class="flex items-center gap-2 mb-4">
+          <mat-icon class="text-primary text-sm">reply</mat-icon>
+          <h3 class="text-lg font-bold text-gray-900">Case Response</h3>
+        </div>
+        
+        <div *ngIf="isAwaitingAction" class="mt-4">
+          <div class="mb-4">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">RESPONSE REMARKS</div>
+            <textarea [(ngModel)]="remarks" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter any additional notes or remarks regarding this action..."></textarea>
           </div>
+          <button (click)="navigateToResponse()" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-3 rounded-lg flex justify-center items-center gap-2 transition-colors">
+            <mat-icon class="text-sm">play_arrow</mat-icon> SUBMIT RESPONSE
+          </button>
+        </div>
 
-          <div class="no-match-alert" *ngIf="!caseDetail.matchedAccountNumber">
-            <mat-icon>report_problem</mat-icon>
-            <div class="alert-info">
-              <span>Account Not Found / Pending Batch Match</span>
-              <p>Validation has either not run yet, or failed to identify any customer profile matching the Aadhaar/PAN/Account parameters.</p>
-            </div>
+        <div *ngIf="isResponded && caseDetails.response" class="mt-4 grid grid-cols-2 gap-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
+          <div>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Response Type</div>
+            <div class="font-semibold text-gray-900">{{ caseDetails.response.responseType }}</div>
           </div>
-        </mat-card-content>
-      </mat-card>
+          <div *ngIf="caseDetails.response.freezeAmountApplied !== null">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Amount Frozen</div>
+            <div class="font-semibold text-gray-900">₹ {{ caseDetails.response.freezeAmountApplied }}</div>
+          </div>
+          <div *ngIf="caseDetails.response.balanceReported !== null">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Balance Reported</div>
+            <div class="font-semibold text-gray-900">₹ {{ caseDetails.response.balanceReported }}</div>
+          </div>
+          <div class="col-span-2">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Remarks</div>
+            <div class="text-sm text-gray-700">{{ caseDetails.response.remarks }}</div>
+          </div>
+          <div class="col-span-2">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Submitted At</div>
+            <div class="text-sm text-gray-500">{{ caseDetails.response.submittedAt | date:'medium' }}</div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
-    <!-- Card 3: Response (Interactive Form or Read-only) -->
-    <div class="right-cards">
-      
-      <!-- Interactive Form -->
-      <mat-card class="detail-card response-form-card" *ngIf="caseDetail.status === 'AccountValidated'">
-        <mat-card-header>
-          <mat-card-title>Action Required: Submit Response</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form [formGroup]="responseForm" (ngSubmit)="onSubmit()" class="response-form">
-            
-            <div class="download-order-box">
-              <mat-icon>info</mat-icon>
-              <span>
-                Please download and review the official <a [href]="getCourtOrderUrl()" target="_blank">Court Order PDF</a> before submitting the balance or freeze confirmation.
-              </span>
-            </div>
+    <!-- Right Column (Validation Results) -->
+    <div class="lg:w-1/3">
+      <div class="bg-[#0f172a] rounded-xl shadow-lg p-6 text-white sticky top-24">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-lg font-bold">Validation Results</h3>
+          <mat-icon class="text-primary-light">verified_user</mat-icon>
+        </div>
 
-            <mat-form-field appearance="outline" *ngIf="caseDetail.orderType === 'FreezeAccount'">
-              <mat-label>Actual Amount Frozen (INR)</mat-label>
-              <input matInput type="number" formControlName="reportedAmount" placeholder="Enter amount frozen" />
-              <mat-error *ngIf="responseForm.get('reportedAmount')?.hasError('required')">
-                Reported Amount is required
-              </mat-error>
-              <mat-error *ngIf="responseForm.get('reportedAmount')?.hasError('min')">
-                Must be greater than zero
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" *ngIf="caseDetail.orderType === 'BalanceEnquiry'">
-              <mat-label>Reported Balance (INR)</mat-label>
-              <input matInput type="number" formControlName="reportedAmount" placeholder="Pre-filled customer balance" />
-              <mat-error *ngIf="responseForm.get('reportedAmount')?.hasError('required')">
-                Reported Balance is required
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Remarks / Auditing Note</mat-label>
-              <textarea matInput formControlName="remarks" rows="4" placeholder="Enter audit observations (e.g. Account frozen, balance reported)"></textarea>
-              <mat-error *ngIf="responseForm.get('remarks')?.hasError('required')">
-                Remarks are required
-              </mat-error>
-            </mat-form-field>
-
-            <button mat-raised-button color="accent" type="submit" [disabled]="responseForm.invalid || isSubmitting">
-              <mat-icon>send</mat-icon>
-              Submit Response
-            </button>
-          </form>
-        </mat-card-content>
-      </mat-card>
-
-      <!-- Read-only View -->
-      <mat-card class="detail-card response-form-card terminal-response-card" *ngIf="caseDetail.status !== 'AccountValidated'">
-        <mat-card-header>
-          <mat-card-title>Response History</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div *ngIf="caseDetail.response" class="response-display">
-            <div class="info-item">
-              <span class="label">Response Status</span>
-              <span class="val bold-val">{{ caseDetail.response.responseType }}</span>
-            </div>
-
-            <div class="info-item" *ngIf="caseDetail.response.reportedAmount !== undefined && caseDetail.response.reportedAmount !== null">
-              <span class="label">Confirmed Amount</span>
-              <span class="val">{{ caseDetail.response.reportedAmount | currency:'INR':'symbol' }}</span>
-            </div>
-
-            <div class="info-item">
-              <span class="label">Remarks</span>
-              <p class="val remarks-display">{{ caseDetail.response.remarks }}</p>
-            </div>
-
-            <div class="info-item">
-              <span class="label">Responded At</span>
-              <span class="val">{{ caseDetail.response.respondedAt | date:'medium' }}</span>
-            </div>
-
-            <div class="info-item">
-              <span class="label">Origin</span>
-              <span class="val italic-val">{{ caseDetail.response.isSystemGenerated ? 'Background Job' : 'Bank Manual Processing' }}</span>
-            </div>
+        <div class="space-y-6">
+          <!-- Matched Account -->
+          <div class="bg-[#1e293b] p-4 rounded-lg relative border border-gray-700">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">MATCHED ACCOUNT #</div>
+            <div class="text-xl font-bold font-mono tracking-wider break-all">{{ caseDetails.matchedAccountNumber }}</div>
+            <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 text-green-400 text-sm">check_circle</mat-icon>
           </div>
 
-          <div *ngIf="!caseDetail.response" class="pending-validation-state">
-            <mat-icon>hourglass_empty</mat-icon>
-            <p>Pending Validation</p>
-            <span>Response will be active once account validation finishes.</span>
+          <!-- Account Status -->
+          <div class="flex justify-between items-center border-b border-gray-700 pb-4">
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">ACCOUNT STATUS</div>
+            <div class="px-2 py-1 text-xs font-bold rounded bg-primary-light text-primary uppercase">{{ caseDetails.accountStatus }}</div>
           </div>
-        </mat-card-content>
-      </mat-card>
 
+          <!-- Current Balance -->
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">CURRENT BALANCE (VERIFIED)</div>
+              <span class="text-[8px] font-bold bg-green-900 text-green-400 px-1.5 py-0.5 rounded">READ ONLY</span>
+            </div>
+            <div class="text-2xl font-bold tracking-tight">₹{{ caseDetails.currentBalance }}</div>
+          </div>
+
+          <!-- Validation Timestamp -->
+          <div class="pt-4 border-t border-gray-700">
+             <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">VALIDATION TIMESTAMP</div>
+             <div class="text-sm text-gray-300">{{ caseDetails.validationTimestamp | date:'medium' }}</div>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
-</div>
-
-<div class="loading-state" *ngIf="isLoading">
-  <mat-spinner></mat-spinner>
-</div>
-
-<div class="error-container" *ngIf="errorMessage">
-  <mat-card class="error-card">
-    <mat-icon>error_outline</mat-icon>
-    <p>{{ errorMessage }}</p>
-    <button mat-raised-button color="primary" routerLink="/bank/cases">Back to Inbox</button>
-  </mat-card>
 </div>

@@ -1,90 +1,68 @@
-/*
- * File: bank-dashboard.component.ts
- * Description: Controller for the Bank Officer dashboard page.
- * To Implement: Handle batch refresh timer state.
- */
-
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { CaseInboxService } from '../../services/case-inbox.service';
-import { BatchService, BatchJobLog } from '../../services/batch.service';
-import { NavbarComponent } from '../navbar/navbar.component';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-bank-dashboard',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-    NavbarComponent
-  ],
-  templateUrl: './bank-dashboard.component.html',
-  styleUrls: ['./bank-dashboard.component.scss']
+  imports: [CommonModule],
+  template: `
+    <div class="welcome-card">
+      <h1>Welcome, Bank Officer!</h1>
+      <p>This is a sample Bank Dashboard proving redirection works successfully.</p>
+      <div class="status-indicator">
+        <span class="dot active"></span>
+        <span class="status-text">Connection Secure: Local MySQL DB</span>
+      </div>
+    </div>
+  `,
+  styles: [`
+    :host {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100%;
+    }
+    .welcome-card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+    .welcome-card h1 {
+      color: #0f172a;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+    .welcome-card p {
+      color: #64748b;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #f0fdf4;
+      border: 1px solid #dcfce7;
+      color: #15803d;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #22c55e;
+      border-radius: 50%;
+    }
+  `]
 })
-export class BankDashboardComponent implements OnInit {
-  private inboxService = inject(CaseInboxService);
-  private batchService = inject(BatchService);
-  private snackBar = inject(MatSnackBar);
-
-  awaitingActionCount = 0;
-  completedCount = 0;
-  autoResolvedCount = 0;
-  pendingBatchCount = 0;
-
-  lastRun: BatchJobLog | null = null;
-  isTriggering = false;
-
-  ngOnInit(): void {
-    this.loadStats();
-    this.loadBatchLog();
-  }
-
-  loadStats(): void {
-    this.inboxService.getCasesForBank().subscribe({
-      next: (cases) => {
-        this.awaitingActionCount = cases.filter(c => c.status === 'AccountValidated').length;
-        this.completedCount = cases.filter(c => c.status === 'FreezeApplied' || c.status === 'BalanceProvided').length;
-        this.autoResolvedCount = cases.filter(c => c.status === 'AccountNotFound').length;
-        this.pendingBatchCount = cases.filter(c => c.status === 'Pending').length;
-      }
-    });
-  }
-
-  loadBatchLog(): void {
-    this.batchService.getLastRun().subscribe({
-      next: (log) => {
-        this.lastRun = log;
-      },
-      error: () => {
-        this.lastRun = null;
-      }
-    });
-  }
-
-  triggerBatchNow(): void {
-    this.isTriggering = true;
-    this.batchService.triggerManualRun().subscribe({
-      next: (log) => {
-        this.isTriggering = false;
-        this.snackBar.open('Batch job ran successfully!', 'Close', { duration: 5000 });
-        this.loadStats();
-        this.loadBatchLog();
-      },
-      error: (err) => {
-        this.isTriggering = false;
-        this.snackBar.open(err.error?.Message || 'Failed to trigger batch validation.', 'Close', { duration: 5000 });
-      }
-    });
-  }
+export class BankDashboardComponent {
+  // No methods needed now
 }

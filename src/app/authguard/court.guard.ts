@@ -1,9 +1,3 @@
-/*
- * File: court.guard.ts
- * Description: Guard checking that the logged-in user role is CourtOfficer.
- * To Implement: Handle redirect routes securely.
- */
-
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
@@ -14,11 +8,10 @@ export const courtGuard: CanActivateFn = (route, state) => {
 
   if (tokenService.getToken() && !tokenService.isTokenExpired()) {
     const role = tokenService.getRole();
-    if (role === 'CourtOfficer') {
+    if (role === 'Court') {
       return true;
     }
-    // If bank officer is logged in, redirect them to bank dashboard
-    if (role === 'BankOfficer') {
+    if (role === 'Bank') {
       router.navigate(['/bank/dashboard']);
       return false;
     }
