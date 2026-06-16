@@ -8,12 +8,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BatchStatisticsDto, BatchHistoryResponseDto, BatchRunResponse } from './batch-processing.model';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class BatchProcessingService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:5000/api';
+  private baseUrl = environment.apiUrl;
 
   getStatistics(): Observable<BatchStatisticsDto> {
     return this.http.get<BatchStatisticsDto>(`${this.baseUrl}/batch/statistics`);
