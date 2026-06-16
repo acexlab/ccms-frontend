@@ -68,7 +68,7 @@ stages:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          az aks get-credentials --resource-group ccms-rg --name ccms-aks --overwrite-existing
+          az aks get-credentials --resource-group ccms-prod-rg --name ccms-prod-cluster --overwrite-existing
           
           # Create Namespace if not exists
           kubectl create namespace $(k8sNamespace) --dry-run=client -o yaml | kubectl apply -f -
