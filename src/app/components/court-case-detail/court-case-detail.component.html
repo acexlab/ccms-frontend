@@ -1,2 +1,226 @@
-<!-- Card 1: Case Details -->
-<!-- Card 2: Bank Response -->
+<div class="p-8" *ngIf="caseDetails">
+  <div class="max-w-7xl mx-auto">
+    
+    <!-- Error Banner -->
+    <div *ngIf="errorMessage" class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-center gap-2">
+      <span class="material-symbols-outlined text-red-500">error</span>
+      {{ errorMessage }}
+    </div>
+
+    <!-- Case Detail Header -->
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="text-xs font-bold text-primary tracking-wider mb-1 uppercase">CASE REFERENCE ID: {{ caseDetails.caseNumber }}</div>
+        <h1 class="text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-3">
+          Judicial Order Detail
+          <span [class]="getStatusClass(caseDetails.status)">
+            {{ formatStatus(caseDetails.status) }}
+          </span>
+        </h1>
+      </div>
+      <div>
+        <a routerLink="/court/dashboard" class="flex items-center gap-1.5 px-4 py-2 bg-gray-150 hover:bg-gray-250 text-gray-700 rounded-lg text-sm font-medium transition-all">
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+
+        <!-- Body Layout Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          <!-- Left Column (Case Details & Documents): 7 cols -->
+          <div class="lg:col-span-7 space-y-6">
+            
+            <!-- Complainant Info -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-150 p-6">
+              <div class="flex items-center gap-2 mb-4 border-b border-gray-100 pb-3">
+                <span class="material-symbols-outlined text-primary text-lg">gavel</span>
+                <h3 class="text-lg font-bold text-gray-900">Judicial Complainant</h3>
+              </div>
+              <div class="grid grid-cols-2 gap-6">
+                <div>
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Full Legal Name</div>
+                  <div class="font-semibold text-gray-950">{{ caseDetails.complainantName }}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Identity Number</div>
+                  <div class="font-semibold text-gray-950 font-mono">{{ caseDetails.complainantIdentityNumber }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Defendant Information -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-150 p-6">
+              <div class="flex items-center gap-2 mb-4 border-b border-gray-100 pb-3">
+                <span class="material-symbols-outlined text-primary text-lg">person</span>
+                <h3 class="text-lg font-bold text-gray-900">Defendant details</h3>
+              </div>
+              <div class="grid grid-cols-2 gap-6">
+                <div>
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Legal Defendant Name</div>
+                  <div class="font-semibold text-gray-950">{{ caseDetails.defendantName }}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Masked Aadhaar</div>
+                  <div class="font-semibold text-gray-950 font-mono">{{ caseDetails.defendantAadhaar }}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Masked PAN</div>
+                  <div class="font-semibold text-gray-950 font-mono">{{ caseDetails.defendantPan }}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 font-semibold">Masked Account Number</div>
+                  <div class="font-semibold text-gray-950 font-mono">{{ caseDetails.defendantAccountNumber }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Case Documents -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-150 p-6">
+              <div class="flex items-center gap-2 mb-4 border-b border-gray-100 pb-3">
+                <span class="material-symbols-outlined text-primary text-lg">description</span>
+                <h3 class="text-lg font-bold text-gray-950">Official Exhibits & Documents</h3>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div *ngFor="let doc of caseDetails.documents" class="border border-gray-150 rounded-lg p-4 bg-gray-50/50 flex flex-col items-center text-center">
+                  <div class="w-10 h-10 bg-primary-light text-primary rounded flex items-center justify-center mb-3">
+                    <span class="material-symbols-outlined">insert_drive_file</span>
+                  </div>
+                  <div class="font-bold text-sm text-gray-950 mb-1 leading-tight">{{ doc.documentType === 'CourtOrder' ? 'Court Order' : (doc.documentType === 'AadhaarCopy' ? 'Aadhaar Copy' : 'PAN Copy') }}</div>
+                  <div class="text-[11px] text-gray-500 mb-4 truncate w-full" [title]="doc.fileName">{{ doc.fileName }}</div>
+                  <div class="flex gap-2 w-full mt-auto">
+                    <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors" (click)="previewDocument(doc)">PREVIEW</button>
+                    <button class="flex-1 py-1.5 text-xs font-bold text-primary bg-primary-light rounded hover:bg-primary-container transition-colors" (click)="downloadDocument(doc)">DOWNLOAD</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bank Response Action Log -->
+            <div *ngIf="caseDetails.response" class="bg-white rounded-xl shadow-sm border border-gray-150 p-6">
+              <div class="flex items-center gap-2 mb-4 border-b border-gray-100 pb-3">
+                <span class="material-symbols-outlined text-primary text-lg">reply</span>
+                <h3 class="text-lg font-bold text-gray-950">Bank Compliance Response Log</h3>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-5 rounded-lg border border-gray-200">
+                <div>
+                  <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Compliance Response Type</div>
+                  <div class="font-semibold text-slate-800 text-sm">{{ caseDetails.response.responseType === 'FreezeApplied' ? 'Account Freeze Applied' : (caseDetails.response.responseType === 'BalanceProvided' ? 'Balance Details Disclosed' : 'Account Not Found') }}</div>
+                </div>
+                <div *ngIf="caseDetails.response.freezeAmountApplied !== null">
+                  <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Frozen Amount</div>
+                  <div class="font-extrabold text-rose-700 text-base">₹ {{ caseDetails.response.freezeAmountApplied.toLocaleString('en-IN') }}</div>
+                </div>
+                <div *ngIf="caseDetails.response.balanceReported !== null">
+                  <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Reported Balance</div>
+                  <div class="font-extrabold text-slate-800 text-base">₹ {{ caseDetails.response.balanceReported.toLocaleString('en-IN') }}</div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Submitted By</div>
+                  <div class="text-slate-800 text-sm font-semibold">{{ caseDetails.response.processedBy || 'N/A' }}</div>
+                </div>
+                <div class="col-span-1 md:col-span-2">
+                  <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-semibold">Remarks</div>
+                  <div class="text-slate-700 text-sm bg-white p-3 rounded border border-gray-150 leading-relaxed">{{ caseDetails.response.remarks }}</div>
+                </div>
+                <div class="col-span-1 md:col-span-2">
+                  <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Submission Timestamp</div>
+                  <div class="text-xs text-slate-500 font-medium">{{ caseDetails.response.submittedAt | date:'medium':'+0530' }} IST</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column (Validation Results & Live PDF View): 5 cols -->
+          <div class="lg:col-span-5 space-y-6">
+            
+            <!-- Validation Summary Card -->
+            <div class="bg-[#0f172a] rounded-xl shadow-lg p-6 text-white">
+              <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold">Background Verification Results</h3>
+                <span class="material-symbols-outlined text-primary-light">verified_user</span>
+              </div>
+
+              <!-- Pending Case Message -->
+              <div *ngIf="caseDetails.status === 'Pending'" class="bg-amber-950/40 border border-amber-800/60 p-4 rounded-lg flex items-start gap-3">
+                <span class="material-symbols-outlined text-amber-500 mt-0.5">hourglass_empty</span>
+                <div>
+                  <div class="font-bold text-amber-400 text-sm">Awaiting Scan Batch</div>
+                  <div class="text-xs text-amber-300 mt-1">This case registration is pending the validation engine run. Accounts are scanned and validated in automated scheduled windows.</div>
+                </div>
+              </div>
+
+              <!-- Account Not Found Message -->
+              <div *ngIf="caseDetails.status === 'AccountNotFound'" class="bg-red-950/40 border border-red-800/60 p-4 rounded-lg flex items-start gap-3">
+                <span class="material-symbols-outlined text-red-500 mt-0.5">report_problem</span>
+                <div>
+                  <div class="font-bold text-red-400 text-sm">Institutional Search Failed</div>
+                  <div class="text-xs text-red-300 mt-1">No matching active bank account associated with the given Defendant Details was found at the target bank.</div>
+                </div>
+              </div>
+
+              <!-- Validated Account Info -->
+              <div *ngIf="caseDetails.status !== 'Pending' && caseDetails.status !== 'AccountNotFound'" class="space-y-6">
+                <div class="bg-[#1e293b] p-4 rounded-lg relative border border-gray-700">
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">MATCHED ACCOUNT NUMBER</div>
+                  <div class="text-lg font-bold font-mono tracking-wider break-all text-green-400">{{ caseDetails.matchedAccountNumber || 'N/A' }}</div>
+                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-green-400">check_circle</span>
+                </div>
+
+                <div class="flex justify-between items-center border-b border-gray-700 pb-4">
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">ACCOUNT STATUS</div>
+                  <div class="px-2 py-1 text-xs font-bold rounded bg-green-900/50 text-green-400 border border-green-800 uppercase">{{ caseDetails.accountStatus || 'ACTIVE' }}</div>
+                </div>
+
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">VERIFIED AVAILABLE BALANCE</div>
+                    <span class="text-[8px] font-bold bg-green-900 text-green-400 px-1.5 py-0.5 rounded">READ ONLY</span>
+                  </div>
+                  <div class="text-2xl font-bold tracking-tight text-white">₹ {{ caseDetails.currentBalance !== null ? caseDetails.currentBalance.toLocaleString('en-IN') : '--' }}</div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-700">
+                  <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">VALIDATION TIMESTAMP</div>
+                  <div class="text-xs text-gray-300">{{ caseDetails.validationTimestamp | date:'medium':'+0530' }} IST</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Court Order Document Viewer Frame -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-150 overflow-hidden flex flex-col h-[500px]" *ngIf="courtOrderDoc">
+              <div class="bg-gray-50 border-b border-gray-150 px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary">gavel</span>
+                  <span class="font-bold text-gray-700 text-sm truncate max-w-[200px]">{{ courtOrderDoc.fileName }}</span>
+                </div>
+                <div>
+                  <button class="p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded" title="Download Order" (click)="downloadDocument(courtOrderDoc)">
+                    <span class="material-symbols-outlined text-sm">download</span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex-1 relative bg-gray-100 flex flex-col justify-center items-center">
+                <!-- Loading -->
+                <div *ngIf="isPdfLoading" class="absolute inset-0 flex flex-col justify-center items-center bg-gray-50 z-10">
+                  <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mb-2"></div>
+                  <p class="text-gray-500 text-xs font-semibold">Generating Live Preview...</p>
+                </div>
+                
+                <!-- PDF Frame -->
+                <iframe *ngIf="courtOrderUrl" [src]="courtOrderUrl" class="w-full h-full border-none"></iframe>
+                
+                <!-- Fallback if no URL -->
+                <div *ngIf="!courtOrderUrl && !isPdfLoading" class="text-gray-500 flex flex-col items-center">
+                  <span class="material-symbols-outlined text-3xl text-gray-400 mb-2">error</span>
+                  <p class="text-sm">Live Preview not available.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>

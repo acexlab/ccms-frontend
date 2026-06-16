@@ -1,4 +1,5 @@
-<div class="max-w-7xl mx-auto space-y-8">
+<div class="p-8">
+  <div class="max-w-7xl mx-auto space-y-8">
         
   <!-- Header Section -->
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -22,7 +23,7 @@
   <div>
     <!-- Skeleton Loading -->
     <div *ngIf="!store.statistics()" class="grid grid-cols-1 md:grid-cols-4 gap-6 animate-pulse">
-      <mat-card *ngFor="let i of [1,2,3,4]" class="rounded-xl border border-gray-100 shadow-sm bg-white">
+      <mat-card *ngFor="let i of [1,2,3,4]" class="stat-card">
         <mat-card-content class="p-6">
           <div class="h-4 w-24 bg-gray-200 rounded mb-4"></div>
           <div class="h-8 w-20 bg-gray-200 rounded"></div>
@@ -34,7 +35,7 @@
     <div *ngIf="store.statistics() as stats" class="grid grid-cols-1 md:grid-cols-4 gap-6">
       
       <!-- Card 1: Cases Processed -->
-      <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
+      <mat-card class="stat-card cursor-default">
         <mat-card-content class="p-6">
           <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
             Cases Processed
@@ -42,16 +43,17 @@
           </div>
           <div class="flex items-baseline gap-3">
             <span class="text-3xl font-bold text-primary tracking-tight">{{ stats.casesProcessed | number }}</span>
-            <span class="flex items-center gap-0.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-              <mat-icon class="text-[14px] w-[14px] h-[14px]">trending_up</mat-icon>
-              +12%
+            <span [ngClass]="stats.changeRate >= 0 ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'"
+                  class="flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full">
+              <mat-icon class="text-[14px] w-[14px] h-[14px]">{{ stats.changeRate >= 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+              {{ stats.changeRate >= 0 ? '+' : '' }}{{ stats.changeRate }}%
             </span>
           </div>
         </mat-card-content>
       </mat-card>
 
       <!-- Card 2: Accounts Matched -->
-      <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
+      <mat-card class="stat-card cursor-default">
         <mat-card-content class="p-6">
           <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
             Accounts Matched
@@ -65,7 +67,7 @@
       </mat-card>
 
       <!-- Card 3: Accounts Not Found -->
-      <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
+      <mat-card class="stat-card cursor-default">
         <mat-card-content class="p-6">
           <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
             Accounts Not Found
@@ -73,13 +75,13 @@
           </div>
           <div class="flex flex-col">
             <span class="text-3xl font-bold text-primary tracking-tight">{{ stats.accountsNotFound | number }}</span>
-            <span class="text-xs text-gray-500 font-medium mt-1">4.7% Rate</span>
+            <span class="text-xs text-gray-500 font-medium mt-1">{{ stats.notFoundRate }}% Rate</span>
           </div>
         </mat-card-content>
       </mat-card>
 
       <!-- Card 4: Duration -->
-      <mat-card class="stat-card rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white cursor-default">
+      <mat-card class="stat-card cursor-default">
         <mat-card-content class="p-6">
           <div class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-3 flex items-center justify-between">
             Duration
@@ -96,7 +98,7 @@
   </div>
 
   <!-- History Table Section -->
-  <mat-card class="rounded-xl border border-gray-200 shadow-sm bg-white overflow-hidden">
+  <mat-card class="stat-card overflow-hidden">
     <!-- Card Header with Filter -->
     <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-white">
       <h3 class="font-bold text-lg text-gray-900">Batch Execution History</h3>
@@ -150,11 +152,11 @@
               </td>
               <!-- Start Time -->
               <td class="p-5 text-sm text-gray-500 font-medium">
-                {{ run.startTime | date:'MMM d, yyyy HH:mm:ss' }}
+                {{ run.startTime | date:'MMM d, yyyy HH:mm:ss':'+0530' }} IST
               </td>
               <!-- End Time -->
               <td class="p-5 text-sm text-gray-500 font-medium">
-                {{ run.endTime ? (run.endTime | date:'MMM d, yyyy HH:mm:ss') : '--' }}
+                {{ run.endTime ? (run.endTime | date:'MMM d, yyyy HH:mm:ss':'+0530') + ' IST' : '--' }}
               </td>
               <!-- Duration -->
               <td class="p-5 text-sm text-gray-500 font-semibold">
@@ -212,4 +214,5 @@
     </div>
   </mat-card>
 
+  </div>
 </div>

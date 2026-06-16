@@ -7,6 +7,12 @@ dist/
 tmp/
 out-tsc/
 
+# Playwright E2E testing outputs
+playwright-report/
+test-results/
+.playwright/
+junit/
+
 # IDEs and editors
 .idea/
 .vscode/
