@@ -80,9 +80,9 @@ export class CreateCaseComponent implements OnInit {
   referenceId = '';
 
   // Dedicated file properties for individual uploads
-  courtOrderFile: File | null = null;
   aadhaarFile: File | null = null;
   panFile: File | null = null;
+  courtOrderFile: File | null = null;
 
   createCaseForm: FormGroup = this.fb.group({
     complainantName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]{3,100}$/)]],
@@ -158,16 +158,16 @@ export class CreateCaseComponent implements OnInit {
       return true;
     }
     if (this.currentStep === 3) {
-      if (!this.courtOrderFile) {
-        alert('Please upload the mandatory Court Order PDF.');
-        return false;
-      }
       if (!this.aadhaarFile) {
         alert('Please upload the Aadhaar Copy PDF/Image.');
         return false;
       }
       if (!this.panFile) {
         alert('Please upload the PAN Copy PDF/Image.');
+        return false;
+      }
+      if (!this.courtOrderFile) {
+        alert('Please upload the Court Order PDF/Image.');
         return false;
       }
       return true;
@@ -198,23 +198,23 @@ export class CreateCaseComponent implements OnInit {
         return;
       }
       
-      if (type === 'courtOrder') {
-        this.courtOrderFile = file;
-      } else if (type === 'aadhaar') {
+      if (type === 'aadhaar') {
         this.aadhaarFile = file;
       } else if (type === 'pan') {
         this.panFile = file;
+      } else if (type === 'courtOrder') {
+        this.courtOrderFile = file;
       }
     }
   }
 
   removeFile(type: string): void {
-    if (type === 'courtOrder') {
-      this.courtOrderFile = null;
-    } else if (type === 'aadhaar') {
+    if (type === 'aadhaar') {
       this.aadhaarFile = null;
     } else if (type === 'pan') {
       this.panFile = null;
+    } else if (type === 'courtOrder') {
+      this.courtOrderFile = null;
     }
   }
 
@@ -229,8 +229,8 @@ export class CreateCaseComponent implements OnInit {
       return;
     }
 
-    if (!this.courtOrderFile || !this.aadhaarFile || !this.panFile) {
-      alert('Please upload all three mandatory files before submitting.');
+    if (!this.aadhaarFile || !this.panFile || !this.courtOrderFile) {
+      alert('Please upload all mandatory files before submitting.');
       return;
     }
 
@@ -253,9 +253,9 @@ export class CreateCaseComponent implements OnInit {
     }
 
     // Append dedicated files individually
-    formData.append('courtOrderFile', this.courtOrderFile);
     formData.append('aadhaarFile', this.aadhaarFile);
     formData.append('panFile', this.panFile);
+    formData.append('courtOrderFile', this.courtOrderFile);
 
     this.caseService.createCase(formData).subscribe({
       next: (res) => {

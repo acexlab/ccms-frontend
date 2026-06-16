@@ -1,4 +1,5 @@
-      <div class="max-w-7xl mx-auto space-y-8">
+<div class="p-8">
+  <div class="max-w-7xl mx-auto space-y-8">
         
         <!-- Header Section -->
         <div>
@@ -117,7 +118,7 @@
                 <div class="flex gap-8 mb-6">
                   <div>
                     <div class="text-xs text-gray-500 font-medium mb-1">Last Run Time</div>
-                    <div class="font-semibold text-gray-900">{{ data.lastRunTime ? (data.lastRunTime | date:'shortTime') : 'Never' }}</div>
+                    <div class="font-semibold text-gray-900">{{ data.lastRunTime ? (data.lastRunTime | date:'shortTime':'+0530') + ' IST' : 'Never' }}</div>
                     <div class="text-xs text-gray-400 font-medium">{{ data.lastRunTime ? 'Today' : '' }}</div>
                   </div>
                   <div>
@@ -165,4 +166,5 @@
         </ng-container>
 
       </div>
+</div>
 

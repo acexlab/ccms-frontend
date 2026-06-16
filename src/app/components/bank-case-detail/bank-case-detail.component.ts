@@ -37,15 +37,22 @@ export class BankCaseDetailComponent implements OnInit {
     });
   }
 
-  downloadDocument(docId: number): void {
-    this.caseService.downloadDocument(this.caseNumber, docId).subscribe((blob) => {
+  downloadDocument(doc: any): void {
+    this.caseService.downloadAttachment(doc.id).subscribe((blob) => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'document';
+      a.download = doc.fileName || 'document';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
+    });
+  }
+
+  previewDocument(doc: any): void {
+    this.caseService.downloadAttachment(doc.id).subscribe((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
     });
   }
 
