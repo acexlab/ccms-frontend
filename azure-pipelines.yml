@@ -1,6 +1,7 @@
 # CCMS Frontend CI/CD Pipeline
 trigger:
 - main
+- frontend-main
 - deployment
 
 resources:
