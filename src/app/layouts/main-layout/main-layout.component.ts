@@ -18,8 +18,8 @@ import { AuthService } from '../../services/auth.service';
             <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1;">gavel</span>
           </div>
           <div>
-            <h1 class="text-primary text-xl font-bold tracking-tight">CCMS</h1>
-            <p class="text-[9px] text-gray-500 font-semibold -mt-1">JUDICIAL PORTAL</p>
+            <h1 class="text-primary text-xl font-bold tracking-tight m-0 leading-none">CCMS</h1>
+            <p class="text-[9px] text-gray-500 font-semibold m-0 leading-none mt-0.5">JUDICIAL PORTAL</p>
           </div>
         </div>
 
@@ -57,8 +57,8 @@ import { AuthService } from '../../services/auth.service';
         <!-- Right side: User name, Role, Logout -->
         <div class="flex items-center gap-4 w-1/4 justify-end">
           <div class="text-right hidden sm:block">
-            <p class="text-xs font-bold text-gray-900 leading-tight">{{ username }}</p>
-            <p class="text-[10px] text-gray-500 font-medium">{{ role === 'Court' ? 'Court Officer' : 'Bank Officer' }}</p>
+            <p class="text-xs font-bold text-gray-900 leading-tight m-0">{{ username }}</p>
+            <p class="text-[10px] text-gray-500 font-medium m-0 mt-0.5">{{ role === 'Court' ? 'Court Officer' : 'Bank Officer' }}</p>
           </div>
           <div class="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center text-primary font-bold text-xs shadow-sm border border-blue-100">
             {{ (username?.substring(0, 2) || 'US').toUpperCase() }}

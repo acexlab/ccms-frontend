@@ -9,6 +9,8 @@ export interface BatchStatisticsDto {
   accountsNotFound: number;
   duration: string;
   matchRate: number;
+  notFoundRate: number;
+  changeRate: number;
   avgDuration: string;
 }
 
