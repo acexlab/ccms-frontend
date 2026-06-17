@@ -93,9 +93,14 @@
                 <p *ngIf="createCaseForm.get('defendantName')?.touched && createCaseForm.get('defendantName')?.invalid" class="text-xs text-error mt-1 font-semibold">Name must contain only letters and spaces (3-100 characters)</p>
               </div>
               <div class="col-span-2 md:col-span-1">
-                <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Identity Number (Aadhaar/PAN)</label>
-                <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="defendantId" placeholder="ID Number" type="text"/>
-                <p *ngIf="createCaseForm.get('defendantId')?.touched && createCaseForm.get('defendantId')?.invalid" class="text-xs text-error mt-1 font-semibold">Must be a valid 12-digit Aadhaar or 10-char PAN (e.g. ABCDE1234F)</p>
+                <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Aadhaar Card Number</label>
+                <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="defendantId" placeholder="e.g. 123456789012" type="text"/>
+                <p *ngIf="createCaseForm.get('defendantId')?.touched && createCaseForm.get('defendantId')?.invalid" class="text-xs text-error mt-1 font-semibold">Must be a valid 12-digit Aadhaar number.</p>
+              </div>
+              <div class="col-span-2 md:col-span-1">
+                <label class="block font-label-md text-label-md text-on-surface-variant mb-1">PAN Card Number</label>
+                <input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-3 text-on-surface" formControlName="defendantPan" placeholder="e.g. ABCDE1234F" type="text"/>
+                <p *ngIf="createCaseForm.get('defendantPan')?.touched && createCaseForm.get('defendantPan')?.invalid" class="text-xs text-error mt-1 font-semibold">Must be a valid 10-char PAN card number (e.g. ABCDE1234F).</p>
               </div>
               <div class="col-span-2 md:col-span-1">
                 <label class="block font-label-md text-label-md text-on-surface-variant mb-1">Bank Account Number</label>
@@ -247,7 +252,7 @@
               <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Defendant Info</p>
               <p class="font-title-md text-title-md" id="rev-def-name">{{ createCaseForm.get('defendantName')?.value || '--' }}</p>
               <p class="text-sm text-on-surface-variant" id="rev-def-bank">{{ createCaseForm.get('defendantBankName')?.value }} ({{ createCaseForm.get('defendantAccountNumber')?.value }})</p>
-              <p class="text-sm text-on-surface-variant">Identity: {{ createCaseForm.get('defendantId')?.value || '--' }}</p>
+              <p class="text-sm text-on-surface-variant">Aadhaar: {{ createCaseForm.get('defendantId')?.value || '--' }} | PAN: {{ createCaseForm.get('defendantPan')?.value || '--' }}</p>
             </div>
             <div>
               <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Execution Details</p>

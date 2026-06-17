@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { CreateCaseComponent } from './create-case.component';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { CaseService } from '../../services/case.service';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 import { of, throwError } from 'rxjs';
 
 describe('CreateCaseComponent', () => {
@@ -13,6 +14,7 @@ describe('CreateCaseComponent', () => {
   let caseServiceSpy: jasmine.SpyObj<CaseService>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let routerSpy: jasmine.SpyObj<Router>;
+  let notificationService: NotificationService;
 
   beforeEach(async () => {
     caseServiceSpy = jasmine.createSpyObj('CaseService', ['getMyCases', 'createCase']);
@@ -39,6 +41,7 @@ describe('CreateCaseComponent', () => {
 
     fixture = TestBed.createComponent(CreateCaseComponent);
     component = fixture.componentInstance;
+    notificationService = TestBed.inject(NotificationService);
     fixture.detectChanges();
   });
 
@@ -62,6 +65,7 @@ describe('CreateCaseComponent', () => {
       complainantId: 'ABCDE1234F',
       defendantName: 'Rajesh Kumar',
       defendantId: '123456789012',
+      defendantPan: 'ABCDE1234F',
       defendantAccountNumber: '111122223333',
       defendantBankName: 'SBI'
     });
@@ -87,12 +91,12 @@ describe('CreateCaseComponent', () => {
   });
 
   it('should reject files exceeding 5MB', () => {
-    spyOn(window, 'alert');
+    spyOn(notificationService, 'error');
     const hugeFile = new File([new ArrayBuffer(6 * 1024 * 1024)], 'huge.pdf', { type: 'application/pdf' });
     const event = { target: { files: [hugeFile] } };
 
     component.onFileSelected(event, 'courtOrder');
-    expect(window.alert).toHaveBeenCalledWith('File huge.pdf exceeds the 5MB limit.');
+    expect(notificationService.error).toHaveBeenCalledWith('File huge.pdf exceeds the 5MB limit.');
     expect(component.courtOrderFile).toBeNull();
   });
 
@@ -107,13 +111,14 @@ describe('CreateCaseComponent', () => {
     expect(component.courtOrderFile).toBeNull();
   });
 
-  it('should submit case and redirect on success', () => {
-    spyOn(window, 'alert');
+  it('should submit case and redirect on success', fakeAsync(() => {
+    spyOn(notificationService, 'success');
     component.createCaseForm.patchValue({
       complainantName: 'Income Tax Dept',
       complainantId: 'ABCDE1234F',
       defendantName: 'Rajesh Kumar',
       defendantId: '123456789012',
+      defendantPan: 'ABCDE1234F',
       defendantAccountNumber: '111122223333',
       defendantBankName: 'SBI',
       orderType: 'freeze',
@@ -128,10 +133,11 @@ describe('CreateCaseComponent', () => {
     caseServiceSpy.createCase.and.returnValue(of({ caseNumber: 'CCMS-20260616-0001', id: 1 }));
 
     component.submitCase();
+    tick(400);
 
     expect(component.isSubmitting).toBeFalse();
     expect(component.submitSuccess).toBeTrue();
     expect(component.referenceId).toBe('CCMS-20260616-0001');
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/court/dashboard']);
-  });
+  }));
 });
