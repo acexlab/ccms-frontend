@@ -21,8 +21,7 @@ export class LoginComponent {
 
   loginForm: FormGroup = this.fb.group({
     username: ['', [Validators.required]],
-    password: ['', [Validators.required]],
-    rememberMe: [false]
+    password: ['', [Validators.required]]
   });
 
   isSubmitting = false;

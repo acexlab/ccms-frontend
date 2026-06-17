@@ -56,7 +56,6 @@
         <div class="input-group">
           <div class="label-row">
             <label for="password">Password</label>
-            <a href="#" class="forgot-link" (click)="$event.preventDefault()">Forgot password?</a>
           </div>
           <div class="input-wrapper">
             <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,18 +86,13 @@
           </div>
         </div>
 
-        <!-- Keep me signed in -->
-        <div class="checkbox-group">
-          <input id="remember" type="checkbox" formControlName="rememberMe" />
-          <label for="remember">Keep me signed in for 8 hours</label>
-        </div>
 
         <!-- Submit Button -->
         <app-loading-button
           type="submit"
           [loading]="isSubmitting"
           text="Sign In"
-          loadingText="Signing In..."
+          loadingText="Loading..."
           customClass="w-full flex justify-center !py-3 !text-base !bg-primary !text-white hover:!bg-primary-hover"
         ></app-loading-button>
       </form>

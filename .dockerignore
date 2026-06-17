@@ -1,0 +1,8 @@
+node_modules
+.angular
+dist
+.git
+.gitignore
+Dockerfile
+azure-pipelines.yml
+k8s

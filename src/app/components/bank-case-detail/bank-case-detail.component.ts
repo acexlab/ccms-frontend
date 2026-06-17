@@ -38,7 +38,7 @@ export class BankCaseDetailComponent implements OnInit {
   }
 
   downloadDocument(doc: any): void {
-    this.caseService.downloadAttachment(doc.id).subscribe((blob) => {
+    this.caseService.downloadDocument(this.caseNumber, doc.id).subscribe((blob) => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -50,7 +50,7 @@ export class BankCaseDetailComponent implements OnInit {
   }
 
   previewDocument(doc: any): void {
-    this.caseService.downloadAttachment(doc.id).subscribe((blob) => {
+    this.caseService.downloadDocument(this.caseNumber, doc.id).subscribe((blob) => {
       const url = window.URL.createObjectURL(blob);
       window.open(url, '_blank');
     });

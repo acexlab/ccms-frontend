@@ -36,10 +36,7 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
               <span class="material-symbols-outlined text-base">dashboard</span>
               Dashboard
             </a>
-            <a routerLink="/court/dashboard" fragment="cases-section" routerLinkActive="active-nav-link" class="nav-link">
-              <span class="material-symbols-outlined text-base">gavel</span>
-              Cases
-            </a>
+
             <a routerLink="/court/create-case" routerLinkActive="active-nav-link" class="nav-link">
               <span class="material-symbols-outlined text-base">add_box</span>
               Create Case
@@ -70,9 +67,7 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
               <p class="text-xs font-bold text-gray-900 leading-tight m-0">{{ username }}</p>
               <p class="text-[9px] text-gray-500 font-semibold m-0 mt-0.5 uppercase tracking-wider">{{ role === 'Court' ? 'Court Officer' : 'Bank Officer' }}</p>
             </div>
-            <div class="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center text-primary font-bold text-xs shadow-sm border border-blue-100">
-              {{ (username?.substring(0, 2) || 'US').toUpperCase() }}
-            </div>
+
             <span class="material-symbols-outlined text-slate-400 text-xs">expand_more</span>
           </button>
 
@@ -80,10 +75,6 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
             <button mat-menu-item class="!text-sm !font-semibold !text-slate-700" (click)="showProfileInfo()">
               <mat-icon class="!text-slate-500 !text-lg">person</mat-icon>
               <span>Profile</span>
-            </button>
-            <button mat-menu-item class="!text-sm !font-semibold !text-slate-700" (click)="showChangePasswordInfo()">
-              <mat-icon class="!text-slate-500 !text-lg">lock</mat-icon>
-              <span>Change Password</span>
             </button>
             <hr class="border-slate-100 my-1"/>
             <button mat-menu-item class="!text-sm !font-semibold !text-red-650" (click)="confirmLogout()">

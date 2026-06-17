@@ -43,7 +43,5 @@ export class CaseService {
     return this.http.get(`${this.apiUrl}/cases/${caseNumber}/documents/${documentId}/download`, { responseType: 'blob' });
   }
 
-  downloadAttachment(documentId: number): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/attachments/${documentId}/download`, { responseType: 'blob' });
-  }
+
 }
