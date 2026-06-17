@@ -67,9 +67,7 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
               <p class="text-xs font-bold text-gray-900 leading-tight m-0">{{ username }}</p>
               <p class="text-[9px] text-gray-500 font-semibold m-0 mt-0.5 uppercase tracking-wider">{{ role === 'Court' ? 'Court Officer' : 'Bank Officer' }}</p>
             </div>
-            <div class="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center text-primary font-bold text-xs shadow-sm border border-blue-100">
-              {{ (username?.substring(0, 2) || 'US').toUpperCase() }}
-            </div>
+
             <span class="material-symbols-outlined text-slate-400 text-xs">expand_more</span>
           </button>
 
