@@ -1,8 +1,6 @@
-# CCMS Frontend CI/CD Pipeline
+# CCMS Backend CI/CD Pipeline
 trigger:
-- main
-- frontend-main
-- deployment
+- version1.0
 
 resources:
 - repo: self
@@ -14,7 +12,7 @@ variables:
   
   # ACR Details
   containerRegistry: 'ccmsregistry.azurecr.io'
-  imageRepository: 'ccms-frontend'
+  imageRepository: 'ccms-backend'
   imagePullSecret: 'ccmsregistry-pull-secret'
   
   # Workspace paths
@@ -66,7 +64,9 @@ stages:
         kubernetesServiceConnection: '$(kubernetesServiceConnection)'
         namespace: '$(namespace)'
         manifests: |
-          $(System.DefaultWorkingDirectory)/k8s/frontend-deployment.yaml
+          $(System.DefaultWorkingDirectory)/k8s/secrets.yaml
+          $(System.DefaultWorkingDirectory)/k8s/configmap.yaml
+          $(System.DefaultWorkingDirectory)/k8s/backend-deployment.yaml
           $(System.DefaultWorkingDirectory)/k8s/ingress.yaml
         imagePullSecrets: |
           $(imagePullSecret)
