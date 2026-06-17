@@ -17,6 +17,8 @@ export class CourtCaseDetailComponent implements OnInit {
   courtOrderDoc: any = null;
   courtOrderUrl: SafeResourceUrl | null = null;
   isPdfLoading = true;
+  isPdfError = false;
+  pdfErrorMessage = '';
   errorMessage = '';
 
   constructor(
@@ -43,12 +45,21 @@ export class CourtCaseDetailComponent implements OnInit {
         if (this.courtOrderDoc) {
           this.caseService.downloadDocument(this.caseNumber, this.courtOrderDoc.id).subscribe({
             next: (blob) => {
+              if (blob.size < 100) {
+                // Likely a stub/dummy file, not a real document
+                this.isPdfError = true;
+                this.pdfErrorMessage = 'Document not available in storage.';
+                this.isPdfLoading = false;
+                return;
+              }
               const url = window.URL.createObjectURL(blob);
               this.courtOrderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
               this.isPdfLoading = false;
             },
             error: (err) => {
               console.error('Error loading pdf preview', err);
+              this.isPdfError = true;
+              this.pdfErrorMessage = err.status === 404 ? 'Document file not found in storage.' : 'Failed to load document preview.';
               this.isPdfLoading = false;
             }
           });

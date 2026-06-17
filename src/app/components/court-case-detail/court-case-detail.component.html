@@ -245,17 +245,30 @@
                 </div>
               </div>
               <div class="flex-1 relative bg-gray-100 flex flex-col justify-center items-center">
-                <!-- Loading -->
+              <!-- Loading -->
                 <div *ngIf="isPdfLoading" class="absolute inset-0 flex flex-col justify-center items-center bg-gray-50 z-10">
                   <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mb-2"></div>
-                  <p class="text-gray-500 text-xs font-semibold">Generating Live Preview...</p>
+                  <p class="text-gray-500 text-xs font-semibold">Loading Document Preview...</p>
                 </div>
                 
                 <!-- PDF Frame -->
-                <iframe *ngIf="courtOrderUrl" [src]="courtOrderUrl" class="w-full h-full border-none"></iframe>
+                <iframe *ngIf="courtOrderUrl && !isPdfError" [src]="courtOrderUrl" class="w-full h-full border-none"></iframe>
+                
+                <!-- Error State -->
+                <div *ngIf="isPdfError && !isPdfLoading" class="text-gray-500 flex flex-col items-center gap-3 p-6 text-center">
+                  <span class="material-symbols-outlined text-4xl text-amber-400">folder_off</span>
+                  <div>
+                    <p class="text-sm font-semibold text-gray-700">Preview Not Available</p>
+                    <p class="text-xs text-gray-400 mt-1">{{ pdfErrorMessage }}</p>
+                  </div>
+                  <button class="mt-2 px-4 py-2 text-xs font-bold text-primary bg-primary-light rounded-lg hover:bg-primary-container transition-colors cursor-pointer" (click)="downloadDocument(courtOrderDoc)">
+                    <span class="material-symbols-outlined text-sm align-middle mr-1">download</span>
+                    Download Instead
+                  </button>
+                </div>
                 
                 <!-- Fallback if no URL -->
-                <div *ngIf="!courtOrderUrl && !isPdfLoading" class="text-gray-500 flex flex-col items-center">
+                <div *ngIf="!courtOrderUrl && !isPdfLoading && !isPdfError" class="text-gray-500 flex flex-col items-center">
                   <span class="material-symbols-outlined text-3xl text-gray-400 mb-2">error</span>
                   <p class="text-sm">Live Preview not available.</p>
                 </div>
