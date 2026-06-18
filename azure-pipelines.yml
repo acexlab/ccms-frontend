@@ -1,26 +1,27 @@
 # CCMS Frontend CI/CD Pipeline
 trigger:
-- main
-- frontend-main
-- deployment
+- version1.0
 
 resources:
 - repo: self
 
 variables:
-  # Service Connection Names inside Azure DevOps
-  dockerRegistryServiceConnection: 'ccms-acr-conn'
-  kubernetesServiceConnection: 'ccms-aks-conn'
-  
-  # ACR Details
-  containerRegistry: 'ccmsacr9596.azurecr.io'
-  imageRepository: 'ccms-frontend'
-  imagePullSecret: 'ccmsacr9596-pull-secret'
-  
-  # Workspace paths
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  tag: '$(Build.BuildId)'
-  namespace: 'ccms'
+- name: dockerRegistryServiceConnection
+  value: 'ccms-acr-conn'
+- name: kubernetesServiceConnection
+  value: 'ccms-aks-conn'
+- name: containerRegistry
+  value: 'ccmsregistry.azurecr.io'
+- name: imageRepository
+  value: 'ccms-frontend'
+- name: imagePullSecret
+  value: 'ccmsregistry-pull-secret'
+- name: dockerfilePath
+  value: '$(Build.SourcesDirectory)/Dockerfile'
+- name: tag
+  value: '$(Build.BuildId)'
+- name: namespace
+  value: 'ccms'
 
 stages:
 - stage: Build
@@ -49,7 +50,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - task: KubernetesManifest@0
+    - task: KubernetesManifest@1
       displayName: Create Image Pull Secrets in AKS
       inputs:
         action: 'createSecret'
@@ -59,17 +60,15 @@ stages:
         secretName: '$(imagePullSecret)'
         dockerRegistryEndpoint: '$(dockerRegistryServiceConnection)'
 
-    - task: KubernetesManifest@0
+    - task: KubernetesManifest@1
       displayName: Deploy to AKS Cluster
       inputs:
         action: 'deploy'
         kubernetesServiceConnection: '$(kubernetesServiceConnection)'
         namespace: '$(namespace)'
         manifests: |
-          $(System.DefaultWorkingDirectory)/k8s/frontend-deployment.yaml
-          $(System.DefaultWorkingDirectory)/k8s/ingress.yaml
+          $(System.DefaultWorkingDirectory)/k8s/ccms-frontend.yaml
         imagePullSecrets: |
           $(imagePullSecret)
         containers: |
           $(containerRegistry)/$(imageRepository):$(tag)
-
