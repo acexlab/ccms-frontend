@@ -13,11 +13,11 @@ variables:
 - name: kubernetesServiceConnection
   value: 'ccms-aks-conn'
 - name: containerRegistry
-  value: 'ccmsregistry.azurecr.io'
+  value: 'ccmsacr9596.azurecr.io'
 - name: imageRepository
   value: 'ccms-frontend'
 - name: imagePullSecret
-  value: 'ccmsregistry-pull-secret'
+  value: 'ccmsacr9596-pull-secret'
 - name: dockerfilePath
   value: '$(Build.SourcesDirectory)/Dockerfile'
 - name: tag
