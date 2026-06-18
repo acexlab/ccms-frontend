@@ -278,6 +278,9 @@ export class CourtDashboardComponent implements OnInit {
   }
 
   countStatus(status: string): number {
+    if (status === 'AccountValidated') {
+      return this.cases.filter(c => c.status && (c.status.toLowerCase() === 'accountvalidated' || c.status.toLowerCase() === 'underreview')).length;
+    }
     return this.cases.filter(c => c.status && c.status.toLowerCase() === status.toLowerCase()).length;
   }
 
