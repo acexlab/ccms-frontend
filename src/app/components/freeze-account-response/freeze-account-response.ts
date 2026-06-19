@@ -57,6 +57,8 @@ export class FreezeAccountResponse implements OnInit {
             next: (blob) => {
               const url = window.URL.createObjectURL(blob);
               this.courtOrderUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+              // Mark loading done immediately once blob URL is ready
+              // The iframe (load) event is unreliable for blob URLs
               this.isPdfLoading = false;
             },
             error: (err) => {
@@ -91,7 +93,8 @@ export class FreezeAccountResponse implements OnInit {
   }
 
   get isFormValid(): boolean {
-    return this.freezeAmount !== null && this.freezeAmount >= 0 && !this.isPdfLoading;
+    // Do NOT gate on isPdfLoading — the iframe load event is unreliable for blob URLs
+    return this.freezeAmount !== null && this.freezeAmount >= 0;
   }
 
   submitResponse(): void {
