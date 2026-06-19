@@ -45,8 +45,8 @@ export class FreezeAccountResponse implements OnInit {
   loadCaseDetails(): void {
     this.caseService.getCaseDetails(this.caseNumber).subscribe({
       next: (data) => {
-        if (data.status !== 'AccountValidated') {
-          // Prevent access to already responded cases
+        if (data.status !== 'AccountValidated' && data.status !== 'UnderReview') {
+          // Prevent access to already responded cases (only allow ActionValidated or UnderReview)
           this.router.navigate(['/bank/cases']);
           return;
         }
@@ -91,7 +91,7 @@ export class FreezeAccountResponse implements OnInit {
   }
 
   get isFormValid(): boolean {
-    return this.freezeAmount !== null && this.freezeAmount > 0 && !this.isPdfLoading;
+    return this.freezeAmount !== null && this.freezeAmount >= 0 && !this.isPdfLoading;
   }
 
   submitResponse(): void {

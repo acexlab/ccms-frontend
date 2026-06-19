@@ -41,8 +41,8 @@ export class BalanceEnquiryResponse implements OnInit {
   loadCaseDetails(): void {
     this.caseService.getCaseDetails(this.caseNumber).subscribe({
       next: (data) => {
-        if (data.status !== 'AccountValidated') {
-          // Prevent access to already responded cases
+        if (data.status !== 'AccountValidated' && data.status !== 'UnderReview') {
+          // Prevent access to already responded cases (only allow AccountValidated or UnderReview)
           this.router.navigate(['/bank/cases']);
           return;
         }
@@ -59,7 +59,7 @@ export class BalanceEnquiryResponse implements OnInit {
   }
 
   get isFormValid(): boolean {
-    return this.verifiedBalance !== null && this.verifiedBalance > 0;
+    return this.verifiedBalance !== null && this.verifiedBalance >= 0;
   }
 
   submitResponse(): void {
