@@ -1,27 +1,30 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 import { of, throwError } from 'rxjs';
-import { By } from '@angular/platform-browser';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let routerSpy: jasmine.SpyObj<Router>;
+  let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
 
   beforeEach(async () => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['login']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['success', 'error', 'warning']);
 
     await TestBed.configureTestingModule({
       imports: [LoginComponent, ReactiveFormsModule],
       providers: [
         FormBuilder,
         { provide: AuthService, useValue: authServiceSpy },
-        { provide: Router, useValue: routerSpy }
+        { provide: Router, useValue: routerSpy },
+        { provide: NotificationService, useValue: notificationServiceSpy }
       ]
     }).compileComponents();
 
@@ -55,7 +58,7 @@ describe('LoginComponent', () => {
     expect(component.showPassword).toBeFalse();
   });
 
-  it('should authenticate and redirect to dashboard based on response redirectUrl', () => {
+  it('should authenticate and redirect to dashboard based on response redirectUrl', fakeAsync(() => {
     component.loginForm.patchValue({
       username: 'court.user',
       password: 'Password@123'
@@ -71,8 +74,10 @@ describe('LoginComponent', () => {
       username: 'court.user',
       password: 'Password@123'
     });
+    
+    tick(400); // Fast-forward time to resolve setTimeout
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/court/dashboard']);
-  });
+  }));
 
   it('should display error message on authentication failure', () => {
     component.loginForm.patchValue({

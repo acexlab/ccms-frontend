@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { CreateCaseComponent } from './create-case.component';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { CaseService } from '../../services/case.service';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 import { of, throwError } from 'rxjs';
 
 describe('CreateCaseComponent', () => {
@@ -13,11 +14,13 @@ describe('CreateCaseComponent', () => {
   let caseServiceSpy: jasmine.SpyObj<CaseService>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let routerSpy: jasmine.SpyObj<Router>;
+  let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
 
   beforeEach(async () => {
     caseServiceSpy = jasmine.createSpyObj('CaseService', ['getMyCases', 'createCase']);
     authServiceSpy = jasmine.createSpyObj('AuthService', ['logout']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['success', 'error', 'warning']);
 
     caseServiceSpy.getMyCases.and.returnValue(of([]));
 
@@ -28,6 +31,7 @@ describe('CreateCaseComponent', () => {
         { provide: CaseService, useValue: caseServiceSpy },
         { provide: AuthService, useValue: authServiceSpy },
         { provide: Router, useValue: routerSpy },
+        { provide: NotificationService, useValue: notificationServiceSpy },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -87,12 +91,11 @@ describe('CreateCaseComponent', () => {
   });
 
   it('should reject files exceeding 5MB', () => {
-    spyOn(window, 'alert');
     const hugeFile = new File([new ArrayBuffer(6 * 1024 * 1024)], 'huge.pdf', { type: 'application/pdf' });
     const event = { target: { files: [hugeFile] } };
 
     component.onFileSelected(event, 'courtOrder');
-    expect(window.alert).toHaveBeenCalledWith('File huge.pdf exceeds the 5MB limit.');
+    expect(notificationServiceSpy.error).toHaveBeenCalledWith('File huge.pdf exceeds the 5MB limit.');
     expect(component.courtOrderFile).toBeNull();
   });
 
@@ -107,8 +110,7 @@ describe('CreateCaseComponent', () => {
     expect(component.courtOrderFile).toBeNull();
   });
 
-  it('should submit case and redirect on success', () => {
-    spyOn(window, 'alert');
+  it('should submit case and redirect on success', fakeAsync(() => {
     component.createCaseForm.patchValue({
       complainantName: 'Income Tax Dept',
       complainantId: 'ABCDE1234F',
@@ -129,9 +131,12 @@ describe('CreateCaseComponent', () => {
 
     component.submitCase();
 
-    expect(component.isSubmitting).toBeFalse();
+    expect(component.isSubmitting).toBeTrue();
     expect(component.submitSuccess).toBeTrue();
     expect(component.referenceId).toBe('CCMS-20260616-0001');
+    
+    tick(400); // fast forward timeout
+    
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/court/dashboard']);
-  });
+  }));
 });

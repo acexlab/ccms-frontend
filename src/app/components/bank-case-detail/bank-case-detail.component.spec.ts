@@ -13,29 +13,9 @@ describe('BankCaseDetailComponent', () => {
   let caseServiceSpy: jasmine.SpyObj<CaseService>;
   let routerSpy: jasmine.SpyObj<Router>;
 
-  const mockCaseDetails = {
-    caseNumber: 'CCMS-TEST-0005',
-    orderType: 'FreezeAccount',
-    status: 'AccountValidated',
-    complainantName: 'Income Tax Dept',
-    complainantIdentityNumber: 'ABCDE1234F',
-    defendantName: 'Rajesh Kumar',
-    defendantAadhaar: 'XXXX XXXX 9012',
-    defendantPan: 'XXXXXXXXX234F',
-    defendantAccountNumber: 'XXXXXXXXXXXX3333',
-    matchedAccountNumber: '111122223333',
-    accountStatus: 'Active',
-    currentBalance: 150000,
-    documents: [
-      { id: 1, documentType: 'CourtOrder', fileName: 'order.pdf', fileSize: 1024 }
-    ]
-  };
-
   beforeEach(async () => {
-    caseServiceSpy = jasmine.createSpyObj('CaseService', ['getCaseDetails', 'downloadAttachment']);
+    caseServiceSpy = jasmine.createSpyObj('CaseService', ['getCaseDetails', 'downloadDocument']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-
-    caseServiceSpy.getCaseDetails.and.returnValue(of(mockCaseDetails));
 
     await TestBed.configureTestingModule({
       imports: [BankCaseDetailComponent, FormsModule, MatIconModule],
@@ -54,10 +34,30 @@ describe('BankCaseDetailComponent', () => {
         }
       ]
     }).compileComponents();
+  });
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(BankCaseDetailComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    
+    // Set up mock details directly for tests
+    component.caseDetails = {
+      caseNumber: 'CCMS-TEST-0005',
+      orderType: 'FreezeAccount',
+      status: 'AccountValidated',
+      complainantName: 'Income Tax Dept',
+      complainantIdentityNumber: 'ABCDE1234F',
+      defendantName: 'Rajesh Kumar',
+      defendantAadhaar: 'XXXX XXXX 9012',
+      defendantPan: 'XXXXXXXXX234F',
+      defendantAccountNumber: 'XXXXXXXXXXXX3333',
+      matchedAccountNumber: '111122223333',
+      accountStatus: 'Active',
+      currentBalance: 150000,
+      documents: [
+        { id: 1, documentType: 'CourtOrder', fileName: 'order.pdf', fileSize: 1024 }
+      ]
+    };
   });
 
   it('should create the component', () => {
@@ -65,21 +65,29 @@ describe('BankCaseDetailComponent', () => {
   });
 
   it('should fetch and display case details on init', () => {
+    // We override component.caseDetails in beforeEach, but let's test the init logic
+    component.caseDetails = null; // Clear it for this test
+    const mockCaseDetails = { caseNumber: 'CCMS-TEST-0005', orderType: 'FreezeAccount', status: 'AccountValidated' };
+    caseServiceSpy.getCaseDetails.and.returnValue(of(mockCaseDetails));
+    
+    fixture.detectChanges(); // Triggers ngOnInit
+
     expect(caseServiceSpy.getCaseDetails).toHaveBeenCalledWith('CCMS-TEST-0005');
     expect(component.caseDetails).toEqual(mockCaseDetails);
-
-    // Verify masked data is shown
     expect(component.isAwaitingAction).toBeTrue();
     expect(component.isResponded).toBeFalse();
   });
 
   it('should redirect to freeze-response if orderType is FreezeAccount', () => {
+    component.caseDetails.orderType = 'FreezeAccount';
+    component.caseNumber = 'CCMS-TEST-0005';
     component.navigateToResponse();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/bank/cases', 'CCMS-TEST-0005', 'freeze-response']);
   });
 
   it('should redirect to balance-response if orderType is BalanceEnquiry', () => {
     component.caseDetails.orderType = 'BalanceEnquiry';
+    component.caseNumber = 'CCMS-TEST-0005';
     component.navigateToResponse();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/bank/cases', 'CCMS-TEST-0005', 'balance-response']);
   });
@@ -91,7 +99,9 @@ describe('BankCaseDetailComponent', () => {
     spyOn(window.URL, 'createObjectURL').and.returnValue('mock-url');
     spyOn(window.URL, 'revokeObjectURL');
 
-    component.downloadDocument(1);
+    component.caseNumber = 'CCMS-TEST-0005';
+    // The HTML passes the whole doc object `{id: 1, ...}`
+    component.downloadDocument({ id: 1, fileName: 'test.pdf' });
 
     expect(caseServiceSpy.downloadDocument).toHaveBeenCalledWith('CCMS-TEST-0005', 1);
   });
