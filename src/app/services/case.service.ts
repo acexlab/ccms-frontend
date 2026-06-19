@@ -20,7 +20,7 @@ export class CaseService {
   }
 
   getMyCases(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/cases`);
+    return this.http.get<any[]>(`${this.apiUrl}/cases?t=${new Date().getTime()}`);
   }
 
   getCaseById(id: number): Observable<any> {
@@ -28,7 +28,7 @@ export class CaseService {
   }
 
   getInboxCases(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/cases/inbox`);
+    return this.http.get<any>(`${this.apiUrl}/cases/inbox?t=${new Date().getTime()}`);
   }
 
   getCaseDetails(caseNumber: string): Observable<any> {
