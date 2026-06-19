@@ -91,7 +91,8 @@ export class CreateCaseComponent implements OnInit {
     complainantName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]{3,100}$/)]],
     complainantId: ['', [Validators.required, Validators.pattern(/^(?:\d{12}|[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1})$/i)]],
     defendantName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]{3,100}$/)]],
-    defendantId: ['', [Validators.required, Validators.pattern(/^(?:\d{12}|[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1})$/i)]],
+    defendantId: ['', [Validators.required, Validators.pattern(/^\d{12}$/)]],
+    defendantPan: ['', [Validators.required, Validators.pattern(/^[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}$/)]],
     defendantAccountNumber: ['', [Validators.required, Validators.pattern(/^\d{9,18}$/)]],
     defendantBankName: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]{3,100}$/)]],
     orderType: ['freeze', [Validators.required]],
@@ -152,6 +153,7 @@ export class CreateCaseComponent implements OnInit {
       const step2Fields = [
         'defendantName',
         'defendantId',
+        'defendantPan',
         'defendantAccountNumber',
         'defendantBankName'
       ];
@@ -266,6 +268,7 @@ export class CreateCaseComponent implements OnInit {
     formData.append('complainantId', this.createCaseForm.get('complainantId')?.value || '');
     formData.append('defendantName', this.createCaseForm.get('defendantName')?.value || '');
     formData.append('defendantId', this.createCaseForm.get('defendantId')?.value || '');
+    formData.append('defendantPan', this.createCaseForm.get('defendantPan')?.value || '');
     formData.append('defendantAccountNumber', this.createCaseForm.get('defendantAccountNumber')?.value || '');
     formData.append('defendantBankName', this.createCaseForm.get('defendantBankName')?.value || '');
     

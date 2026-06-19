@@ -47,6 +47,11 @@ import { CommonModule } from '@angular/common';
       color: #4b5563;
       border: 1px solid #e5e7eb;
     }
+    .badge-review {
+      background-color: #f3e8ff;
+      color: #7e22ce;
+      border: 1px solid #e9d5ff;
+    }
     .badge-default {
       background-color: #e9ecef;
       color: #495057;
@@ -60,6 +65,7 @@ export class StatusBadgeComponent {
     switch (this.status) {
       case 'AccountValidated': return 'Awaiting Action';
       case 'Pending': return 'Pending Batch';
+      case 'UnderReview': return 'Under Review';
       case 'FreezeApplied': return 'Freeze Applied';
       case 'BalanceProvided': return 'Balance Provided';
       case 'AccountNotFound': return 'Auto Resolved';
@@ -71,6 +77,7 @@ export class StatusBadgeComponent {
     switch (this.status) {
       case 'AccountValidated': return 'badge-awaiting';
       case 'Pending': return 'badge-pending';
+      case 'UnderReview': return 'badge-review';
       case 'FreezeApplied': return 'badge-freeze';
       case 'BalanceProvided': return 'badge-balance';
       case 'AccountNotFound': return 'badge-auto';

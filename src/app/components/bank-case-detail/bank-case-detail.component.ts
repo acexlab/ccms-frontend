@@ -65,7 +65,7 @@ export class BankCaseDetailComponent implements OnInit {
   }
 
   get isAwaitingAction(): boolean {
-    return this.caseDetails?.status === 'AccountValidated';
+    return this.caseDetails?.status === 'AccountValidated' || this.caseDetails?.status === 'UnderReview';
   }
 
   get isResponded(): boolean {

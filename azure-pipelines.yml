@@ -1,24 +1,29 @@
-# CCMS Backend CI/CD Pipeline
+# CCMS Frontend CI/CD Pipeline
 trigger:
 - version1.0
+- frontend-main
+- deployment
 
 resources:
 - repo: self
 
 variables:
-  # Service Connection Names inside Azure DevOps
-  dockerRegistryServiceConnection: 'ccms-acr-conn'
-  kubernetesServiceConnection: 'ccms-aks-conn'
-  
-  # ACR Details
-  containerRegistry: 'ccmsregistry.azurecr.io'
-  imageRepository: 'ccms-backend'
-  imagePullSecret: 'ccmsregistry-pull-secret'
-  
-  # Workspace paths
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  tag: '$(Build.BuildId)'
-  namespace: 'ccms'
+- name: dockerRegistryServiceConnection
+  value: 'ccms-acr-conn'
+- name: kubernetesServiceConnection
+  value: 'ccms-aks-conn'
+- name: containerRegistry
+  value: 'ccmsacr9596.azurecr.io'
+- name: imageRepository
+  value: 'ccms-frontend'
+- name: imagePullSecret
+  value: 'ccmsacr9596-pull-secret'
+- name: dockerfilePath
+  value: '$(Build.SourcesDirectory)/Dockerfile'
+- name: tag
+  value: '$(Build.BuildId)'
+- name: namespace
+  value: 'ccms'
 
 stages:
 - stage: Build
@@ -64,12 +69,8 @@ stages:
         kubernetesServiceConnection: '$(kubernetesServiceConnection)'
         namespace: '$(namespace)'
         manifests: |
-          $(System.DefaultWorkingDirectory)/k8s/secrets.yaml
-          $(System.DefaultWorkingDirectory)/k8s/configmap.yaml
-          $(System.DefaultWorkingDirectory)/k8s/backend-deployment.yaml
-          $(System.DefaultWorkingDirectory)/k8s/ingress.yaml
+          $(System.DefaultWorkingDirectory)/k8s/ccms-frontend.yaml
         imagePullSecrets: |
           $(imagePullSecret)
         containers: |
           $(containerRegistry)/$(imageRepository):$(tag)
-

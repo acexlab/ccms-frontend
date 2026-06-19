@@ -43,6 +43,7 @@ describe('CreateCaseComponent', () => {
 
     fixture = TestBed.createComponent(CreateCaseComponent);
     component = fixture.componentInstance;
+    notificationService = TestBed.inject(NotificationService);
     fixture.detectChanges();
   });
 
@@ -66,6 +67,7 @@ describe('CreateCaseComponent', () => {
       complainantId: 'ABCDE1234F',
       defendantName: 'Rajesh Kumar',
       defendantId: '123456789012',
+      defendantPan: 'ABCDE1234F',
       defendantAccountNumber: '111122223333',
       defendantBankName: 'SBI'
     });
@@ -111,11 +113,13 @@ describe('CreateCaseComponent', () => {
   });
 
   it('should submit case and redirect on success', fakeAsync(() => {
+
     component.createCaseForm.patchValue({
       complainantName: 'Income Tax Dept',
       complainantId: 'ABCDE1234F',
       defendantName: 'Rajesh Kumar',
       defendantId: '123456789012',
+      defendantPan: 'ABCDE1234F',
       defendantAccountNumber: '111122223333',
       defendantBankName: 'SBI',
       orderType: 'freeze',
@@ -130,6 +134,7 @@ describe('CreateCaseComponent', () => {
     caseServiceSpy.createCase.and.returnValue(of({ caseNumber: 'CCMS-20260616-0001', id: 1 }));
 
     component.submitCase();
+    tick(400);
 
     expect(component.isSubmitting).toBeTrue();
     expect(component.submitSuccess).toBeTrue();
